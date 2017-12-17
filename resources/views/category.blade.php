@@ -73,165 +73,110 @@
             <input type="submit" value="Искать">
         </form>
         <div class="flex wrap pr">
-            <div class="podbor-item ">
-                <article class="item-cart">
-                    <div class="item-photo" style="background-image: url(/public/img/111.png)"></div>
-                    <div class="item-desc">
-                        <div class="item-desc-params flex">
-                            <div class="flex item-desc-params-left">
-                                <span class="rating">4.5</span>
-                                <span class="feedbacks">666</span>
+            @if (count($items))
+                @for($i=0; $i<4; $i++)
+                    @foreach($teasers as $teaser)
+                        @if($teaser->position == $i+1)
+                            <div class="podbor-item ">
+                                <article class="tizers">
+                                    <img class="item-photo" src="{{$teaser->logo}}">
+                                    <p>{{$teaser->text}}</p>
+                                </article>
                             </div>
-                            <div>
-                                <span class="item-price">18900</span>
+                        @else
+
+                            @if(isset($items[$i]))
+                            <div class="podbor-item ">
+                                <article class="item-cart">
+                                    <div class="item-photo" style="background-image: url({{$items[$i]->logo}})"></div>
+                                    <div class="item-desc">
+                                        <div class="item-desc-params flex">
+                                            <div class="flex item-desc-params-left">
+                                                <span class="rating">4.5</span>
+                                                <span class="feedbacks">666</span>
+                                            </div>
+                                            <div>
+                                                <span class="item-price">18900</span>
+                                            </div>
+                                        </div>
+                                        <div class="item-desc-text">
+                                            <p><b>{{$items[$i]->name}}</b> <br>
+                                                {{$items[$i]->about}}</p>
+                                        </div>
+                                        <div class="item-desc-tags">
+                                                <span>{{$items[$i]->city}}</span>
+                                            @if(isset($items[$i]->param1))
+                                                <span class="dot"></span>
+                                                <span>{{$items[$i]->param1}}</span>
+                                            @endif
+                                            @if(isset($items[$i]->param2))
+                                                <span class="dot"></span>
+                                                <span>{{$items[$i]->param2}}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </article>
                             </div>
-                        </div>
-                        <div class="item-desc-text">
-                            <p><b>Квартет "Молодость"</b>
-                                Народные мотивы в сочетании с современной рок-музыкой. Невозм записать Горных орлов и вы почувствуете
-                                драйв
-                                привычных народных</p>
-                        </div>
-                        <div class="item-desc-tags">
-                            <span>Махачкала</span>
-                            <span class="dot"></span>
-                            <span>Эстрада</span>
-                            <span class="dot"></span>
-                            <span>Аварский</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-            <div class="podbor-item ">
-                <article class="item-cart">
-                    <div class="item-photo" style="background-image: url(/public/img/111.png)"></div>
-                    <div class="item-desc">
-                        <div class="item-desc-params flex">
-                            <div class="flex item-desc-params-left">
-                                <span class="rating">4.5</span>
-                                <span class="feedbacks">666</span>
-                            </div>
-                            <div>
-                                <span class="item-price">18900</span>
-                            </div>
-                        </div>
-                        <div class="item-desc-text">
-                            <p><b>Квартет "Молодость"</b>
-                                Народные мотивы в сочетании с современной рок-музыкой. Невозм записать Горных орлов и вы почувствуете
-                                драйв
-                                привычных народных</p>
-                        </div>
-                        <div class="item-desc-tags">
-                            <span>Махачкала</span>
-                            <span class="dot"></span>
-                            <span>Эстрада</span>
-                            <span class="dot"></span>
-                            <span>Аварский</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-            <div class="podbor-item ">
-                <article class="tizers">
-                    <img class="item-photo" src="/public/img/tizer1.png">
-                    <p>Если вы не в перый раз организуете свадьбу, вы, должно быть, знаете, как тяжело наладить коммуникацию с исполнителями: они не берут трубку, постоянно заняты. Даже договориться о встрече большая проблема. Мы решим ее сами. Наш менеджер обо всем позаботиться. Просто оставьте заявку. </p>
-                </article>
-            </div>
-            <div class="podbor-item ">
-                <article class="item-cart">
-                    <div class="item-photo" style="background-image: url(/public/img/111.png)"></div>
-                    <div class="item-desc">
-                        <div class="item-desc-params flex">
-                            <div class="flex item-desc-params-left">
-                                <span class="rating">4.5</span>
-                                <span class="feedbacks">666</span>
-                            </div>
-                            <div>
-                                <span class="item-price">18900</span>
-                            </div>
-                        </div>
-                        <div class="item-desc-text">
-                            <p><b>Квартет "Молодость"</b>
-                                Народные мотивы в сочетании с современной рок-музыкой. Невозм записать Горных орлов и вы почувствуете
-                                драйв
-                                привычных народных</p>
-                        </div>
-                        <div class="item-desc-tags">
-                            <span>Махачкала</span>
-                            <span class="dot"></span>
-                            <span>Эстрада</span>
-                            <span class="dot"></span>
-                            <span>Аварский</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
+                            @endif
+                        @endif
+                    @endforeach
+
+                @endfor
+            @endif
+
+
         </div>
         <div class="flex wrap">
-            <div class="podbor-item ">
-                <article class="item-cart">
-                    <div class="item-photo" style="background-image: url(/public/img/111.png)"></div>
-                    <div class="item-desc">
-                        <div class="item-desc-params flex">
-                            <div class="flex item-desc-params-left">
-                                <span class="rating">4.5</span>
-                                <span class="feedbacks">666</span>
+            @if (count($items)>4)
+                @for($i=4; $i<7; $i++)
+                    @foreach($teasers as $teaser)
+                        @if($teaser->position == $i+1)
+                            <div class="podbor-item ">
+                                <article class="tizers">
+                                    <img class="item-photo" src="{{$teaser->logo}}">
+                                    <p>{{$teaser->text}}</p>
+                                </article>
                             </div>
-                            <div>
-                                <span class="item-price">18900</span>
-                            </div>
-                        </div>
-                        <div class="item-desc-text">
-                            <p><b>Квартет "Молодость"</b>
-                                Народные мотивы в сочетании с современной рок-музыкой. Невозм записать Горных орлов и вы почувствуете
-                                драйв
-                                привычных народных</p>
-                        </div>
-                        <div class="item-desc-tags">
-                            <span>Махачкала</span>
-                            <span class="dot"></span>
-                            <span>Эстрада</span>
-                            <span class="dot"></span>
-                            <span>Аварский</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-            <div class="podbor-item ">
-                <article class="item-cart">
-                    <div class="item-photo" style="background-image: url(/public/img/111.png)"></div>
-                    <div class="item-desc">
-                        <div class="item-desc-params flex">
-                            <div class="flex item-desc-params-left">
-                                <span class="rating">4.5</span>
-                                <span class="feedbacks">666</span>
-                            </div>
-                            <div>
-                                <span class="item-price">18900</span>
-                            </div>
-                        </div>
-                        <div class="item-desc-text">
-                            <p><b>Квартет "Молодость"</b>
-                                Народные мотивы в сочетании с современной рок-музыкой. Невозм записать Горных орлов и вы почувствуете
-                                драйв
-                                привычных народных</p>
-                        </div>
-                        <div class="item-desc-tags">
-                            <span>Махачкала</span>
-                            <span class="dot"></span>
-                            <span>Эстрада</span>
-                            <span class="dot"></span>
-                            <span>Аварский</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-            <div class="podbor-item " >
-                <article class="tizers">
-                    <img class="item-photo" src="/public/img/tizer2.png">
-                    <p>Если вы не в перый раз организуете свадьбу, вы, должно быть, знаете, как тяжело наладить коммуникацию с исполнителями: они не берут трубку, постоянно заняты. Даже договориться о встрече большая проблема. Мы решим ее сами. Наш менеджер обо всем позаботиться. Просто оставьте заявку. </p>
-                </article>
-            </div>
+                        @else
+
+                            @if(isset($items[$i]))
+                                <div class="podbor-item ">
+                                    <article class="item-cart">
+                                        <div class="item-photo" style="background-image: url({{$items[$i]->logo}})"></div>
+                                        <div class="item-desc">
+                                            <div class="item-desc-params flex">
+                                                <div class="flex item-desc-params-left">
+                                                    <span class="rating">4.5</span>
+                                                    <span class="feedbacks">666</span>
+                                                </div>
+                                                <div>
+                                                    <span class="item-price">18900</span>
+                                                </div>
+                                            </div>
+                                            <div class="item-desc-text">
+                                                <p><b>{{$items[$i]->name}}</b> <br>
+                                                    {{$items[$i]->about}}</p>
+                                            </div>
+                                            <div class="item-desc-tags">
+                                                <span>{{$items[$i]->city}}</span>
+                                                @if(isset($items[$i]->param1))
+                                                    <span class="dot"></span>
+                                                    <span>{{$items[$i]->param1}}</span>
+                                                @endif
+                                                @if(isset($items[$i]->param2))
+                                                    <span class="dot"></span>
+                                                    <span>{{$items[$i]->param2}}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                            @endif
+                        @endif
+                    @endforeach
+
+                @endfor
+            @endif
             <div class="loadNewItem"><span>Загрузить еще</span> ↓</div>
         </div>
     </div>

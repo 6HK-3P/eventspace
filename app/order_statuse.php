@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class order_statuse extends Model
+class Order_statuse extends Model
 {
     //
 }

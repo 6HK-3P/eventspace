@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ranking_group extends Model
+class Ranking_group extends Model
 {
     //
 }
