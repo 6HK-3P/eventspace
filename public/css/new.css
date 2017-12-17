@@ -1,0 +1,33 @@
+.line{
+	padding:5px;
+	margin-bottom: 10px; 
+}
+.line-container{
+	border: 1px dotted #ccc;
+	padding:5px;
+	margin-bottom: 10px; 
+	width: 100%;
+}
+.line-checked{
+	display: block;
+	opacity: 1 !important;
+	z-index: 1 !important;
+	position: relative !important;
+	margin-right: 5px; 
+}
+
+.line .jq-radio{
+	margin-right: 10px; 
+}
+.line i{
+	margin-left: 20px; 
+}
+.line-container .drum-container{
+	display: none;
+}
+.line-container #second{
+	display: block;
+}
+.asd{
+	padding: 0 25px;
+}
