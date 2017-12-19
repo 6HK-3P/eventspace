@@ -57,7 +57,7 @@ class MainController extends Controller
         //добавление в воркерс
         $addw= new worker;
         $addw->user_id = $userid['id'];
-        $addw->category_id = '1';
+        $addw->category_id = '4';
         $addw->city_id = $request->input('basic_city');
         $addw->logo = '/static/img/111.png';
         $addw->about = $request->input('add_description');

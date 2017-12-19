@@ -42,13 +42,86 @@ class CategoryController extends Controller
 
         $countcamers = Workers_count_camer::all();
         /*наковыриваем товары-воркеры*/
-        $items = Worker::where("category_id", $cat)->limit(7)->get();
+        $result = $this->sortAlphavit($cat, "ASC");
+        $teasers = $result["teasers"];
+        $items = $result["items"];
+
+
+        return view('category')->with(['items'=>$items, 'teasers'=>$teasers,'cat'=>$cat, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
+                                             'allcities' => $allcitie ,  'alltoasts' => $alltoast ,'alllanguages' => $alllanguage,
+                                              'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype]);
+
+    }
+
+
+    public function sort(Request $request)
+    {
+        $cat = $request->input("cat");
+        $order = $request->input("order");
+        $result = $this->sortAlphavit($cat, $order);
+        echo json_encode($result,JSON_UNESCAPED_UNICODE);
+
+    }
+
+
+    public function sortAlphavit($cat, $order)
+    {
+        $items = User::whereHas('worker', function($q) use ($cat) {$q->where('category_id', $cat);})->orderBy("name", $order)->limit(7)->get();
+        $items = $this->getAdditionalInfo($items, $cat);
+        $teasers = Teaser::where("position", "<=","7")->get();
+
+        return ["teasers"=>$teasers, 'items'=>$items];
+    }
+
+
+    public function getWorkers(Request $request)
+    {
+        $cat = $request->input("cat");
+        $order = $request->input("order");
+        $searchs = $request->input("search");
+        $offset = $request->input("offset");
+        $items = User::whereHas('worker', function($q) use ($cat) {$q->where('category_id', $cat);})->orderBy("name", $order)->offset($offset)->limit(6)->get();
+        $items = $this->getAdditionalInfo($items, $cat);
+        $teasers = Teaser::where("position", "<=", 6+$offset)->where("position", "=>", $offset)->get();
+
+        echo json_encode(["teasers"=>$teasers,"items"=> $items],JSON_UNESCAPED_UNICODE);
+    }
+
+    public function search(Request $request)
+    {
+
+        $cat = $request->input("cat");
+        $order = $request->input("order");
+        $searchs = $request->input("search");
+        $items = User::whereHas('worker', function($q) use ($cat) {$q->where('category_id', $cat); })->where('name','LIKE', '%'.$searchs.'%')->orderBy("name", $order)->limit(7)->get();
+
+        $items = $this->getAdditionalInfo($items, $cat);
+        $teasers = Teaser::where("position", "<=","7")->get();
+
+        echo json_encode(["teasers"=>$teasers, 'items'=>$items],JSON_UNESCAPED_UNICODE);
+    }
+
+
+    public function selectCategory($category){
+        switch ($category){
+            case "photographers" : $cat = 1; break;
+            case "video": $cat = 2; break;
+            case "halls": $cat = 3; break;
+            case "musicians": $cat = 4; break;
+            case "toastmakers": $cat = 5; break;
+            case "cars": $cat = 6; break;
+            default: $cat = 1;
+        }
+        return $cat;
+    }
+
+
+    public function getAdditionalInfo($items,  $cat){
         if (count($items)){
             foreach ($items as $item){
-                $item->name = User::find($item->user_id)->name;
                 /*наковыриваем для товаров-воркеров недостающую инфу*/
-                $item->city = Workers_citie::find($item->city_id)->title;
-                $info = json_decode($item->workers_additional_info);
+                $item->city = Workers_citie::find($item->worker->city_id)->title;
+                $info = json_decode($item->worker->workers_additional_info);
                 if ($cat == 4){
                     $item->param1 = Workers_musicians_type::find($info->basic_types*1)->title;
                     $item->param2 = Workers_language::find($info->basic_lang*1)->name;
@@ -67,27 +140,6 @@ class CategoryController extends Controller
             }
         }
 
-        $teasers = Teaser::where("position", "<","7")->get();
-
-
-        return view('category')->with(['items'=>$items, 'teasers'=>$teasers,'cat'=>$cat, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
-                                             'allcities' => $allcitie ,  'alltoasts' => $alltoast ,'alllanguages' => $alllanguage,
-                                              'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype]);
-
+        return $items;
     }
-
-
-    public function selectCategory($category){
-        switch ($category){
-            case "photographers" : $cat = 1; break;
-            case "video": $cat = 2; break;
-            case "halls": $cat = 3; break;
-            case "musicians": $cat = 4; break;
-            case "toastmakers": $cat = 5; break;
-            case "cars": $cat = 6; break;
-            default: $cat = 1;
-        }
-        return $cat;
-    }
-
 }

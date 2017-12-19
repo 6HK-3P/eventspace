@@ -85,7 +85,7 @@
 </footer>
 <script src="/public/js/functions.js"></script>
 <script src="/public/js/index.js"></script>
-<script src="/public/js/login.js"></script>
+
 <script src="/public/libs/jquery.formstyler.min.js"></script>
 <script src="/public/js/dzen.js"></script>
 <script src="/public/js/nouislider.min.js"></script>

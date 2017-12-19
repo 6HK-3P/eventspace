@@ -54,27 +54,28 @@
             ?>"></i>
             {{\App\workers_categorie::find($cat)->name}}
        </h1>
-        <form class="search-form">
+        <form class="search-form" id="search_form">
             <label>
                 Сортировка
-                <select class="sort-select">
-                    <option value="price">по цене</option>
-                    <option value="name">по алфавиту</option>
-                    <option value="rating">по рейтингу</option>
-                    <option value="comments_count">по количеству отзывов</option>
+                <select class="sort-select" id="sort">
+                    <option value="1">по цене</option>
+                    <option value="2" selected>по алфавиту</option>
+                    <option value="3">по рейтингу</option>
+                    <option value="4">по количеству отзывов</option>
                 </select>
-                <button class="button-sort"></button>
+                <button class="button-sort" data-order="asc"></button>
             </label>
             <label>
                 Поиск
-                <input type="text" placeholder="В категории">
+                <input type="text" name="search" id="input_search" placeholder="В категории">
             </label>
 
-            <input type="submit" value="Искать">
+            <input type="submit" id="search" value="Искать">
         </form>
-        <div class="flex wrap pr">
+        <div class="flex wrap pr topBlock">
+            <? $k = 4; ?>
             @if (count($items))
-                @for($i=0; $i<4; $i++)
+                @for($i=0; $i<$k; $i++)
                     @foreach($teasers as $teaser)
                         @if($teaser->position == $i+1)
                             <div class="podbor-item ">
@@ -83,12 +84,13 @@
                                     <p>{{$teaser->text}}</p>
                                 </article>
                             </div>
-                        @else
-
+                            <?  $k--; ?>
+                        @endif
+                        @endforeach
                             @if(isset($items[$i]))
                             <div class="podbor-item ">
                                 <article class="item-cart">
-                                    <div class="item-photo" style="background-image: url({{$items[$i]->logo}})"></div>
+                                    <div class="item-photo" style="background-image: url({{$items[$i]->worker->logo}})"></div>
                                     <div class="item-desc">
                                         <div class="item-desc-params flex">
                                             <div class="flex item-desc-params-left">
@@ -101,7 +103,7 @@
                                         </div>
                                         <div class="item-desc-text">
                                             <p><b>{{$items[$i]->name}}</b> <br>
-                                                {{$items[$i]->about}}</p>
+                                                {{$items[$i]->worker->about}}</p>
                                         </div>
                                         <div class="item-desc-tags">
                                                 <span>{{$items[$i]->city}}</span>
@@ -118,17 +120,18 @@
                                 </article>
                             </div>
                             @endif
-                        @endif
-                    @endforeach
+
+
 
                 @endfor
-            @endif
+                            @endif
 
 
         </div>
-        <div class="flex wrap">
-            @if (count($items)>4)
-                @for($i=4; $i<7; $i++)
+        <div class="flex wrap bottomBlock">
+            @if (count($items)>$k)
+                <? $g =  $k+3 ?>
+                @for($i=$k; $i<$g; $i++)
                     @foreach($teasers as $teaser)
                         @if($teaser->position == $i+1)
                             <div class="podbor-item ">
@@ -137,12 +140,13 @@
                                     <p>{{$teaser->text}}</p>
                                 </article>
                             </div>
-                        @else
-
+                            <? $g--; ?>
+                        @endif
+                        @endforeach
                             @if(isset($items[$i]))
                                 <div class="podbor-item ">
                                     <article class="item-cart">
-                                        <div class="item-photo" style="background-image: url({{$items[$i]->logo}})"></div>
+                                        <div class="item-photo" style="background-image: url({{$items[$i]->worker->logo}})"></div>
                                         <div class="item-desc">
                                             <div class="item-desc-params flex">
                                                 <div class="flex item-desc-params-left">
@@ -155,7 +159,7 @@
                                             </div>
                                             <div class="item-desc-text">
                                                 <p><b>{{$items[$i]->name}}</b> <br>
-                                                    {{$items[$i]->about}}</p>
+                                                    {{$items[$i]->worker->about}}</p>
                                             </div>
                                             <div class="item-desc-tags">
                                                 <span>{{$items[$i]->city}}</span>
@@ -172,41 +176,175 @@
                                     </article>
                                 </div>
                             @endif
-                        @endif
-                    @endforeach
+                    @endfor
+              @endif
+                     </div>
+        @if (count($items)>$k) @if(\App\Worker::where("category_id", $cat)->count()>$g) <div class="loadNewItem" data-offsetElem="{{$g}}"><span>Загрузить еще</span> ↓</div>@endif @endif
 
-                @endfor
-            @endif
-            <div class="loadNewItem"><span>Загрузить еще</span> ↓</div>
-        </div>
     </div>
 </main>
-<script src="/static/js/entity/api.js"></script>
-<script src="/static/js/category.js"></script>
+
 
 <script>
+
+
     $(document).ready(function () {
         // получение  макс и мин
         var min=0;
         var max=10000;
         var price= [1];
 
-        $.ajax({
-            url: "/api/getWorkers",
-            type: "POST",
-            data:  {price},
-            success: function(data) {
 
-                data=JSON.parse (data);
-
-                max =JSON.parse (data).max;
-                min =JSON.parse (data).min;
-
-
+        function mock(item) {
+            var mock =	"<div class='podbor-item '>";
+            mock += "<article class='item-cart'>";
+            mock += "<div class='item-photo' style='background-image: url("+item.worker.logo+")'></div>";
+            mock += "<div class='item-desc'>";
+            mock += "<div class='item-desc-params flex'>";
+            mock += "<div class='flex item-desc-params-left'>";
+            mock += "<span class='rating'>4.5</span>";
+            mock += "<span class='feedbacks'>666</span>";
+            mock += "</div>";
+            mock += "<div>";
+            mock += "<span class='item-price'>18900</span>";
+            mock += "</div>";
+            mock += "</div>";
+            mock += "<div class='item-desc-text'>";
+            mock += "<p><b>"+item.name+"</b> <br>";
+            mock += ""+item.worker.about+"</p>";
+            mock += "</div><div class='item-desc-tags'>";
+            mock += "<span>"+item.city+"</span>";
+            if(item.param1) {
+                mock += "<span class='dot'></span>";
+                mock += "<span>" + item.param1 + "</span>";
+            }
+            if(item.param2){
+                mock += "<span class='dot'></span>";
+                mock += "<span>"+item.param2+"</span>";
             }
 
+            mock += "</div>";
+            mock += "</div>";
+            mock += "</article>";
+            mock += "</div>";
+            return mock;
+        }
+
+        function mockTeaser(teaser) {
+            var mock = "<div class='podbor-item '>";
+            mock +=  "<article class='tizers'>";
+            mock +=  "<img class='item-photo' src='{{$teaser->logo}}'>";
+            mock +=  "<p>{{$teaser->text}}</p>";
+            mock +=  "</article></div>";
+            return mock;
+        }
+        $("#search_form").on("submit", function (e) {
+            e.preventDefault();
+            return false;
+        })
+        $("#sort").on("change",function () {
+            var valueSort = $(this).val();
+            var order = $(".button-sort").data("order");
+            $.ajax({
+                url: "/api/getSort?sort="+valueSort+"&cat={{$cat}}&order="+order,
+                type: "GET",
+                success: function(data) {
+                    $(".topBlock").html("");
+                    $(".bottomBlock").html("");
+                    var json = JSON.parse(data);
+                    var items = json["items"];
+                    if(items.length==0){
+                        $(".topBlock").append("<h3> По вашему запросу ничего не найдено </h3>")
+                    }
+                    else{
+                        for(var i=0; i<4; i++){
+                            $(".topBlock").append(mock(items[i]));
+                        }
+                        for(var p=k; p<7; p++){
+                            $(".bottomBlock").append(mock(items[p]));
+                        }
+                    }
+
+
+                }
+
+            });
         });
 
+        $("#search").on("click",function (e) {
+            e.preventDefault();
+            var valueSearch = $("#input_search").val();
+            var order = $(".button-sort").data("order");
+            $.ajax({
+                url: "/api/getSearch?search="+valueSearch+"&cat={{$cat}}&order="+order,
+                type: "GET",
+                success: function(data) {
+
+                    $(".topBlock").html("");
+                    $(".bottomBlock").html("");
+                    var json = JSON.parse(data);
+                    var items = json["items"];
+                    if(items.length==0){
+                        $(".topBlock").append("<h3> По вашему запросу ничего не найдено </h3>")
+                    }
+                    else{
+                        for(var i=0; i<4; i++){
+                            $(".topBlock").append(mock(items[i]));
+                        }
+                        for(var p=4; p<7; p++){
+                            $(".bottomBlock").append(mock(items[p]));
+                        }
+                    }
+
+                }
+
+            });
+            return false;
+        });
+
+
+        $(".loadNewItem").on("click",function (e) {
+            e.preventDefault();
+            var offset = $(this).attr("data-offsetelem");
+            var valueSearch = $("#input_search").val();
+            var order = $(".button-sort").data("order");
+            alert(offset);
+            $.ajax({
+                url: "/api/getWorkers?search="+valueSearch+"&cat={{$cat}}&order="+order+"&offset="+offset,
+                type: "GET",
+                success: function(data) {
+
+                    var json = JSON.parse(data);
+                    var items = json["items"];
+                    var newOffset = $(".loadNewItem").data("offsetelem") + items.length;
+                    $(".loadNewItem").attr('data-offsetelem',newOffset);
+                    if(items.length==0){
+                        $(".topBlock").append("<h3> По вашему запросу ничего не найдено </h3>")
+                    }
+                    else{
+
+                        for(var p=0; p<items.length; p++){
+                            $(".bottomBlock").append(mock(items[p]));
+
+                        }
+                    }
+
+                }
+
+            });
+            return false;
+        });
+
+        $(".button-sort").on("click", function (e) {
+            e.preventDefault();
+            if($(this).hasClass('reverse')){
+                $(this).removeClass('reverse').data('order','asc');
+            }
+            else {
+                $(this).addClass('reverse').data('order', 'desc');
+            }
+            return false;
+        })
 //////////////////// аякс выполняетс после и не успевают примениться переменные, ае сли ждать ломается всё что ниже
 
         var html5Slider = document.getElementById('html5');

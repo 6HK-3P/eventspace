@@ -14,6 +14,11 @@
 Route::get('/', 'MainController@index');
 Route::get('/category/{category}', 'CategoryController@index');
 Route::get('/add', 'MainController@addz');
+
+Route::get('/api/getSort', 'CategoryController@sort');
+Route::get('/api/getSearch', 'CategoryController@search');
+Route::get('/api/getWorkers', 'CategoryController@getWorkers');
+
 Route::post('/add', 'MainController@addw');
 Auth::routes();
 
