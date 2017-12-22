@@ -1,0 +1,107 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Site_setting;
+use App\Teaser;
+use App\User;
+use Illuminate\Http\Request;
+use Monolog\Handler\UdpSocketTest;
+
+class AdminController extends Controller
+{
+    public function index(){
+
+        $teasers = Teaser::all();
+        return view('admin.adminmenu', ['teasers'=>$teasers]);
+    }
+
+    public function addteaser(Request $request){
+
+        $tizer_count = $request->input('tizer_form_count');
+        for($i=1; $i<$tizer_count+1; $i++){
+            $id = $request->input('tizer_id'.$i);
+            if (empty($id)){
+                $addTeasers = new Teaser();
+            }
+            else{
+                $addTeasers = Teaser::find($id);
+            }
+            $addTeasers->title = $request->input('tizer_title'.$i);
+            $addTeasers->text = $request->input('tizer_text'.$i);
+            $addTeasers->position = $request->input('tizer_pos'.$i);
+            $imageName = "tizer_photo".$i;
+            $image = $request->$imageName;
+
+            if (count($image)) {
+                $pref = rand(1, 10000);
+                $name = $pref . $image->getClientOriginalName();
+                $image->move(public_path() . '/img/teasers/', $name);
+                $addTeasers->logo = "/public/img/teasers/" . $name;
+
+            } else {
+                if(empty($id)){
+                    $addTeasers->logo = "/public/img/teasers/empty.png";
+                }
+
+            }
+            $addTeasers->save();
+
+        }
+
+        return redirect('/admin');
+    }
+
+    public function addhead(Request $request)
+    {
+
+        for($i=1; $i<9; $i++){
+            if(empty($request->input('head'.$i))){
+
+            }
+            else{
+                $addHead = Site_setting::find($i);
+                $addHead->value = $request->input('head'.$i);
+                $addHead->save();
+
+            }
+        }
+
+        return redirect('/admin');
+    }
+
+    public function workers(){
+
+        return view('admin.adminworkers');
+    }
+
+    public function user(){
+
+        return view('admin.adminuser');
+    }
+
+    public function addMan(Request $request){
+        $addMans = new User();
+        $addMans->name = $request->input('meneger_name');
+        $addMans->phone = $request->input('meneger_phone');
+        $addMans->password = $request->input('meneger_password');
+        $addMans->root = 2;
+        $addMans->save();
+        return redirect('/admin/user');
+    }
+
+    public function order(){
+
+        return view('admin.adminorders');
+    }
+
+    public function sms(){
+
+        return view('admin.adminsms');
+    }
+
+    public function feedback(){
+
+        return view('admin.adminfeedback');
+    }
+}

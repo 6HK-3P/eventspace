@@ -5,7 +5,7 @@ $(document).ready(function(){
 	var container = $("#tizer_container")
 	var count     = form.attr('data-count-tizer');
 	count++;
-	var tizer = "<div class='tizer' id='tizer"+count+"' style='display:none'><h5>Tizer"+count+"</h5><div class='flex'><label>Изображение<br><span>Размер 200 на 50</span></label><input type='file' name='tizer_photo"+count+"' accept='image\\/*,image/jpeg'></div><div class='flex'><label>Позиция</label><div class='tizer-pos'><input type='number' name='tizer_pos"+count+"'></div></div><div class='flex'><label>Заголовок</label><input type='text' name='tizer_title"+count+"'></div><div class='flex'><label>Текст</label><textarea name='tizer_text"+count+"' cols='32' rows='8'></textarea></div></div>";
+	var tizer = "<div class='tizer' id='tizer"+count+"' style='display:none'><h5>Tizer"+count+"</h5><div class='flex'><label>Изображение<br><span>Размер 200 на 50</span></label><input type='file' name='tizer_photo"+count+"' accept='image\\/*,image/jpeg'></div><div class='flex'><label>Позиция</label><div class='tizer-pos'><input type='number' name='tizer_pos"+count+"'></div></div><div class='flex'><label>Заголовок</label><input type='text' name='tizer_title"+count+"'></div><div class='flex'><label>Текст</label><textarea name='tizer_text"+count+"' cols='32' rows='8'></textarea></div><input type='hidden' name='tizer_id"+count+"' value=''></div>";
    $.when(container.append(tizer)).then(function(){ 
     	$("#tizer"+count).slideDown(400)
 	    	var elem = $("#tizer"+count);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Site_setting;
 use App\User;
 use App\Workers_cars_color;
 use App\Workers_cars_mark;
@@ -23,6 +24,9 @@ class CategoryController extends Controller
 
     public function index($category="car")
     {
+        //вся информация которая в шапке
+        $allhead = Site_setting::all();
+
         $cat = $this->selectCategory($category);
         //всё про машины
         $carstype = Workers_cars_type::all();
@@ -49,7 +53,7 @@ class CategoryController extends Controller
 
         return view('category')->with(['items'=>$items, 'teasers'=>$teasers,'cat'=>$cat, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
                                              'allcities' => $allcitie ,  'alltoasts' => $alltoast ,'alllanguages' => $alllanguage,
-                                              'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype]);
+                                              'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype, 'allheads'=>$allhead]);
 
     }
 

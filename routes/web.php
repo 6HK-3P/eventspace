@@ -23,3 +23,13 @@ Route::post('/add', 'MainController@addw');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/admin', 'AdminController@index');
+Route::post('/admin/add', 'AdminController@addteaser');
+Route::post('/admin/head', 'AdminController@addhead');
+Route::post('/admin/createMan', 'AdminController@addMan');
+Route::get('/admin/workers', 'AdminController@workers');
+Route::get('/admin/user', 'AdminController@user');
+Route::get('/admin/order', 'AdminController@order');
+Route::get('/admin/sms', 'AdminController@sms');
+Route::get('/admin/feedback', 'AdminController@feedback');
