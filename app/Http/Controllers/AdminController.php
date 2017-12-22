@@ -54,19 +54,28 @@ class AdminController extends Controller
 
     public function addhead(Request $request)
     {
+        $addHead = Site_setting::find(1);
+        $array = [];
 
-        for($i=1; $i<9; $i++){
-            if(empty($request->input('head'.$i))){
+        $array['number'] = $request->input('head1');
+        $array['vk'] = $request->input('head2');
+        $array['whatsapp'] = $request->input('head3');
+        $array['instagram'] = $request->input('head4');
+        $array['copyright'] = $request->input('head5');
+        $array['support'] = $request->input('head6');
+        $array['affilate'] = $request->input('head7');
 
-            }
-            else{
-                $addHead = Site_setting::find($i);
-                $addHead->value = $request->input('head'.$i);
-                $addHead->save();
+        $image = $request->head8;
 
-            }
+        if (count($image)) {
+            $pref = rand(1, 10000);
+            $name = $pref . $image->getClientOriginalName();
+            $image->move(public_path() . '/img/', $name);
+            $array['logo']  = "/public/img/" . $name;
+
         }
-
+        $addHead->value = json_encode($array);
+        $addHead->save();
         return redirect('/admin');
     }
 

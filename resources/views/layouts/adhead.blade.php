@@ -29,8 +29,11 @@
     <div class="main-header-top flex">
         <div class="main-header-top-logo"><img src="/public/img/logo.png" alt=""></div>
         <div class="main-header-top-com">
-            <div><p>8 925 912-29-12</p></div>
-            <div><span class="vk"><a href="https://vk.com">Vk</a></span> <span class="wats">WhatsApp</span> <span class="insta"><a href="https://www.instagram.com/">Instagram</a></span></div>
+            <?php $settings = new App\Http\Controllers\SettingsController(); ?>
+            <div><p>{{$settings::getNumber()}}</p></div>
+            <div><span class="vk"><a href="{{$settings::getVk()}}">Vk</a></span>
+                <span class="wats"><a href="{{$settings::getWhatsapp()}}">WhatsApp</a></span>
+                <span class="insta"><a href="{{$settings::getInstagram()}}">Instagram</a></span></div>
 
         </div>
         <div class="main-header-top-company"><a href="#">Компания</a></div>
@@ -77,11 +80,11 @@
     <div  class="footer container flex">
         <div>
             <p><b>© Event Space 2016</b></p>
-            <p class="copyright_desc">Пожалуйста, ставьте ссылку <br> на <a href="#">Event Space</a>, если используете материалы с сайта</p>
+            <p class="copyright_desc">{{$settings::getCopyright()}}</p>
         </div>
         <div class="flex">
-            <div><p>Служба поддержки</p><p>8 925 075-82-81</p></div>
-            <div><p>Вопросы сотрудничества</p><p>8 925 075-82-81</p></div>
+            <div><p>Служба поддержки</p><p>{{$settings::getSupport()}}</p></div>
+            <div><p>Вопросы сотрудничества</p><p>{{$settings::getAffilate()}}</p></div>
         </div>
         <div class="solidWorks"><p>Сделано с любовью в SolidWorks</p></div>
     </div>
