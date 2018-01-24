@@ -622,7 +622,7 @@ label.check:before {
 	padding-bottom: 10px;
 	position: relative;
 }
-.profile_options_item:nth-child(2):before, .profile_options_item:nth-child(3):before{
+.profile_options_item.ska:before{
 	 content: "Основной";
     position: absolute;
     top: 28px;

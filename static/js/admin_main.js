@@ -32,7 +32,7 @@ $(document).ready(function () {
         }
     });
 
-    $("form.flex").on('submit', function (e) {
+   /* $("form.flex").on('submit', function (e) {
         var form = $(this);
         e.preventDefault();
         $.ajax({
@@ -54,8 +54,8 @@ $(document).ready(function () {
             }
         });
     });
-
-
+я хз что это
+*/
     $("#tizer_form").on('submit', function (e) {
         e.preventDefault();
 

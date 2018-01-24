@@ -90,7 +90,9 @@
                             @if(isset($items[$i]))
                             <div class="podbor-item ">
                                 <article class="item-cart">
-                                    <div class="item-photo" style="background-image: url({{$items[$i]->worker->logo}})"></div>
+                                    <a href="/product/{{$items[$i]->id}}">
+                                        <div class="item-photo" style="background-image: url({{$items[$i]->worker->logo}})"></div>
+                                    </a>
                                     <div class="item-desc">
                                         <div class="item-desc-params flex">
                                             <div class="flex item-desc-params-left">
@@ -120,30 +122,25 @@
                                 </article>
                             </div>
                             @endif
-
-
-
-                @endfor
-                            @endif
-
-
+                    @endfor
+                @endif
         </div>
         <div class="flex wrap bottomBlock">
             @if (count($items)>$k)
                 <? $g =  $k+3 ?>
-                @for($i=$k; $i<$g; $i++)
-                    @foreach($teasers as $teaser)
-                        @if($teaser->position == $i+1)
-                            <div class="podbor-item ">
-                                <article class="tizers">
-                                    <img class="item-photo" src="{{$teaser->logo}}">
-                                    <p>{{$teaser->text}}</p>
-                                </article>
-                            </div>
-                            <? $g--; ?>
-                        @endif
+                    @for($i=$k; $i<$g; $i++)
+                        @foreach($teasers as $teaser)
+                            @if($teaser->position == $i+1)
+                                <div class="podbor-item ">
+                                    <article class="tizers">
+                                        <img class="item-photo" src="{{$teaser->logo}}">
+                                        <p>{{$teaser->text}}</p>
+                                    </article>
+                                </div>
+                                <? $g--; ?>
+                            @endif
                         @endforeach
-                            @if(isset($items[$i]))
+                        @if(isset($items[$i]))
                                 <div class="podbor-item ">
                                     <article class="item-cart">
                                         <div class="item-photo" style="background-image: url({{$items[$i]->worker->logo}})"></div>
@@ -178,9 +175,8 @@
                             @endif
                     @endfor
               @endif
-                     </div>
+        </div>
         @if (count($items)>$k) @if(\App\Worker::where("category_id", $cat)->count()>$g) <div class="loadNewItem" data-offsetElem="{{$g}}"><span>Загрузить еще</span> ↓</div>@endif @endif
-
     </div>
 </main>
 

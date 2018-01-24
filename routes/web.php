@@ -13,23 +13,34 @@
 
 Route::get('/', 'MainController@index');
 Route::get('/category/{category}', 'CategoryController@index');
-Route::get('/add', 'MainController@addz');
+
 
 Route::get('/api/getSort', 'CategoryController@sort');
 Route::get('/api/getSearch', 'CategoryController@search');
 Route::get('/api/getWorkers', 'CategoryController@getWorkers');
 
-Route::post('/add', 'MainController@addw');
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
+//Админка мейн
 Route::get('/admin', 'AdminController@index');
 Route::post('/admin/add', 'AdminController@addteaser');
 Route::post('/admin/head', 'AdminController@addhead');
-Route::post('/admin/createMan', 'AdminController@addMan');
-Route::get('/admin/workers', 'AdminController@workers');
-Route::get('/admin/user', 'AdminController@user');
-Route::get('/admin/order', 'AdminController@order');
-Route::get('/admin/sms', 'AdminController@sms');
-Route::get('/admin/feedback', 'AdminController@feedback');
+//Админка Пользователи
+Route::post('/admin/createMan', 'AdminUserController@addMan');
+Route::get('/admin/user', 'AdminUserController@user');
+//Админка Исполнители
+Route::get('/admin/workers', 'AdminWorkerController@selectworkers');
+Route::get('/admin/workers/{id}', 'AdminWorkerController@getWorkers');
+Route::get('/admin/workers/add/{cat}/{id}', 'AdminWorkerController@addz');
+Route::get('/admin/workers/add/{cat}/{id}/getRulePrice', 'AdminWorkerController@getPriceRules');
+Route::post('/admin/workers/add/{cat}/{id}', 'AdminWorkerController@addw');
+Route::post('/admin/workers/add/{cat}/{id}/price_add', 'AdminWorkerController@pricing');
+//Админка Заказы
+Route::get('/admin/order', 'AdminOrderController@order');
+//Админка Отзывы
+Route::get('/admin/feedback', 'AdminFeedbackController@feedback');
+//Админка Смс
+Route::get('/admin/sms', 'AdminSmsController@sms');
+Route::post('/admin/sms/add', 'AdminSmsController@addsms');
+
+Route::get('/product/{id}', 'ProductController@index');
+
+Auth::routes();

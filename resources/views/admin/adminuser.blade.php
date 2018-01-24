@@ -32,13 +32,13 @@
                     <td>Телефон</td>
                     <td>Деятельность</td>
                 </tr>
-
-                <tr class="tbody">
-                    <td><a href=""></a></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-
+                @foreach($allPerformers as $allPer)
+                    <tr class="tbody">
+                        <td><a href="">{{$allPer->name}}</a></td>
+                        <td>{{$allPer->phone}}</td>
+                        <td>{{\App\Workers_categorie::find($allPer->worker['category_id'])["name"]}}</td>
+                    </tr>
+                @endforeach
             </table>
         </section>
         <section class="admins tabs-body">
@@ -60,11 +60,13 @@
                     <td>Активные заказы</td>
                 </tr>
 
+                @foreach($allManagers as $allManager)
                 <tr class="tbody">
-                    <td></td>
-                    <td></td>
+                    <td>{{$allManager->name}}</td>
+                    <td>{{$allManager->phone}}</td>
                     <td></td>
                 </tr>
+                @endforeach
 
             </table>
         </section>

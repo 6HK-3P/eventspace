@@ -1,16 +1,7 @@
-@extends('layouts.head')
+@extends('layouts.adhead')
 @section('content')
-    <div class="main-header-bottom">
-        <h1>Управление сайтом</h1>
-        <nav class="flex">
-            <div><a href="index.html">Шапка, тизеры и футер</a></div>
-            <div><a href="#">Исполнители <br><span>Музыканты</span></a></div>
-            <div><a href="">Пользователи</a></div>
-            <div><a href="">Заказы</a></div>
-            <div><a href="">Отзывы</a></div>
-        </nav>
-    </div>
-</header>
+
+
 <main class="container admin-main">
     <section class="add-artist">
         <div class="flex start tabs-cont">
@@ -19,7 +10,7 @@
             <div id="portfolio" class="tabs"><span>Портфолио</span></div>
         </div>
         <section class="info tabs-body" style="display: block;">
-            <form action="/add" enctype="multipart/form-data" class="options flex" method="POST">
+            <form action="/admin/workers/add/{{$cat->id}}/{{$id}}" enctype="multipart/form-data" class="options flex" method="POST">
                 {{csrf_field()}}
                 <aside class="filter col30">
                     <h4>Настройки профиля</h4>
@@ -28,51 +19,41 @@
                             <div class="profile_options_item">
 
                                 <h5>Основной город</h5>
-                                <select name="basic_city">
-                                    @foreach($allcities as $cities)
-                                    <option value={{$cities->id}}>{{$cities->title}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                                @if($id>0)
+                                    <select name="basic_city">
 
-                            <div class="profile_options_item">
-								<span class="ree">
-									Выберите хотя бы один тип
-								</span>
-                                <h5>Репертуар</h5>
-                                <ul>
-                                    @foreach($audiotypes as $audio)
-                                    <li>
-                                        <input type="checkbox" id = "type{{$audio->id}}" name="type[]" value={{$audio->id}} class="type_sing">
-                                        <label for="type{{$audio->id}}">{{$audio->title}}</label>
-                                        <div>
-                                            <input type="radio" name="filter_main_type_artist" value={{$audio->id}} id="filter_main_type_artist{{$audio->id}}" checked>
-                                            <label for="filter_main_type_artist{{$audio->id}}" class="filter_radio"></label>
-                                        </div>
-                                    </li>
-                                    @endforeach
+                                        @foreach($allcities as $cities)
+                                            <option value={{$cities->id}} @if($allWorkerInfo->city_id == $cities->id) selected @endif>{{$cities->title}}</option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    <select name="basic_city">
+                                        @foreach($allcities as $cities)
+                                            <option value={{$cities->id}}>{{$cities->title}}</option>
+                                        @endforeach
+                                    </select>
+
+                                @endif
 
                             </div>
+                            @include('admin.addworker.filtres.repertoire')
+                            @include('admin.addworker.filtres.language')
 
-                            <div class="profile_options_item">
-								<span class="ree">
-									Выберите хотя бы один язык
-								</span>
-                                <h5>Язык исполнения</h5>
-                                <ul>
-                                    @foreach($alllanguages as $language)
-                                    <li><input type="checkbox" id = "lang{{$language->id}}" name="lang[]" value={{$language->id}} class="lang"><label for="lang{{$language->id}}">{{$language->name}}</label> <div><input type="radio" name="main_lang" value="{{$language->id}}" id="main_lang{{$language->id}}" checked><label for="main_lang{{$language->id}}" class="filter_radio"></label></div></li>
-                                    @endforeach
-
-                                </ul>
-                            </div>
                             <div class="profile_options_item">
                                 <h5>Менеджер</h5>
-                                <select name="filter_admin_artist">
-                                    @foreach($managers as $manager)
-                                    <option value="{{$manager->id}}">{{$manager->name}}</option>
-                                    @endforeach
-                                </select>
+                                @if($id>0)
+                                    <select name="filter_admin_artist">
+                                        @foreach($managers as $manager)
+                                            <option value="{{$manager->id}}" @if($allWorkerInfo->manager_id == $manager->id) selected @endif>{{$manager->name}}</option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    <select name="filter_admin_artist">
+                                        @foreach($managers as $manager)
+                                            <option value="{{$manager->id}}">{{$manager->name}}</option>
+                                        @endforeach
+                                    </select>
+                                @endif
                             </div>
                             <div class="profile_options_item">
                                 <h5>Короткая ссылка</h5>
@@ -87,18 +68,20 @@
                         <h4>Информация</h4>
                         <div class="flex">
                             <label>Название</label>
-                            <input type="text" name="add_title" class="add_title">
+                            <input type="text" name="add_title" class="add_title" @if($id !=0) value="{{$allWorkerInfo->user->name}}"@endif>
                         </div>
                         <div class="flex">
                             <label>Описание</label>
-                            <textarea name="add_description" id="add_description"  class="add_description" cols="80" rows="7"></textarea>
+
+                            <textarea name="add_description" id="add_description"  class="add_description" cols="80" rows="7">@if($id !=0){{$allWorkerInfo->about}}@endif</textarea>
+
                         </div>
                     </div>
 
                     <div class="autoriz">
                         <h4>Параметры авторизации</h4>
                         <div class="flex wrap">
-                            <div><p>Логин (Номер телефона)</p><input type="text" name="login"  class = "contact-tel"  placeholder="+7 988-888-22-22"></div>
+                            <div><p>Логин (Номер телефона)</p><input type="text" name="login"  class = "contact-tel"  placeholder="+7 988-888-22-22" @if($id !=0) value="{{$allWorkerInfo->user->phone}}"@endif></div>
                             <div><p>Пароль</p><input type="password" maxlength="12" id="password" class="password" name="password"></div>
                             <div><p>Повторите пароль</p><input type="password" maxlength="12" class="password_copy" id="password_copy" name="password_copy"></div>
                         </div>
@@ -106,29 +89,53 @@
                     </div>
 
                     <div id="contacts_peoples" class="flex wrap">
-                        <div class="contact_people">
-                            <h4>Номер телефона для заказа</h4>
-                            <div><span>Имя</span><input type="text" name="contact-name1" maxlength="20" class="contact-name"></div>
-                            <div><span>Телефон</span><input type="text" type="text" name="contact-tel1" class = "contact-tel telephone" placeholder="+7 988-888-22-22"></div>
-                            <div><a href="#" class="add_new_contact" data-count=1>Добавить дополнительный контакт</a></div>
+
+                            @if($id !=0)
+
+                            <?php  $g=1; $contacts = json_decode($allWorkerInfo->worker_contacts); ?>
+                                @foreach($contacts as $contact)
+                                    <div class="contact_people" >
+                                        <h4>Номер телефона для заказа</h4>
+
+                                        <div><span>Имя</span><input type="text" name="contact-name{{$g}}" maxlength="20"  value="{{$contact->name}}" class="contact-name" ></div>
+                                        <div><span>Телефон</span><input type="text" name="contact-tel{{$g}}" class = "contact-tel telephone" value = "{{$contact->phone}}" placeholder="+7 988-888-22-22"></div>
+                                    </div>
+                                    <? $g++?>
+
+                                @endforeach
+                                @if($g<3)
+                                    <div class="contact_people"> <a href="#" class="add_new_contact" data-count=1>Добавить дополнительный контакт</a></div>
+                                @endif
+                            @else
+                            <div class="contact_people" >
+                                <h4>Номер телефона для заказа</h4>
+                                <div><span>Имя</span><input type="text" name="contact-name1" maxlength="20"  value="" class="contact-name"></div>
+                                <div><span>Телефон</span><input type="text" name="contact-tel1" class = "contact-tel telephone" value = '' placeholder="+7 988-888-22-22"></div>
+                            <div class="contact_people"> <a href="#" class="add_new_contact" data-count=1>Добавить дополнительный контакт</a></div>
+                            </div>
+                            @endif
+
+
                         </div>
                         <div id="comment_artist">
                             <h4>Пожелания менеджеру</h4>
                             <h6>(Хотите сообщить что то менеджеру?)</h6>
-                            <textarea name="filter_comments_artist" id="" cols="30" rows="5"></textarea>
+                            <textarea name="filter_comments_artist" id="" cols="30" rows="5">@if($id !=0){{$allWorkerInfo->manager_comment}}@endif</textarea>
                         </div>
-                    </div>
+
 
                     <div class="tizer-buttons flex">
                         <input class="submit" type="reset" id="cancel" value = "Отменить изменения">
                         <input type="submit" class="submit" value="Сохранить изменения">
                     </div>
+
                 </div>
             </form>
         </section>
         <section class="price tabs-body flex" style="display: none;">
             <aside class="filter col30">
-                <form action="#" name="add_price_rule" class="add_price_rule">
+                <form action="/admin/workers/add/{{$cat->id}}/{{$id}}/price_add" name="add_price_rule" class="add_price_rule" method="POST">
+                    {{ csrf_field() }}
                     <h4>Добавление цен</h4>
                     <div class="filter_wrap media price_option">
                         <p class="instruction1">Инструкция</p>
@@ -144,22 +151,13 @@
 								Выберите хотя бы один тип
 							</span>
                             <h6>Выберите города с одинаковой ценой</h6>
-                            <div><input type="checkbox" id="city1" name="city[]" class="city" value="1">
-                                <label for="city1">Дербент</label></div>
-                            <div><input type="checkbox" id="city2" name="city[]" class="city" value="2">
-                                <label for="city2">Махачкала</label></div>
-                            <div><input type="checkbox" id="city3" name="city[]" class="city" value="3">
-                                <label for="city3">Даг. огни</label></div>
-                            <div><input type="checkbox" id="city4" name="city[]" class="city" value="4">
-                                <label for="city4">Буйнакск</label></div>
-                            <div><input type="checkbox" id="city5" name="city[]" class="city" value="5">
-                                <label for="city5">Избербаш</label></div>
-                            <div><input type="checkbox" id="city6" name="city[]" class="city" value="6">
-                                <label for="city6">Хасавюрт</label></div>
-                            <div><input type="checkbox" id="city7" name="city[]" class="city" value="7">
-                                <label for="city7">Каспийск</label></div>
-                            <div><input type="checkbox" id="city8" name="city[]" class="city" value="8">
-                                <label for="city8">Кизляр</label></div>
+                            <? $k = 1; ?>
+                            @foreach($allcities as $cities)
+
+                            <div><input type="checkbox" id="city{{$k}}" name="city[]" class="city" value="{{$cities->id}}">
+                                <label for="city{{$k}}">{{$cities->title}}</label></div>
+                                <? $k++; ?>
+                            @endforeach
                             <span class="checkAll" data-id = "add_city">Отметить все</span>
                             <span class="unCheckAll" data-id = "add_city">Cнять все</span>
                         </div>
@@ -218,7 +216,7 @@
 									Выберите хотя бы один тип
 							</span>
                                 <div>
-                                    <input type="checkbox" id="type_3" class="types" name="type_3">
+                                    <input type="checkbox" id="type_3" class="types" name="type_3" value="3">
                                     <label for="type_3">Выступление весь  день </label>
                                 </div>
                                 <div class="prices service_type_3">
@@ -230,7 +228,7 @@
                             </div>
                             <div class="services_wrap">
                                 <div>
-                                    <input type="checkbox" id="type_2" class="types" name="type_2">
+                                    <input type="checkbox" id="type_2" class="types" name="type_2" value="2">
                                     <label for="type_2">Выступление 2 часа</label>
                                 </div>
                                 <div class="prices service_type_2">
@@ -242,7 +240,7 @@
                             </div>
                             <div class="services_wrap last-child">
                                 <div>
-                                    <input type="checkbox" id="type_1" class="types" name="type_1">
+                                    <input type="checkbox" id="type_1" class="types" name="type_1" value="1">
                                     <label for="type_1">Выступление 1 час</label>
                                 </div>
                                 <div class="prices service_type_1">
@@ -263,6 +261,7 @@
                 <h4>Ценовые правила</h4>
                 <form action="#" name="price_rules_edit">
                     <div class="price_rules_edit_wrap">
+
                         <table class="price_rules">
                             <thead>
                             <td>№</td>
@@ -274,9 +273,10 @@
                             <td></td>
                             </thead>
                             <tbody>
+
                             <tr>
-                                <td>1</td>
-                                <td>По месяцам</td>
+                                <td></td>
+                                <td></td>
                                 <td>Махачкала, Каспийск</td>
                                 <td>Декабрь, Январь, Февраль, Март, Апрель</td>
                                 <td>
@@ -292,40 +292,11 @@
                                 </td>
                             </tr>
 
-                            <tr>
-                                <td>2</td>
-                                <td>По месяцам</td>
-                                <td>Дербент, Дагестанские Огни</td>
-                                <td>Декабрь, Январь, Февраль, Март, Апрель</td>
-                                <td>
-                                    <div class="flex"><label>День / Вечер</label><input type="text" class="table_price" value="25 000"></div>
-                                </td>
-                                <td><div class="flex"><label>Вечер / день</label><input type="text" class="table_price" value="2 500"></div>
-                                </td>
-                                <td><input type="submit" value="" class="delete_rule">
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>3</td>
-                                <td>По дням</td>
-                                <td>Махачкала, Каспийск</td>
-                                <td>1 января - 10 января</td>
-                                <td>
-                                    <div class="flex"><label>День / Вечер</label><input type="text" class="table_price" value="28 000"></div>
-                                    <div class="flex"><label>2 часа</label><input type="text" class="table_price" value="15 000"></div>
-                                    <div class="flex"><label>1 час</label><input type="text" class="table_price" value="10 000"></div>
-                                </td>
-                                <td><div class="flex"><label>Вечер / день</label><input type="text" class="table_price" value="10 000"></div>
-                                    <div class="flex"><label>2 часа</label><input type="text" class="table_price" value="5 000"></div>
-                                    <div class="flex"><label>1 час</label><input type="text" class="table_price" value="2 000"></div>
-                                </td>
-                                <td><input type="submit" value="" class="delete_rule">
-                                </td>
-                            </tr>
                             </tbody>
                         </table>
+
                         <p class="empty">Пока нет ценовых правил</p>
+
                     </div>
 
                     <div class="tizer-buttons flex">
@@ -431,7 +402,7 @@
                 </div>
             </div>
         </section>
-        <script src="js/add_artist.js"></script>
+        <script src="/public/js/add_artist.js"></script>
     </section>
 </main>
 @endsection

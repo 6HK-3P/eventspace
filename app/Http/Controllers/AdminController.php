@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Site_setting;
+use App\Sm;
 use App\Teaser;
 use App\User;
+use App\Worker;
+use App\Workers_categorie;
 use Illuminate\Http\Request;
 use Monolog\Handler\UdpSocketTest;
 
@@ -79,38 +82,10 @@ class AdminController extends Controller
         return redirect('/admin');
     }
 
-    public function workers(){
 
-        return view('admin.adminworkers');
-    }
 
-    public function user(){
 
-        return view('admin.adminuser');
-    }
 
-    public function addMan(Request $request){
-        $addMans = new User();
-        $addMans->name = $request->input('meneger_name');
-        $addMans->phone = $request->input('meneger_phone');
-        $addMans->password = $request->input('meneger_password');
-        $addMans->root = 2;
-        $addMans->save();
-        return redirect('/admin/user');
-    }
 
-    public function order(){
 
-        return view('admin.adminorders');
-    }
-
-    public function sms(){
-
-        return view('admin.adminsms');
-    }
-
-    public function feedback(){
-
-        return view('admin.adminfeedback');
-    }
 }

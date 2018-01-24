@@ -41,14 +41,16 @@ window.addEventListener("load", function(){
 
 	$(".options .submit[type=submit]").on("click", function(e){
 		e.preventDefault();
+		var catArray = document.location.href.split('/');
+		var cat = catArray[catArray.length-2];
+		alert(cat);
 		var error = new Object();
 		error.type_sing= [isCheck("type_sing"), ""];
 		error.lang = [isCheck("lang"), ""];
 		error.title = [isEmpty("add_title") , ".add_title"];
 		error.description = [isEmpty("add_description"), ".add_description"];
 		error.login = [isFull("contact-tel",16), "input[name='login']"];
-		error.password = [isPass(), ".password, .password_copy"];
-		error.contactName = [isEmpty("contact-name"),"input[name='contact-name1']" ]; 
+		error.contactName = [isEmpty("contact-name"),"input[name='contact-name1']" ];
 		error.contactTel = [isFull("telephone",16), "input[name='contact-tel1']"]; 
 		console.log(error);
 		error.count = 0;
