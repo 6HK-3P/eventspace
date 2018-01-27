@@ -1,6 +1,11 @@
 window.addEventListener("load", function(){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
-	$('.instruction1').on("click", function(){ 
+    $('.instruction1').on("click", function(){
 	  $(this).hide();
 	  $('.instruction2').show();
 	  $(".desc_interval").fadeIn();
@@ -41,9 +46,6 @@ window.addEventListener("load", function(){
 
 	$(".options .submit[type=submit]").on("click", function(e){
 		e.preventDefault();
-		var catArray = document.location.href.split('/');
-		var cat = catArray[catArray.length-2];
-		alert(cat);
 		var error = new Object();
 		error.type_sing= [isCheck("type_sing"), ""];
 		error.lang = [isCheck("lang"), ""];
@@ -69,16 +71,21 @@ window.addEventListener("load", function(){
 				$(".profile_options_item:nth-child(3) .ree").show();
 			}
 			if (!error.count) {
-				$(".options").submit()
-			}
+                $(".options").submit();
+            }
 			else{
 				return false;
 			}
 
-	})
 
-$(".add_price_rule input[type=submit]").on("click", function(e){
-		//e.preventDefault();
+	})
+/*Отправка ценового правила блять в базу */
+$(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
+		e.preventDefault();
+    $(".price_rules_body").html();
+    $("#updatePrice").addClass("loader");
+		var idArray = location.href.split("/");
+		var id = idArray[idArray.length-1];
 		var error = new Object();
 		error.cities= [isCheck("city"), ""];
 		error.months = [isCheck("month"), ""];
@@ -104,11 +111,124 @@ $(".add_price_rule input[type=submit]").on("click", function(e){
 		$(".add_price_rule input[type=checkbox]").on("change",function(){
 			$(this).parent().parent().find(".ree").hide();
 		})
-		if (error.months[0] && error.types[0]) {
+		if (((error.months[0]) || (error.dayStart[0]  ||  error.dayEnd[0])) && error.types[0]) {
 			return false;
 		}
+
+
+		$.ajax({
+			url: "/admin/workers/price_add/"+id,
+			type: "POST",
+			data: $("#rule").serialize(),
+            success: function(result){
+                getPriceRules();
+            }
+		});
+    	$("#rule")[0].reset();
+    	$("#rule label").removeAttr("class");
+
+		return false;
 		
-})
+	})
+
+	/*ОТПРАВКА БЛЯТЬ ОБНОВЛЕННЫХ ПРАВИЛД ЕБАНАВРОТ*/
+    $("#updatePrice.cat4 input[type=submit]").on("click", function(e){
+        e.preventDefault();
+        $(".price_rules_body").html();
+        $("#updatePrice").addClass("loader");
+        var idArray = location.href.split("/");
+        var id = idArray[idArray.length-1];
+
+        $.ajax({
+            url: "/admin/workers/update_pricing/"+id,
+            type: "POST",
+            data: $("#updatePrice").serialize(),
+            success: function(){
+                getPriceRules();
+            }
+        });
+
+
+        return false;
+
+    })
+
+
+
+	/*СУКА ПОЛУЧИ ПРАВИЛА ВСЕ ТВОЮ МАТЬ*/
+	function getPriceRules() {
+
+        var idArray = location.href.split("/");
+        var id = idArray[idArray.length-1];
+        $.ajax({
+            url: "/admin/workers/getRulePrice/"+id,
+            type: "GET",
+            contentType: false,
+            cache: false,
+            processData: false,
+            complete: function (data) {
+                if (data.responseText === '') {
+
+                    return false;
+                }
+                var response = JSON.parse(data.responseText);
+				$("#updatePrice").removeClass("loader")
+                bladePriceRules(response);
+
+            }
+        });
+    }
+	getPriceRules();
+    /*ЗАШАБЛОНЬ БЛЯДСКИЕ ПРАВИЛА*/
+    function bladePriceRules(response) {
+    	var rules = response.rules;
+    	if(rules.length) {
+            var tmpl = "";
+            for (var i = 0; i < rules.length; i++) {
+                tmpl += "<tr>";
+                tmpl += "<td>" + (i + 1) + " <input type='hidden' name='price_rule_id[]' value='" + rules[i].id + "'> </td>";
+                tmpl += "<td>" + rules[i].view + "</td>";
+                tmpl += "<td>" + rules[i].cities + "</td>";
+                if (rules[i].months) {
+                    tmpl += "<td>" + rules[i].months + "</td><td>";
+                }
+                else {
+                    var suka = JSON.parse(rules[i].date);
+                    tmpl += "<td>" + suka[0] + " - " + suka[1] + "</td><td>";
+                }
+                var price = JSON.parse(rules[i].price);
+                if (price[2]) {
+                    tmpl += "<div class='flex'><label>День / Вечер</label><input type='text' name='date_price_3_" + rules[i].id + "' class='table_price' value='" + price[2] + "'></div>";
+                }
+                if (price[1]) {
+                    tmpl += "<div class='flex'><label>2 часа</label><input type='text' name='date_price_2_" + rules[i].id + "' class='table_price' value='" + price[1] + "'></div>";
+                }
+                if (price[0]) {
+                    tmpl += "<div class='flex'><label>1 час</label><input type='text' name='date_price_1_" + rules[i].id + "' class='table_price' value='" + price[0] + "'></div>";
+                }
+                tmpl += "</td><td>";
+
+                var deposit = JSON.parse(rules[i].deposit);
+                if (deposit[2]) {
+                    tmpl += "<div class='flex'><label>День / Вечер</label><input type='text' name='date_deposit_3_" + rules[i].id + "' class='table_price' value='" + deposit[2] + "'></div>";
+                }
+                if (deposit[1]) {
+                    tmpl += "<div class='flex'><label>2 часа</label><input type='text' name='date_deposit_2_" + rules[i].id + "' class='table_price' value='" + deposit[1] + "'></div>";
+                }
+                if (deposit[0]) {
+                    tmpl += "<div class='flex'><label>1 час</label><input type='text' name='date_deposit_1_" + rules[i].id + "' class='table_price' value='" + deposit[0] + "'></div>";
+                }
+                tmpl += "</td><td><a href='/admin/workers/removeRulePrice/" + rules[i].worker_id + "' class='delete_rule'>x</a></td></tr>";
+            }
+
+            $(".price_rules_body").html(tmpl);
+            $(".add_price_rule")[0].reset();
+            return false;
+        }
+        var tmp =   '<p class="empty">Пока нет ценовых правил</p>';
+        $(".price_rules_edit_wrap").html(tmp);
+
+    }
 
 	$(".profile_options_item input[type=checkbox]").on("change",function(){
 		$(this).parent().parent().parent().find(".ree").hide();
@@ -217,3 +337,4 @@ $("#save_changes").on("click",function(e) {
 		});
 		return false;
 })
+

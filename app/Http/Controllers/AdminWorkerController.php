@@ -13,16 +13,18 @@ use Illuminate\Http\Request;
 
 class AdminWorkerController extends Controller
 {
+// --------------страница выбора категории воркеров--------------
     public function selectWorkers(){
 
         return view('admin.selectworkers');
     }
+// --------------получение из бд всех воркеров для вывода--------------
     public function getWorkers($id=4){
         $cat = Workers_categorie::find($id);
         $allWorkers = Worker::where('category_id', $id)->paginate(5);
         return view('admin.adminworkers')->with(['cat'=>$cat, 'allWorkers'=>$allWorkers]);
     }
-
+// --------------добавление в бд новой информации о воркере или добавление нового воркера--------------
     public function addw(Request $request,  $cat, $id)
     {
 
@@ -72,7 +74,7 @@ class AdminWorkerController extends Controller
         $addw->save();
         return redirect('/admin/workers/add/'.$cat.'/'.$addw->id);
     }
-
+// --------------вывод информации на страницу Информация--------------
     public function addz($cat, $id)
     {
 
@@ -89,18 +91,20 @@ class AdminWorkerController extends Controller
         //язык
         $alllanguage = workers_language::all();
 
+       $allPricingInfo = Pricing::all();
 
         $managers = User::where("root",2)->get();
+
         return view('add_worker')->with(['allcities' => $allcitie, 'audiotypes' => $audiotype, 'alllanguages' => $alllanguage,"managers"=> $managers,
-                                               'allWorkerInfo' => $allWorkerInfo, 'id'=> $id, 'cat' =>$cat ]);
+                                               'allWorkerInfo' => $allWorkerInfo, 'id'=> $id, 'cat' =>$cat, 'AllPricing' => $allPricingInfo ]);
     }
 
-
-    public function getPriceRules($cat, $id){
+// --------------получить из бд все ценовые правила--------------
+    public function getPriceRules($id){
         $ruleprice = Pricing::where('worker_id', $id)->get();
         foreach ($ruleprice as $rule){
             $rule->cities = [];
-            if ($rule->view = "По месяцам"){
+            if ($rule->view == "По месяцам"){
                 $months = [];
                 $arrayMonths = json_decode($rule->date);
                 sort($arrayMonths);
@@ -122,22 +126,20 @@ class AdminWorkerController extends Controller
                 }
                 $rule->months = implode($months, ", ");
             }
-
             $arrayCities = json_decode($rule->city);
             $arr = [];
             foreach ($arrayCities as $city_id) {
                 $arr[] = Workers_citie::find($city_id)->title;
             }
             $rule->cities = implode($arr, ", ");
-            $rule->price = json_encode($rule->price);
-            $rule->deposit = json_encode($rule->deposit);
+
         }
         echo json_encode(["rules"=>$ruleprice],JSON_UNESCAPED_UNICODE);
 
     }
 
-
-    public function pricing(Request $request,  $cat, $id){
+// --------------добавление в бд нового ценового правила--------------
+    public function pricing(Request $request, $id){
         $alltime = '';
         $allprice = '';
         $alldeposit = '';
@@ -145,12 +147,12 @@ class AdminWorkerController extends Controller
 
         for($i=1; $i<4; $i++) {
             if($request->input('type_'.$i)){
-                $allprice[] = [$request->input('type_'.$i) => $request->input('price_type_'.$i)];
+                $allprice[] = $request->input('price_type_'.$i);
             }
         }
         for($i=1; $i<4; $i++) {
             if($request->input('type_'.$i)){
-                $alldeposit[] = [$request->input('type_'.$i) =>  $request->input('zalog_type_'.$i)];
+                $alldeposit[] = $request->input('zalog_type_'.$i);
             }
         }
         $addPricing = new Pricing();
@@ -158,7 +160,9 @@ class AdminWorkerController extends Controller
         $addPricing->view = 'По месяцам';
         if($request->input('start_date') && $request->input('end_date')) {
             $addPricing->view = 'По дням';
-            $alldate = json_encode([$request->input('start_date'),$request->input('end_date')]);
+            $start = date("d.m.Y",strtotime($request->input('start_date')));
+            $end = date("d.m.Y",strtotime($request->input('end_date')));
+            $alldate = json_encode([$start, $end]);
         }
         else{
             $alldate = json_encode($request->input('month'));
@@ -168,6 +172,58 @@ class AdminWorkerController extends Controller
         $addPricing->price = json_encode($allprice);
         $addPricing->deposit = json_encode($alldeposit);
         $addPricing -> save();
-        return redirect('/admin/workers/add/'.$cat.'/'.$id);
+
     }
+// --------------обновление ценовых правил в бд --------------
+    public function updatePricing(Request $request){
+        $price_id_array = $request->input('price_rule_id');
+        foreach ($price_id_array as $price_id){
+            $updateDeposit = [];
+            $updatePrice = [];
+            $name = "date_price_1_".$price_id;
+            if($request->input($name)){
+                $updatePrice[] = $request->input($name);
+            }
+            $name = "date_price_2_".$price_id;
+            if($request->input($name)){
+                $updatePrice[] = $request->input($name);
+            }
+            $name = "date_price_3_".$price_id;
+            if($request->input($name)){
+                $updatePrice[] = $request->input($name);
+            }
+            //-------------------
+            $name = "date_deposit_1_".$price_id;
+            if($request->input($name)){
+                $updateDeposit[] = $request->input($name);
+            }
+            $name = "date_deposit_2_".$price_id;
+            if($request->input($name)){
+                $updateDeposit[] = $request->input($name);
+            }
+            $name = "date_deposit_3_".$price_id;
+            if($request->input($name)){
+                $updateDeposit[] = $request->input($name);
+            }
+
+            $updatePricing = Pricing::find($price_id);
+            $updatePricing->price = json_encode($updatePrice);
+            $updatePricing->deposit = json_encode($updateDeposit);
+            $updatePricing-> save();
+        }
+
+        return json_encode(true);
+    }
+
+// --------------удаление воркера и юзера--------------
+    public function deleteWorker(Request $request, $cat, $id){
+        $idW = Worker::find($id)->user_id;
+        $delUser = User::find($idW)->delete();
+        $delWorkerk = Worker::find($id)->delete();
+        return redirect('/admin/workers/'.$cat);
+    }
+// --------------добавление фотки бд нового ценооброзования--------------
+//   public function addLogo(Request $request, $cat, $id){
+//       $updateLogo = Worker::find($id);
+//   }
 }

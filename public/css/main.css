@@ -2700,3 +2700,23 @@ textarea:focus{
 .reverse{
 	background-image: url('../img/sort1.png');
 }
+#updatePrice.loader{
+	position: relative;
+}
+#updatePrice.loader::before{
+	content: '';
+	display: block;
+	min-height: 30vh;
+	width:100%;
+	background-image: url("../img/loader.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 100px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right:0;
+	background-color: #fff;
+	z-index: 20;
+}

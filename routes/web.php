@@ -30,9 +30,11 @@ Route::get('/admin/user', 'AdminUserController@user');
 Route::get('/admin/workers', 'AdminWorkerController@selectworkers');
 Route::get('/admin/workers/{id}', 'AdminWorkerController@getWorkers');
 Route::get('/admin/workers/add/{cat}/{id}', 'AdminWorkerController@addz');
-Route::get('/admin/workers/add/{cat}/{id}/getRulePrice', 'AdminWorkerController@getPriceRules');
+Route::get('/admin/workers/getRulePrice/{id}', 'AdminWorkerController@getPriceRules');
 Route::post('/admin/workers/add/{cat}/{id}', 'AdminWorkerController@addw');
-Route::post('/admin/workers/add/{cat}/{id}/price_add', 'AdminWorkerController@pricing');
+Route::get('/admin/workers/add/{cat}/{id}/delete', 'AdminWorkerController@deleteWorker');
+Route::post('/admin/workers/price_add/{id}', 'AdminWorkerController@pricing');
+Route::post('/admin/workers/update_pricing/{id}', 'AdminWorkerController@updatePricing');
 //Админка Заказы
 Route::get('/admin/order', 'AdminOrderController@order');
 //Админка Отзывы

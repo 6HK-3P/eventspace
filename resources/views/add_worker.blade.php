@@ -134,7 +134,7 @@
         </section>
         <section class="price tabs-body flex" style="display: none;">
             <aside class="filter col30">
-                <form action="/admin/workers/add/{{$cat->id}}/{{$id}}/price_add" name="add_price_rule" class="add_price_rule" method="POST">
+                <form action="#" id="rule" name="add_price_rule" class="add_price_rule cat{{$cat->id}}" method="POST">
                     {{ csrf_field() }}
                     <h4>Добавление цен</h4>
                     <div class="filter_wrap media price_option">
@@ -259,9 +259,9 @@
             </aside>
             <div class="add-artist-price col70">
                 <h4>Ценовые правила</h4>
-                <form action="#" name="price_rules_edit">
+                <form action="#" id="updatePrice" class="cat{{$cat->id}} loader" name="price_rules_edit">
                     <div class="price_rules_edit_wrap">
-
+                        {{csrf_field()}}
                         <table class="price_rules">
                             <thead>
                             <td>№</td>
@@ -272,30 +272,13 @@
                             <td>Залог</td>
                             <td></td>
                             </thead>
-                            <tbody>
+                            <tbody class="price_rules_body">
 
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td>Махачкала, Каспийск</td>
-                                <td>Декабрь, Январь, Февраль, Март, Апрель</td>
-                                <td>
-                                    <div class="flex"><label>День / Вечер</label><input type="text" class="table_price" value="20 000"></div>
-                                    <div class="flex"><label>2 часа</label><input type="text" class="table_price" value="8 000"></div>
-                                    <div class="flex"><label>1 час</label><input type="text" class="table_price" value="5 000"></div>
-                                </td>
-                                <td><div class="flex"><label>Вечер / день</label><input type="text" class="table_price" value="20 000"></div>
-                                    <div class="flex"><label>2 часа</label><input type="text" class="table_price" value="2 000"></div>
-                                    <div class="flex"><label>1 час</label><input type="text" class="table_price" value="1 000"></div>
-                                </td>
-                                <td><input type="submit" value="" class="delete_rule">
-                                </td>
-                            </tr>
 
                             </tbody>
                         </table>
 
-                        <p class="empty">Пока нет ценовых правил</p>
+
 
                     </div>
 
@@ -323,7 +306,8 @@
                     <div id="add_photo">
                         <h5>Фото</h5>
                         <div class="flex start">
-                            <form action="#" enctype="multipart/form-data" class="media">
+                            <form action="/admin/workers/add/4/6/addlogo" enctype="multipart/form-data" class="media" method="POST">
+                                {{ csrf_field() }}
                                 <input type="file" name="add_foto[]" class="w100" multiple accept="image/*,image/jpeg">
                                 <input type="submit" name="new_media" class="w100" value="Загрузить">
                             </form>

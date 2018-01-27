@@ -25,7 +25,7 @@
                         </div>
                         <div class="artists_edit flex column">
                             <a class="edit" href="/admin/workers/add/{{$cat->id}}/{{$worker->id}}">Редактировать</a>
-                            <a class="remove" href="#">✖ <span>Удалить</span></a>
+                            <a class="remove" href="/admin/workers/add/{{$cat->id}}/{{$worker->id}}/delete">✖ <span>Удалить</span></a>
                         </div>
                     </li>
                     @endforeach
