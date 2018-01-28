@@ -236,17 +236,46 @@ class AdminWorkerController extends Controller
        $worker = Worker::find($id);
        $arrayPhoto = json_decode($worker->logo);
        foreach ($images as $image) {
-           $pref = rand(1, 10000);
-           $name = $pref . $image->getClientOriginalName();
+           $originalname = explode('.' , $image->getClientOriginalName());
+           $pref = rand(1, 10000000);
+           $name = $pref.'.'.$originalname[count($originalname)-1];
            $image->move(public_path() . '/img/', $name);
 
-           $arrayPhoto[] = '/public/img/'.$name;
+           $arrayPhoto[] =  ["type" => "photo", "src"=>'/public/img/'.$name];
 
        }
        $worker->logo = json_encode($arrayPhoto);
        $worker-> save();
-
        return redirect('/admin/workers/add/'.$cat.'/'.$id.'');
-
    }
+// --------------добавление видео бд нового ценооброзования--------------
+    public function addVideo(Request $request,$cat, $id){
+        $worker = Worker::find($id);
+        $arrayVideo = json_decode($worker->logo);
+        $srcRequest = $request->input('video_src');
+        $srcArray = explode( "/", $srcRequest);
+        $srcId = str_replace("watch?v=", "",$srcArray[count($srcArray)-1]);
+        $srcImg = "http://img.youtube.com/vi/".$srcId."/hqdefault.jpg";
+        $srcVideo = "https://www.youtube.com/embed/".$srcId;
+        $arrayVideo[] = [ "type" => "video", "src" => $srcVideo, "poster"=>$srcImg];
+        $worker->logo = json_encode($arrayVideo);
+        $worker-> save();
+        return redirect('/admin/workers/add/'.$cat.'/'.$id.'');
+    }
+// --------------добавление видео бд нового ценооброзования--------------
+    public function addAudio(Request $request,$cat, $id){
+        $audios = $request->add_audio;
+        $worker = Worker::find($id);
+        $arrayAudio = json_decode($worker->audio);
+        foreach ($audios as $audio) {
+            $originalname = explode('.' , $audio->getClientOriginalName());
+            $pref = rand(1, 10000000);
+            $name = $pref.'.'.$originalname[count($originalname)-1];
+            $audio->move(public_path() . '/audio/', $name);
+            $arrayAudio[] = '/public/audio/'.$name;
+        }
+        $worker->audio = json_encode($arrayAudio);
+        $worker-> save();
+        return redirect('/admin/workers/add/'.$cat.'/'.$id.'');
+    }
 }

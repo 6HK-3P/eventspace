@@ -297,8 +297,9 @@
                 <div class="filter_wrap">
                     <div id="add_video">
                         <h5>Видео</h5>
-                        <form action="#" enctype="multipart/form-data" class="media">
-                            <input type="text" name="video_src" placeholder="Вставьте ссылку (youtube, vimeo)">
+                        <form action="/admin/workers/addvideo/{{$cat->id}}/{{$id}}" enctype="multipart/form-data" class="media" method="POST">
+                            {{ csrf_field() }}
+                            <input type="text" required name="video_src" placeholder="Вставьте ссылку (youtube, vimeo)">
                             <input type="submit" name="new_media" value="Добавить">
                         </form>
                     </div>
@@ -308,16 +309,17 @@
                         <div class="flex start">
                             <form action="/admin/workers/addlogo/{{$cat->id}}/{{$id}}" enctype="multipart/form-data" class="media" method="POST">
                                 {{ csrf_field() }}
-                                <input type="file" name="add_foto[]" class="w100" multiple accept="image/*,image/jpeg">
+                                <input type="file" name="add_foto[]" required class="w100" multiple accept="image/*,image/jpeg">
                                 <input type="submit" name="new_media" class="w100" value="Загрузить">
                             </form>
                         </div>
                     </div>
 
                     <div id="add_audio">
-                        <form action="#" enctype="multipart/form-data" class="audio">
+                        <form action="/admin/workers/addaudio/{{$cat->id}}/{{$id}}" enctype="multipart/form-data" class="audio" method="POST">
+                            {{ csrf_field() }}
                             <h5>Аудио </h5>
-                            <input type="file" name="add_audio[]" class="w100" multiple accept="mp3">
+                            <input type="file" required name="add_audio[]" class="w100" multiple accept="mp3">
                             <label class="w100"><span>только mp3</span></label>
                             <input type="submit" name="new_audio" class="w100" value="Загрузить">
                         </form>
@@ -330,31 +332,29 @@
                 <form action="#" enctype="multipart/form-data" name="media" class="media">
                     <h5>Настройки галереи</h5>
                     <div id = "video_options" class="flex wrap video_options">
+                        @if(!empty($allWorkerInfo->logo))
                         <?  $LogoInfo = json_decode($allWorkerInfo->logo); $i = 1;?>
 
                         @foreach($LogoInfo as $LogoInfos)
-                        <div class="item img" data-itemId={{$i}}>
-                            <div class="gallery-img" style="background-image: url({{$LogoInfos}})"></div>
-                            <input type="submit" class="remove_video"  name="remove_video" value="">
-                        </div>
+
+                                @if($LogoInfos->type=="photo")
+                                    <div class="item img" data-itemId={{$i}}>
+                                        <div class="gallery-img" style="background-image: url({{$LogoInfos->src}})"></div>
+                                        <input type="submit" class="remove_video"  name="remove_video" value="">
+                                    </div>
+                                @else
+                                    <div class="item video" data-itemId=3>
+                                        <div class="video_wrap"></div>
+                                        <div class="obert">
+                                            <img src="{{$LogoInfos->poster}}" width="380" height="210">
+                                            <input type="submit" class="remove_video"  name="remove_video" value="">
+                                        </div>
+                                        <iframe width="380" height="210" src="{{$LogoInfos->src}}" frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                @endif
                             <? $i++; ?>
                         @endforeach
-                        <div class="item video" data-itemId=3>
-                            <div class="video_wrap"></div>
-                            <div class="obert">
-                                <img src="http://img.youtube.com/vi/LbPRGDwlfqs/hqdefault.jpg" width="380" height="210">
-                                <input type="submit" class="remove_video"  name="remove_video" value="">
-                            </div>
-                            <iframe width="380" height="210" src="https://www.youtube.com/embed/LbPRGDwlfqs" frameborder="0" allowfullscreen></iframe>
-                        </div>
-
-                        <div class="item video" data-itemId=4>
-                            <div class="obert">
-                                <img src="http://img.youtube.com/vi/-59jGD4WrmE/hqdefault.jpg" width="380" height="210">
-                                <input type="submit" class="remove_video"  name="remove_video" value="">
-                            </div>
-                            <iframe width="380" height="210" src="https://www.youtube.com/embed/-59jGD4WrmE" frameborder="0" allowfullscreen></iframe>
-                        </div>
+                        @endif
                     </div>
                 </form>
 

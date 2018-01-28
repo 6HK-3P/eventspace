@@ -9,9 +9,9 @@
                 <ul>
 
                     @foreach($allWorkers as $worker)
-                        <?  $LogoInfo = json_decode($worker->logo);?>
+                        
                     <li class="flex">
-                        <div class="artists-list-img"><img src="{{$LogoInfo[0]}}" alt=""></div>
+                        <div class="artists-list-img"><img src="" alt=""></div>
                         <div class="artists-list-desc">
                             <h4>{{App\User::find($worker->user_id)->name}}</h4>
                             <p>
