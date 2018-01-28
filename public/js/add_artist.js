@@ -218,7 +218,7 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
                 if (deposit[0]) {
                     tmpl += "<div class='flex'><label>1 час</label><input type='text' name='date_deposit_1_" + rules[i].id + "' class='table_price' value='" + deposit[0] + "'></div>";
                 }
-                tmpl += "</td><td><a href='/admin/workers/removeRulePrice/" + rules[i].worker_id + "' class='delete_rule'>x</a></td></tr>";
+                tmpl += "</td><td><a href='/admin/workers/removeRulePrice/" + rules[i].id + "' class='delete_rule'>x</a></td></tr>";
             }
 
             $(".price_rules_body").html(tmpl);

@@ -7,9 +7,11 @@
                 <div><a class="new_artist" href="/admin/workers/add/{{$cat->id}}/0">+ Добавить нового</a></div></div>
             <div class="artists-list">
                 <ul>
+
                     @foreach($allWorkers as $worker)
+                        <?  $LogoInfo = json_decode($worker->logo);?>
                     <li class="flex">
-                        <div class="artists-list-img"><img src="{{$worker->logo}}" alt=""></div>
+                        <div class="artists-list-img"><img src="{{$LogoInfo[0]}}" alt=""></div>
                         <div class="artists-list-desc">
                             <h4>{{App\User::find($worker->user_id)->name}}</h4>
                             <p>

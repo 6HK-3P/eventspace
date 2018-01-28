@@ -2,18 +2,19 @@
 @section('content')
 <main>
     <div class="container flex al">
+        <? $i = 1; ?>
         @foreach($InfoWorker as $Info)
             <div class="content">
                 <h1 class="itemTitle">{{$InfoUsers['name']}}</h1>
                 <div class="owl-carousel">
-                    <? $i = 1; ?>
-                        <div data-hash="{{$i}}" class="owl-item" style="background-image: url({{ $Info->logo }});"></div>
-                        <? $i++; ?>
+                    <?  $LogoInfo = json_decode($Info->logo);?>
+                            <div data-hash="{{$i}}" class="owl-item" style="background-image: url({{ $LogoInfo[0] }});"></div>
                 </div>
                 <div class="minimg flex start">
-                    <? $i = 1;?>
-                        <a class="minimg-item active" href="#{{$i}}" style="background-image: url({{ $Info->logo }});"></a>
+                    @foreach($LogoInfo as $logos)
+                        <a class="minimg-item @if($i == 1) active @endif" href="#{{$i}}" style="background-image: url({{ $logos }});"></a>
                         <? $i++; ?>
+                    @endforeach
                 </div>
                 <div class="flex valuation">
                     <div class="flex valuation-row start"><span class="rat">4.5</span><span class="fed">13</span></div>

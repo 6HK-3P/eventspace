@@ -91,7 +91,8 @@
                             <div class="podbor-item ">
                                 <article class="item-cart">
                                     <a href="/product/{{$items[$i]->id}}">
-                                        <div class="item-photo" style="background-image: url({{$items[$i]->worker->logo}})"></div>
+                                        <?  $LogoInfo = json_decode($items[$i]->worker->logo);?>
+                                        <div class="item-photo"  style="background-image: url({{$LogoInfo[0]}}); Background-size: cover; Background-position: center center"></div>
                                     </a>
                                     <div class="item-desc">
                                         <div class="item-desc-params flex">

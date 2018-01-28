@@ -35,6 +35,8 @@ Route::post('/admin/workers/add/{cat}/{id}', 'AdminWorkerController@addw');
 Route::get('/admin/workers/add/{cat}/{id}/delete', 'AdminWorkerController@deleteWorker');
 Route::post('/admin/workers/price_add/{id}', 'AdminWorkerController@pricing');
 Route::post('/admin/workers/update_pricing/{id}', 'AdminWorkerController@updatePricing');
+Route::post('/admin/workers/addlogo/{cat}/{id}', 'AdminWorkerController@addLogo');
+Route::get('/admin/workers/removeRulePrice/{id}', 'AdminWorkerController@removeRulePrice');
 //Админка Заказы
 Route::get('/admin/order', 'AdminOrderController@order');
 //Админка Отзывы

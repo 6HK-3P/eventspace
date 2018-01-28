@@ -259,7 +259,7 @@
             </aside>
             <div class="add-artist-price col70">
                 <h4>Ценовые правила</h4>
-                <form action="#" id="updatePrice" class="cat{{$cat->id}} loader" name="price_rules_edit">
+                <form action="#" id="updatePrice" class="cat{{$cat->id}} loader" name="price_rules_edit" method="POST">
                     <div class="price_rules_edit_wrap">
                         {{csrf_field()}}
                         <table class="price_rules">
@@ -306,7 +306,7 @@
                     <div id="add_photo">
                         <h5>Фото</h5>
                         <div class="flex start">
-                            <form action="/admin/workers/add/4/6/addlogo" enctype="multipart/form-data" class="media" method="POST">
+                            <form action="/admin/workers/addlogo/{{$cat->id}}/{{$id}}" enctype="multipart/form-data" class="media" method="POST">
                                 {{ csrf_field() }}
                                 <input type="file" name="add_foto[]" class="w100" multiple accept="image/*,image/jpeg">
                                 <input type="submit" name="new_media" class="w100" value="Загрузить">
@@ -330,16 +330,15 @@
                 <form action="#" enctype="multipart/form-data" name="media" class="media">
                     <h5>Настройки галереи</h5>
                     <div id = "video_options" class="flex wrap video_options">
-                        <div class="item img" data-itemId=1>
-                            <div class="gallery-img" style="background-image: url(img/ss.jpg)"></div>
+                        <?  $LogoInfo = json_decode($allWorkerInfo->logo); $i = 1;?>
+
+                        @foreach($LogoInfo as $LogoInfos)
+                        <div class="item img" data-itemId={{$i}}>
+                            <div class="gallery-img" style="background-image: url({{$LogoInfos}})"></div>
                             <input type="submit" class="remove_video"  name="remove_video" value="">
                         </div>
-
-                        <div class="item img" data-itemId=2>
-                            <div class="gallery-img" style="background-image: url(img/s.jpg)"></div>
-                            <input type="submit" class="remove_video"  name="remove_video" value="">
-                        </div>
-
+                            <? $i++; ?>
+                        @endforeach
                         <div class="item video" data-itemId=3>
                             <div class="video_wrap"></div>
                             <div class="obert">

@@ -214,6 +214,14 @@ class AdminWorkerController extends Controller
 
         return json_encode(true);
     }
+// --------------удаление ценового правила-----------------
+    public function removeRulePrice($id){
+
+        $deleteRulePrice = Pricing::find($id);
+        $deleteRulePrice->delete();
+        return true;
+
+    }
 
 // --------------удаление воркера и юзера--------------
     public function deleteWorker(Request $request, $cat, $id){
@@ -223,7 +231,22 @@ class AdminWorkerController extends Controller
         return redirect('/admin/workers/'.$cat);
     }
 // --------------добавление фотки бд нового ценооброзования--------------
-//   public function addLogo(Request $request, $cat, $id){
-//       $updateLogo = Worker::find($id);
-//   }
+   public function addLogo(Request $request,$cat, $id){
+       $images = $request->add_foto;
+       $worker = Worker::find($id);
+       $arrayPhoto = json_decode($worker->logo);
+       foreach ($images as $image) {
+           $pref = rand(1, 10000);
+           $name = $pref . $image->getClientOriginalName();
+           $image->move(public_path() . '/img/', $name);
+
+           $arrayPhoto[] = '/public/img/'.$name;
+
+       }
+       $worker->logo = json_encode($arrayPhoto);
+       $worker-> save();
+
+       return redirect('/admin/workers/add/'.$cat.'/'.$id.'');
+
+   }
 }
