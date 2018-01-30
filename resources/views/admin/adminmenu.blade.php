@@ -79,8 +79,5 @@
         </form>
     </section>
 </main>
-<script src="/static/js/functions.js"></script>
-<script src="/static/js/admin_main.js"></script>
-<script src="/static/js/tabs.js"></script>
 
 @endsection

@@ -97,7 +97,7 @@
 <script src="/public/js/nouislider.min.js"></script>
 <script>
     $(document).ready(function () {
-        var html5Slider = document.getElementById('html5');
+      /*  var html5Slider = document.getElementById('html5');
 
         noUiSlider.create(html5Slider, {
             start: [ 5500, 12500 ],
@@ -114,7 +114,7 @@
 
         html5Slider.noUiSlider.on('update', function( values, handle ) {
             skipValues[handle].innerHTML = parseInt(values[handle]).toFixed();
-        });
+        });*/
     })
 </script>
 

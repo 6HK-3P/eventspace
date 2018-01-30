@@ -264,7 +264,6 @@
         </div>
     </section>
 </main>
-<script src="/static/js/entity/api.js"></script>
-<script src="/static/js/index.js"></script>
+
 
     @endsection
