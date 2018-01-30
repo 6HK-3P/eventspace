@@ -24,6 +24,4 @@
         </div>
     </section>
 </main>
-<script src="/static/js/entity/api.js"></script>
-<script src="/static/js/admin/feedbacks.js"></script>
 @endsection

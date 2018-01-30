@@ -72,5 +72,4 @@
         </section>
     </section>
 </main>
-<script src="/static/js/tabs.js"></script>
 @endsection

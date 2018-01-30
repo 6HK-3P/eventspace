@@ -89,5 +89,4 @@
         </form>
     </section>
 </main>
-<script src="/static/js/admin/sms.js"></script>
     @endsection
