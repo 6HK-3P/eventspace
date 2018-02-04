@@ -324,7 +324,8 @@ $(".titles").on("click", function(){
 
 $("#save_changes").on("click",function(e) {
 		e.preventDefault();
-
+		var idArray = location.href.split("/");
+		var id = idArray[idArray.length-1];
 		var media = new Object();
 		var audio = new Object();
 		var m = document.getElementById("video_options");
@@ -337,19 +338,17 @@ $("#save_changes").on("click",function(e) {
 			}
 		}
 		if (arrayAudio.length) {
-			for (var i = 0; i < arrayAudio.length; i++) {
-				audio[i] = new Object();
-				audio[i].id = arrayAudio[i].getAttribute("data-itemId");
-				audio[i].type = "audio";
-			}
+            for (var i = 0; i < arrayAudio.length; i++) {
+                audio[i] = arrayAudio[i].getAttribute("data-source");
+            }
 		}
 
 
 		
-		console.log("media");
+		/*console.log("media");
 		console.log(media);
 		console.log("audio");
-		console.log(audio);
+		console.log(audio);*/
 		$.ajax({
 		  url: "#",
 		  type: "POST",

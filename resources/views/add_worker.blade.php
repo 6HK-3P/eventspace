@@ -364,7 +364,7 @@
                     <div id = "audio_options" class="flex wrap audio_options">
                         <? $allAudios = json_decode($allWorkerInfo->audio) ?>
                             @foreach($allAudios as $Audios)
-                                <div class="item audio flex" data-itemId=1>
+                                <div class="item audio flex" data-source="{{json_encode($Audios)}}">
                                     <span class="music_title">{{$Audios->name}}</span>
                                     <input type="submit" class="remove_audio"  name="remove_audio" value="">
                                 </div>
