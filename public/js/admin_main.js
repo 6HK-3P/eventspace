@@ -52,7 +52,7 @@ $(".checkAll").on("click", function(){
 	var id = $(this).data("id");
 	$(this).parent().find(".unCheckAll").show();
 	$(this).hide();
-	$("input[type=checkbox]").prop('checked', 'checked');
+	$("#" +id+ " input[type=checkbox]").prop('checked', 'checked');
 	checkboxing($("#" +id+ " input[type=checkbox]"));
 	if (id == "add_type") {
 		$(".prices").slideDown(200);	
@@ -62,7 +62,7 @@ $(".unCheckAll").on("click", function(){
 	var id = $(this).data("id");
 	$(this).hide();
 	$(this).parent().find(".checkAll").show();
-	$("input[type=checkbox]").prop('checked', false);
+	$("#" +id+ " input[type=checkbox]").prop('checked', false);
 	checkboxing($("#" +id+ " input[type=checkbox]"));
 	if (id == "add_type") {
 		$(".prices").slideUp(200);	

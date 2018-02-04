@@ -125,7 +125,7 @@
 
 
                     <div class="tizer-buttons flex">
-                        <input class="submit" type="reset" id="cancel" value = "Отменить изменения">
+                        <input class="submit" type="reset"  value = "Отменить изменения">
                         <input type="submit" class="submit" value="Сохранить изменения">
                     </div>
 
@@ -168,10 +168,11 @@
                                 <span class="titles" id="calendarWrap">По дням</span>
                             </div>
                             <div class="months  titlebody">
-								<span class="ree">
-									Выберите хотя бы один тип
-								</span>
+
                                 <div class="flex wrap">
+                                    <span class="ree">
+									Выберите хотя бы один тип
+								    </span>
                                     <div><input type="checkbox" id="month1" value="1" class="month" name="month[]">
                                         <label for="month1">Январь</label></div>
                                     <div><input type="checkbox" id="month7" name="month[]" class="month" value="7">
@@ -338,12 +339,12 @@
                         @foreach($LogoInfo as $LogoInfos)
 
                                 @if($LogoInfos->type=="photo")
-                                    <div class="item img" data-itemId={{$i}}>
+                                    <div class="item img"  data-source="{{json_encode($LogoInfos)}}">
                                         <div class="gallery-img" style="background-image: url({{$LogoInfos->src}})"></div>
                                         <input type="submit" class="remove_video"  name="remove_video" value="">
                                     </div>
                                 @else
-                                    <div class="item video" data-itemId=3>
+                                    <div class="item video"  data-source="{{json_encode($LogoInfos)}}">
                                         <div class="video_wrap"></div>
                                         <div class="obert">
                                             <img src="{{$LogoInfos->poster}}" width="380" height="210">
@@ -386,6 +387,19 @@
             </div>
         </section>
         <script src="/public/js/add_artist.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+        <script>
+            var arrSortVideo = [];
+            $( function() {
+                $( "#audio_options" ).sortable();
+                $( "#audio_options" ).disableSelection();
+            } );
+            $( function() {
+                $( "#video_options" ).sortable();
+                $( "#video_options" ).disableSelection();
+            } );
+        </script>
     </section>
 </main>
 @endsection

@@ -79,6 +79,8 @@ window.addEventListener("load", function(){
 
 
 	})
+
+
 /*Отправка ценового правила блять в базу */
 $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
 		e.preventDefault();
@@ -92,13 +94,14 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
 		error.types = [isCheck("types"), ""];
 		error.dayStart = [isEmpty("day_start"), ".day_start"];
 		error.dayEnd = [isEmpty("day_end"), ".day_end"];
+		console.log(error);
 		if (error.cities[0]) {
 			$("#add_city .ree").show();
 		}
 		if (error.months[0] && $(".months").css("display") != "none") {
 			$("#add_interval .ree").show();
 		}
-		if (error.types[0] && $(".months").css("display") != "none") {
+		if (error.types[0]) {
 			$("#add_type .ree").show();
 		}
 		if(error.dayStart[0] && $(".calendarWrap").css("display") != "none"){
@@ -107,11 +110,11 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
 		if(error.dayEnd[0] && $(".calendarWrap").css("display") != "none"){
 			$(error.dayEnd[1]).addClass("error");
 		}
-		console.log(error);
 		$(".add_price_rule input[type=checkbox]").on("change",function(){
 			$(this).parent().parent().find(".ree").hide();
 		})
-		if (((error.months[0]) || (error.dayStart[0]  ||  error.dayEnd[0])) && error.types[0]) {
+		if (((error.months[0]) && (error.dayStart[0]  ||  error.dayEnd[0])) || error.types[0] || error.cities[0]) {
+            getPriceRules();
 			return false;
 		}
 
@@ -121,7 +124,10 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
 			type: "POST",
 			data: $("#rule").serialize(),
             success: function(result){
+
                 getPriceRules();
+                $("#add_type input[type=checkbox]").change();
+                $(".unCheckAll").click();
             }
 		});
     	$("#rule")[0].reset();
@@ -152,6 +158,8 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
         return false;
 
     })
+
+	/*БУДАЛЕНИЕ БЛЯДСКИХ ПРАВИЛ*/
 
 
 
@@ -197,32 +205,45 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
                     tmpl += "<td>" + suka[0] + " - " + suka[1] + "</td><td>";
                 }
                 var price = JSON.parse(rules[i].price);
-                if (price[2]) {
-                    tmpl += "<div class='flex'><label>День / Вечер</label><input type='text' name='date_price_3_" + rules[i].id + "' class='table_price' value='" + price[2] + "'></div>";
+                if (price[0]) {
+                    tmpl += "<div class='flex'><label>День / Вечер</label><input type='text' name='date_price_1_" + rules[i].id + "' class='table_price' value='" + price[0] + "'></div>";
                 }
                 if (price[1]) {
                     tmpl += "<div class='flex'><label>2 часа</label><input type='text' name='date_price_2_" + rules[i].id + "' class='table_price' value='" + price[1] + "'></div>";
                 }
-                if (price[0]) {
-                    tmpl += "<div class='flex'><label>1 час</label><input type='text' name='date_price_1_" + rules[i].id + "' class='table_price' value='" + price[0] + "'></div>";
+                if (price[2]) {
+                    tmpl += "<div class='flex'><label>1 час</label><input type='text' name='date_price_3_" + rules[i].id + "' class='table_price' value='" + price[2] + "'></div>";
                 }
                 tmpl += "</td><td>";
 
                 var deposit = JSON.parse(rules[i].deposit);
-                if (deposit[2]) {
-                    tmpl += "<div class='flex'><label>День / Вечер</label><input type='text' name='date_deposit_3_" + rules[i].id + "' class='table_price' value='" + deposit[2] + "'></div>";
+                if (deposit[0]) {
+                    tmpl += "<div class='flex'><label>День / Вечер</label><input type='text' name='date_deposit_1_" + rules[i].id + "' class='table_price' value='" + deposit[0] + "'></div>";
                 }
                 if (deposit[1]) {
                     tmpl += "<div class='flex'><label>2 часа</label><input type='text' name='date_deposit_2_" + rules[i].id + "' class='table_price' value='" + deposit[1] + "'></div>";
                 }
-                if (deposit[0]) {
-                    tmpl += "<div class='flex'><label>1 час</label><input type='text' name='date_deposit_1_" + rules[i].id + "' class='table_price' value='" + deposit[0] + "'></div>";
+                if (deposit[2]) {
+                    tmpl += "<div class='flex'><label>1 час</label><input type='text' name='date_deposit_3_" + rules[i].id + "' class='table_price' value='" + deposit[2] + "'></div>";
                 }
                 tmpl += "</td><td><a href='/admin/workers/removeRulePrice/" + rules[i].id + "' class='delete_rule'>x</a></td></tr>";
             }
 
             $(".price_rules_body").html(tmpl);
-            $(".add_price_rule")[0].reset();
+
+            $(".delete_rule").on("click", function (e) {
+                e.preventDefault();
+                var href = $(this).attr("href");
+                $.ajax({
+                    url: href,
+                    type: "GET",
+                    complete: function () {
+                        getPriceRules()
+                    }
+                });
+                return false;
+
+            })
             return false;
         }
         var tmp =   '<p class="empty">Пока нет ценовых правил</p>';
@@ -294,9 +315,11 @@ $(".titles").on("click", function(){
 	$(".titles").removeClass("active");
 	$(this).addClass("active");
 	$(id).fadeIn();
-	$(id+ " input[type=checkbox]").removeAttr("checked");
-	$("#add_interval .ree").slideUp();
-	$(".day_end, .day_start").removeClass("error");
+	$(".months input[type=checkbox]").prop('checked', false);
+    $(".months label").removeClass("check");
+	$(".day_end, .day_start").removeClass("error").val("");
+    $("#add_interval .ree").slideUp();
+
 })
 
 $("#save_changes").on("click",function(e) {
@@ -310,9 +333,7 @@ $("#save_changes").on("click",function(e) {
 		var arrayAudio = (a) ? a.getElementsByClassName("item") : false;
 		if (arrayMedia.length) {
 			for (var i = 0; i < arrayMedia.length; i++) {
-				media[i] = new Object();
-				media[i].id = arrayMedia[i].getAttribute("data-itemId");
-				media[i].type = arrayMedia[i].getAttribute("class").replace("item ","");
+				media[i] = arrayMedia[i].getAttribute("data-source");
 			}
 		}
 		if (arrayAudio.length) {
@@ -322,6 +343,8 @@ $("#save_changes").on("click",function(e) {
 				audio[i].type = "audio";
 			}
 		}
+
+
 		
 		console.log("media");
 		console.log(media);

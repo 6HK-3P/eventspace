@@ -141,18 +141,24 @@ class AdminWorkerController extends Controller
 // --------------добавление в бд нового ценового правила--------------
     public function pricing(Request $request, $id){
         $alltime = '';
-        $allprice = '';
-        $alldeposit = '';
+        $allprice = [];
+        $alldeposit = [];
         $allcity = json_encode($request->input('city'));
 
-        for($i=1; $i<4; $i++) {
+        for($i=3; $i>0; $i--) {
             if($request->input('type_'.$i)){
                 $allprice[] = $request->input('price_type_'.$i);
             }
+            else{
+                $allprice[] = "";
+            }
         }
-        for($i=1; $i<4; $i++) {
+        for($i=3; $i>0; $i--) {
             if($request->input('type_'.$i)){
                 $alldeposit[] = $request->input('zalog_type_'.$i);
+            }
+            else{
+                $alldeposit[] = "";
             }
         }
         $addPricing = new Pricing();
@@ -180,7 +186,7 @@ class AdminWorkerController extends Controller
         foreach ($price_id_array as $price_id){
             $updateDeposit = [];
             $updatePrice = [];
-            $name = "date_price_1_".$price_id;
+            $name = "date_price_3_".$price_id;
             if($request->input($name)){
                 $updatePrice[] = $request->input($name);
             }
@@ -188,12 +194,12 @@ class AdminWorkerController extends Controller
             if($request->input($name)){
                 $updatePrice[] = $request->input($name);
             }
-            $name = "date_price_3_".$price_id;
+            $name = "date_price_1_".$price_id;
             if($request->input($name)){
                 $updatePrice[] = $request->input($name);
             }
             //-------------------
-            $name = "date_deposit_1_".$price_id;
+            $name = "date_deposit_3_".$price_id;
             if($request->input($name)){
                 $updateDeposit[] = $request->input($name);
             }
@@ -201,7 +207,7 @@ class AdminWorkerController extends Controller
             if($request->input($name)){
                 $updateDeposit[] = $request->input($name);
             }
-            $name = "date_deposit_3_".$price_id;
+            $name = "date_deposit_1_".$price_id;
             if($request->input($name)){
                 $updateDeposit[] = $request->input($name);
             }
@@ -248,7 +254,7 @@ class AdminWorkerController extends Controller
        $worker-> save();
        return redirect('/admin/workers/add/'.$cat.'/'.$id.'');
    }
-// --------------добавление видео бд нового ценооброзования--------------
+// --------------добавление видео в  бд--------------
     public function addVideo(Request $request,$cat, $id){
         $worker = Worker::find($id);
         $arrayVideo = json_decode($worker->logo);
@@ -262,7 +268,7 @@ class AdminWorkerController extends Controller
         $worker-> save();
         return redirect('/admin/workers/add/'.$cat.'/'.$id.'');
     }
-// --------------добавление видео бд нового ценооброзования--------------
+// --------------добавление аудио в  бд--------------
     public function addAudio(Request $request,$cat, $id){
         $audios = $request->add_audio;
         $worker = Worker::find($id);
