@@ -4,11 +4,13 @@
 
 <main class="container admin-main">
     <section class="add-artist">
+        @if($id!=0)
         <div class="flex start tabs-cont">
             <div id="info" class="tabs active"><span>Информация</span></div>
             <div id="price" class="tabs"><span>Ценообразование</span></div>
             <div id="portfolio" class="tabs"><span>Портфолио</span></div>
         </div>
+        @endif
         <section class="info tabs-body" style="display: block;">
             <form action="/admin/workers/add/{{$cat->id}}/{{$id}}" enctype="multipart/form-data" class="options flex" method="POST">
                 {{csrf_field()}}
@@ -132,6 +134,7 @@
                 </div>
             </form>
         </section>
+        @if($id!=0)
         <section class="price tabs-body flex" style="display: none;">
             <aside class="filter col30">
                 <form action="#" id="rule" name="add_price_rule" class="add_price_rule cat{{$cat->id}}" method="POST">
@@ -296,6 +299,14 @@
             <aside class="filter col30">
                 <h4>Добавление</h4>
                 <div class="filter_wrap">
+                    <div class="ava">
+                        <h5>Аватарка</h5>
+                        @if(empty($allWorkerInfo->ava))
+                            <img src="/public/img/profile.svg" alt="" width="100%">
+                        @else
+                            <img src="{{$allWorkerInfo->ava}}"  alt="" width="100%">
+                        @endif
+                    </div>
                     <div id="add_video">
                         <h5>Видео</h5>
                         <form action="/admin/workers/addvideo/{{$cat->id}}/{{$id}}" enctype="multipart/form-data" class="media" method="POST">
@@ -340,10 +351,19 @@
                         @foreach($LogoInfo as $LogoInfos)
 
                                 @if($LogoInfos->type=="photo")
+
                                     <div class="item img"  data-type="{{$LogoInfos->type}}" data-src="{{$LogoInfos->src}}">
                                         <div class="gallery-img" style="background-image: url({{$LogoInfos->src}})"></div>
+                                        @if($LogoInfos->src == $allWorkerInfo->ava)
+                                            <div class="avaImg">Аватарка</div>
+                                        @else
+                                            <div class="imgAva">Сделать аватаркой</div>
+                                        @endif
                                         <input type="submit" class="remove_video"  name="remove_video" value="">
                                     </div>
+
+
+
                                 @else
                                     <div class="item video"  data-type="{{$LogoInfos->type}}" data-src="{{$LogoInfos->src}}" data-poster="{{$LogoInfos->poster}}">
                                         <div class="video_wrap"></div>
@@ -363,6 +383,7 @@
                 <form action="#" enctype="multipart/form-data" name="audio" class="media">
                     <h5>Настройки аудио</h5>
                     <div id = "audio_options" class="flex wrap audio_options">
+                        @if($allWorkerInfo->audio)
                         <? $allAudios = json_decode($allWorkerInfo->audio) ?>
                             @foreach($allAudios as $Audios)
                                 <div class="item audio flex" data-name="{{$Audios->name}}" data-link="{{$Audios->link}}">
@@ -370,6 +391,7 @@
                                     <input type="submit" class="remove_audio"  name="remove_audio" value="">
                                 </div>
                             @endforeach
+                        @endif
                     </div>
                 </form>
 
@@ -378,6 +400,7 @@
                 </div>
             </div>
         </section>
+        @endif
         <script src="/public/js/add_artist.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
