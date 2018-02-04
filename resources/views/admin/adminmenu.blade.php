@@ -5,6 +5,7 @@
         <h2>Шапка</h2>
         <form action="/admin/head" class="flex" enctype="multipart/form-data" method="post">
             {{ csrf_field() }}
+            <? $InfoCommunity = json_decode($allCommunityInfo->value); ?>
             <div class="cols2">
                 <div class="flex">
                     <label>Логотип<br><span>Размер 200 на 100</span></label>
@@ -12,34 +13,34 @@
                 </div>
                 <div class="flex">
                     <label>Номер телефона</label>
-                    <input type="text" name="head1">
+                    <input type="text" name="head1" value="{{$InfoCommunity->number}}">
                 </div>
                 <div class="flex">
                     <label>Ссылка на ВК</label>
-                    <input type="text" name="head2">
+                    <input type="text" name="head2" value="{{$InfoCommunity->vk}}">
                 </div>
                 <div class="flex">
                     <label>Ссылка на WhatsApp</label>
-                    <input type="text" name="head3">
+                    <input type="text" name="head3" value="{{$InfoCommunity->whatsapp}}">
                 </div>
                 <div class="flex">
                     <label>Ссылка на Instagram</label>
-                    <input type="text" name="head4">
+                    <input type="text" name="head4" value="{{$InfoCommunity->instagram}}">
                 </div>
                 <h2>Футер</h2>
                 <div class="flex">
                     <label>Текст копирайта</label>
-                    <textarea name="head5" cols="32" rows="5"></textarea>
+                    <textarea name="head5" cols="32" rows="5" >{{$InfoCommunity->copyright}}</textarea>
                 </div>
             </div>
             <div class="cols2 leftcol">
                 <div>
                     <label>Служба поддержки</label><br><br>
-                    <textarea name="head6" cols="32" rows="4"></textarea>
+                    <textarea name="head6" cols="32" rows="4">{{$InfoCommunity->support}}</textarea>
                 </div>
                 <div>
                     <label>Вопросы сотрудничества</label><br><br>
-                    <textarea name="head7" cols="32" rows="4"></textarea>
+                    <textarea name="head7" cols="32" rows="4">{{$InfoCommunity->affilate}}</textarea>
                 </div>
                 <input type="submit" class="submit" value="Сохранить">
             </div>
