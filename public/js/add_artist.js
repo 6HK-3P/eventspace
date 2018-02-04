@@ -1,9 +1,22 @@
 window.addEventListener("load", function(){
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+    var arrayTabs = location.href.split("tab=");
+    if(arrayTabs.length>1){
+     var id = arrayTabs[arrayTabs.length-1];
+    	if (id == 3){
+            $("#portfolio").click();
+		}
+
+
+	}
+
+
+    
 
     $('.instruction1').on("click", function(){
 	  $(this).hide();
