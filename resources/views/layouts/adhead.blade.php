@@ -18,7 +18,7 @@
     <script src="/public/js/inputmask/jquery.inputmask.js"></script>
     <script src="http://yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
     <script src="http://yastatic.net/share2/share.js"></script>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
 

@@ -326,20 +326,29 @@ $("#save_changes").on("click",function(e) {
 		e.preventDefault();
 		var idArray = location.href.split("/");
 		var id = idArray[idArray.length-1];
-		var media = new Object();
-		var audio = new Object();
+		var media = [];
+		var audio = [];
 		var m = document.getElementById("video_options");
 		var a = document.getElementById("audio_options");
 		var arrayMedia = (m) ? m.getElementsByClassName("item") : false;
 		var arrayAudio = (a) ? a.getElementsByClassName("item") : false;
 		if (arrayMedia.length) {
 			for (var i = 0; i < arrayMedia.length; i++) {
-				media[i] = arrayMedia[i].getAttribute("data-source");
+			    var mediaObject = new Object();
+                mediaObject.type = arrayMedia[i].getAttribute("data-type");
+                mediaObject.src = arrayMedia[i].getAttribute("data-src");
+                if(mediaObject.type == "video"){
+                    mediaObject.poster = arrayMedia[i].getAttribute("data-poster");
+                }
+                media[i] = mediaObject;
 			}
 		}
 		if (arrayAudio.length) {
             for (var i = 0; i < arrayAudio.length; i++) {
-                audio[i] = arrayAudio[i].getAttribute("data-source");
+                var audioObject = new Object();
+                audioObject.name = arrayAudio[i].getAttribute("data-name");
+                audioObject.link = arrayAudio[i].getAttribute("data-link");
+                audio[i] = audioObject;
             }
 		}
 
@@ -350,11 +359,11 @@ $("#save_changes").on("click",function(e) {
 		console.log("audio");
 		console.log(audio);*/
 		$.ajax({
-		  url: "#",
-		  type: "POST",
+		  url: "/admin/workers/updateportfolio/"+id,
+		  type: "GET",
 		  data: {media: media, audio : audio},
 		  success: function(data){
-		  
+
 		  }
 		});
 		return false;

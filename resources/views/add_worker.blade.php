@@ -331,6 +331,7 @@
             <div class="add-artist-portfolio col70">
                 <h4>Редактирование</h4>
                 <form action="#" enctype="multipart/form-data" name="media" class="media">
+
                     <h5>Настройки галереи</h5>
                     <div id = "video_options" class="flex wrap video_options">
                         @if(!empty($allWorkerInfo->logo))
@@ -339,12 +340,12 @@
                         @foreach($LogoInfo as $LogoInfos)
 
                                 @if($LogoInfos->type=="photo")
-                                    <div class="item img"  data-source="{{json_encode($LogoInfos)}}">
+                                    <div class="item img"  data-type="{{$LogoInfos->type}}" data-src="{{$LogoInfos->src}}">
                                         <div class="gallery-img" style="background-image: url({{$LogoInfos->src}})"></div>
                                         <input type="submit" class="remove_video"  name="remove_video" value="">
                                     </div>
                                 @else
-                                    <div class="item video"  data-source="{{json_encode($LogoInfos)}}">
+                                    <div class="item video"  data-type="{{$LogoInfos->type}}" data-src="{{$LogoInfos->src}}" data-poster="{{$LogoInfos->poster}}">
                                         <div class="video_wrap"></div>
                                         <div class="obert">
                                             <img src="{{$LogoInfos->poster}}" width="380" height="210">
@@ -364,7 +365,7 @@
                     <div id = "audio_options" class="flex wrap audio_options">
                         <? $allAudios = json_decode($allWorkerInfo->audio) ?>
                             @foreach($allAudios as $Audios)
-                                <div class="item audio flex" data-source="{{json_encode($Audios)}}">
+                                <div class="item audio flex" data-name="{{$Audios->name}}" data-link="{{$Audios->link}}">
                                     <span class="music_title">{{$Audios->name}}</span>
                                     <input type="submit" class="remove_audio"  name="remove_audio" value="">
                                 </div>

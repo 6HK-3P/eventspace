@@ -252,7 +252,7 @@ class AdminWorkerController extends Controller
        }
        $worker->logo = json_encode($arrayPhoto);
        $worker-> save();
-       return redirect('/admin/workers/add/'.$cat.'/'.$id.'');
+       return redirect('/admin/workers/add/'.$cat.'/'.$id.'?tab=3');
    }
 
 // --------------добавление видео в  бд--------------
@@ -269,7 +269,7 @@ class AdminWorkerController extends Controller
         $arrayVideo[] = [ "type" => "video", "src" => $srcVideo, "poster"=>$srcImg];
         $worker->logo = json_encode($arrayVideo);
         $worker-> save();
-        return redirect('/admin/workers/add/'.$cat.'/'.$id.'');
+        return redirect('/admin/workers/add/'.$cat.'/'.$id.'?tab=3');
     }
 
 // --------------добавление аудио в бд  --------------
@@ -288,6 +288,17 @@ class AdminWorkerController extends Controller
         }
         $worker->audio = json_encode($arrayAudio);
         $worker-> save();
-        return redirect('/admin/workers/add/'.$cat.'/'.$id.'');
+        return redirect('/admin/workers/add/'.$cat.'/'.$id.'?tab=3');
+    }
+
+// --------------обновление аудио и видео в бд  --------------
+    public function updatePortfolio(Request $request, $id){
+        $worker = Worker::find($id);
+        $media = $request->input('media');
+        $audio = $request->input('audio');
+        $worker->logo = json_encode($media);
+        $worker->audio = json_encode($audio);
+        $worker-> save();
+        return json_encode(true);
     }
 }
