@@ -82,7 +82,6 @@ class AdminWorkerController extends Controller
         $cat = Workers_categorie::find($cat);
         if($id > 0){
             $allWorkerInfo = Worker::find($id);
-
         }
         //город
         $allcitie = workers_citie::all();
@@ -94,6 +93,7 @@ class AdminWorkerController extends Controller
        $allPricingInfo = Pricing::all();
 
         $managers = User::where("root",2)->get();
+
 
         return view('add_worker')->with(['allcities' => $allcitie, 'audiotypes' => $audiotype, 'alllanguages' => $alllanguage,"managers"=> $managers,
                                                'allWorkerInfo' => $allWorkerInfo, 'id'=> $id, 'cat' =>$cat, 'AllPricing' => $allPricingInfo ]);
@@ -254,7 +254,10 @@ class AdminWorkerController extends Controller
        $worker-> save();
        return redirect('/admin/workers/add/'.$cat.'/'.$id.'');
    }
+
 // --------------добавление видео в  бд--------------
+
+
     public function addVideo(Request $request,$cat, $id){
         $worker = Worker::find($id);
         $arrayVideo = json_decode($worker->logo);
@@ -268,17 +271,20 @@ class AdminWorkerController extends Controller
         $worker-> save();
         return redirect('/admin/workers/add/'.$cat.'/'.$id.'');
     }
-// --------------добавление аудио в  бд--------------
+
+// --------------добавление аудио в бд  --------------
+
     public function addAudio(Request $request,$cat, $id){
         $audios = $request->add_audio;
         $worker = Worker::find($id);
         $arrayAudio = json_decode($worker->audio);
         foreach ($audios as $audio) {
-            $originalname = explode('.' , $audio->getClientOriginalName());
+            $orgName = $audio->getClientOriginalName();
+            $originalname = explode('.' , $orgName);
             $pref = rand(1, 10000000);
             $name = $pref.'.'.$originalname[count($originalname)-1];
             $audio->move(public_path() . '/audio/', $name);
-            $arrayAudio[] = '/public/audio/'.$name;
+            $arrayAudio[] = ['name' => $orgName, 'link' => '/public/audio/'.$name];
         }
         $worker->audio = json_encode($arrayAudio);
         $worker-> save();

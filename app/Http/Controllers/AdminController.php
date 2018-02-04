@@ -16,7 +16,8 @@ class AdminController extends Controller
     public function index(){
 
         $teasers = Teaser::all();
-        return view('admin.adminmenu', ['teasers'=>$teasers]);
+        $allCommunityInfos = Site_setting::find(1);
+        return view('admin.adminmenu', ['teasers'=>$teasers, 'allCommunityInfo' => $allCommunityInfos]);
     }
 
     public function addteaser(Request $request){
