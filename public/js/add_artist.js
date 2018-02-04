@@ -136,11 +136,12 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
 			url: "/admin/workers/price_add/"+id,
 			type: "POST",
 			data: $("#rule").serialize(),
-            success: function(result){
+            complete: function(result){
 
-                getPriceRules();
+
                 $("#add_type input[type=checkbox]").change();
                 $(".unCheckAll").click();
+                getPriceRules();
             }
 		});
     	$("#rule")[0].reset();
@@ -162,7 +163,7 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
             url: "/admin/workers/update_pricing/"+id,
             type: "POST",
             data: $("#updatePrice").serialize(),
-            success: function(){
+            complete: function(){
                 getPriceRules();
             }
         });
