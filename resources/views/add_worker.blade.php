@@ -361,22 +361,13 @@
                 <form action="#" enctype="multipart/form-data" name="audio" class="media">
                     <h5>Настройки аудио</h5>
                     <div id = "audio_options" class="flex wrap audio_options">
-                        <div class="item audio flex" data-itemId=1>
-                            <span class="music_title">Стас Михайлов - Для тебя Стас Михайлов - Для тебяСтас Михайлов - Для тебя</span>
-                            <input type="submit" class="remove_audio"  name="remove_audio" value="">
-                        </div>
-                        <div class="item audio flex" data-itemId=2>
-                            <span class="music_title">Бутырка - какая осень в лагерях</span>
-                            <input type="submit" class="remove_audio"  name="remove_audio" value="">
-                        </div>
-                        <div class="item audio flex" data-itemId=3>
-                            <span class="music_title">Владимирский централ</span>
-                            <input type="submit" class="remove_audio"  name="remove_audio" value="">
-                        </div>
-                        <div class="item audio flex" data-itemId=4>
-                            <span class="music_title">Филипп Киркоров - Снег</span>
-                            <input type="submit" class="remove_audio"  name="remove_audio" value="">
-                        </div>
+                        <? $allAudios = json_decode($allWorkerInfo->audio) ?>
+                            @foreach($allAudios as $Audios)
+                                <div class="item audio flex" data-itemId=1>
+                                    <span class="music_title">{{$Audios->name}}</span>
+                                    <input type="submit" class="remove_audio"  name="remove_audio" value="">
+                                </div>
+                            @endforeach
                     </div>
                 </form>
 
