@@ -250,7 +250,7 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
             }
             tmpl += "</tbody></table>";
             $(".price_rules_edit_wrap").html(tmpl);
-            
+
             $(".delete_rule").on("click", function (e) {
                 e.preventDefault();
                 var href = $(this).attr("href");

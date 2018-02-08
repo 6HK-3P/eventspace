@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/public/css/slick-theme.css">
     <link rel="stylesheet" href="/public/css/slick.css">
     <link rel="stylesheet" href="/public/css/main.css">
+    <link rel="stylesheet" href="/public/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/public/css/owl.theme.default.min.css">
     <link href="/public/css/nouislider.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="/public/js/admin_main.js"></script>
@@ -92,6 +94,8 @@
 <script src="/public/libs/jquery.formstyler.min.js"></script>
 <script src="/public/js/dzen.js"></script>
 <script src="/public/js/nouislider.min.js"></script>
+<script src="/public/js/product.js"></script>
+<script src="/public/js/owl.carousel.js"></script>
 <script>
     $(document).ready(function () {
         var html5Slider = document.getElementById('html5');
