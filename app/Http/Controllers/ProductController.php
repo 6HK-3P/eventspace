@@ -21,7 +21,7 @@ class ProductController extends Controller
 {
     public function index($id){
         $allInfoUser = User::find($id);
-        $allInfoWorker = Worker::where('user_id',$allInfoUser['id'])->get();
+        $allInfoWorker = Worker::where('user_id',$allInfoUser['id'])->first();
 
         //вся информация которая в шапке
         $allhead = Site_setting::all();

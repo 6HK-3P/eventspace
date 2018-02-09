@@ -2,18 +2,33 @@
 @section('content')
 <main>
     <div class="container flex al">
-        <? $i = 1; ?>
-        @foreach($InfoWorker as $Info)
+
             <div class="content">
                 <h1 class="itemTitle">{{$InfoUsers['name']}}</h1>
                 <div class="owl-carousel">
-                    <?  $LogoInfo = json_decode($Info->logo);?>
-                            <div data-hash="{{$i}}" class="owl-item" style="background-image: url({{ $LogoInfo[0] }});"></div>
+                    <? $i = 1; ?>
+                    <?  $LogoInfo = json_decode($InfoWorker->logo);?>
+                        @foreach($LogoInfo as $logos)
+                            @if($logos->type == "photo")
+                                <div data-hash="{{$i}}" class="owl-item" style="background-image: url({{ $logos->src }});"></div>
+                            @else
+                                <div data-hash="{{$i}}" class="owl-item" >
+                                    <iframe  width="100%" height="100%" src="{{ $logos->src }}" frameborder="0" allowfullscreen=""></iframe>
+                                </div>
+                            @endif
+
+                            <? $i++; ?>
+                        @endforeach
                 </div>
                 <div class="minimg flex start">
+                    <? $i = 1; ?>
                     @foreach($LogoInfo as $logos)
-                        <a class="minimg-item @if($i == 1) active @endif" href="#{{$i}}" style="background-image: url({{ $logos }});"></a>
-                        <? $i++; ?>
+                            @if($logos->type == "photo")
+                                <a class="minimg-item @if($i == 1) active @endif" href="#{{$i}}" style="background-image: url({{ $logos->src }});"></a>
+                            @else
+                                <a class="minimg-item @if($i == 1) active @endif" href="#{{$i}}" style="background-image: url({{ $logos->poster }});"></a>
+                            @endif
+                            <? $i++; ?>
                     @endforeach
                 </div>
                 <div class="flex valuation">
@@ -22,39 +37,38 @@
                 </div>
                 <div class="itemDescriprion">
                     <p>
-                        {{$Info->about}}
+                        {{$InfoWorker->about}}
                     </p>
                 </div>
         </div>
-        @endforeach
         <div class="drum__filter">
             <strong class="drum__filter-title">Забронировать</strong>
 
             <form class="drum__filter-form bron">
-                @if ($Info->category_id == 6) @include('filters.category_car')
+                @if ($InfoWorker->category_id == 6) @include('filters.category_car')
                 @include('filters.category_date')
                 @include('filters.category_cities')
                 @endif
 
-                @if ($Info->category_id == 5) @include('filters.category_entertainer')
+                @if ($InfoWorker->category_id == 5) @include('filters.category_entertainer')
                 @include('filters.category_date')
                 @include('filters.category_cities')
                 @endif
 
-                @if ($Info->category_id == 3) @include('filters.category_date')
+                @if ($InfoWorker->category_id == 3) @include('filters.category_date')
                 @include('filters.category_cities')
                 @include('filters.category_hall')
                 @endif
-                @if ($Info->category_id == 2) @include('filters.category_mediastudio')
+                @if ($InfoWorker->category_id == 2) @include('filters.category_mediastudio')
                 @include('filters.category_date')
                 @include('filters.category_cities')
                 @endif
-                @if ($Info->category_id == 4) @include('filters.category_musician')
+                @if ($InfoWorker->category_id == 4) @include('filters.category_musician')
                 @include('filters.category_date')
                 @include('filters.category_cities')
                 @endif
 
-                @if ($Info->category_id == 1) @include('filters.category_date')
+                @if ($InfoWorker->category_id == 1) @include('filters.category_date')
                 @include('filters.category_duration')
                 @include('filters.category_cities')
                 @endif
@@ -85,25 +99,24 @@
     <div class="container">
         <h1 class="itemTitle">Аудиозаписи</h1>
         <div class="audiorecords">
-            <div id="audioplayer1" class="audiorecord">
-                <audio class="music" preload="true">
-                    <source src="/audio/sound.mp3">
-                </audio>
-                <div class="flex start audiohead"><button class="pButton play"></button> Бутырка: Какая осень в лагерях</div>
-                <div class="timeline">
-                    <div class="playhead"></div>
-                </div>
-            </div>
+            @if($InfoWorker->audio)
+                <? $audios = json_decode($InfoWorker->audio); $i=1; ?>
+                @foreach($audios as $audio)
 
-            <div id="audioplayer2" class="audiorecord">
-                <audio class="music" preload="true">
-                    <source src="/audio/sound2.mp3">
-                </audio>
-                <div class="flex start audiohead"><button class="pButton play"></button> Михаил Круг: Владимирский централ</div>
-                <div class="timeline">
-                    <div class="playhead"></div>
+                <div id="audioplayer{{$i}}" class="audiorecord">
+                    <audio class="music" preload="true">
+                        <source src="{{$audio->link}}">
+                    </audio>
+                    <div class="flex start audiohead"><button class="pButton play"></button> {{$audio->name}}</div>
+                    <div class="timeline">
+                        <div class="playhead"></div>
+                    </div>
                 </div>
-            </div>
+                    <?php $i++;?>
+                @endforeach
+            @endif
+
+
         </div>
         <h1 class="itemTitle">Отзывы</h1>
         <form action="" class="feedbackForm">
