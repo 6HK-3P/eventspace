@@ -132,7 +132,7 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
 		}
 
 
-		$.ajax({
+    $.when($.ajax({
 			url: "/admin/workers/price_add/"+id,
 			type: "POST",
 			data: $("#rule").serialize(),
@@ -141,9 +141,12 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
 
                 $("#add_type input[type=checkbox]").change();
                 $(".unCheckAll").click();
-                getPriceRules();
+
             }
+		})).then(function(){
+        	getPriceRules();
 		});
+
     	$("#rule")[0].reset();
     	$("#rule label").removeAttr("class");
 
@@ -203,9 +206,12 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
 	getPriceRules();
     /*ЗАШАБЛОНЬ БЛЯДСКИЕ ПРАВИЛА*/
     function bladePriceRules(response) {
+        $(".price_rules_edit_wrap").html("");
     	var rules = response.rules;
-    	if(rules.length) {
-            var tmpl = "";
+
+    	if(rules.length>0) {
+
+            var tmpl = " <table class='price_rules'><thead><td>№</td><td>Вид</td> <td>Города</td> <td>Даты</td> <td>Цена</td> <td>Залог</td> <td></td></thead> <tbody class='price_rules_body'>";
             for (var i = 0; i < rules.length; i++) {
                 tmpl += "<tr>";
                 tmpl += "<td>" + (i + 1) + " <input type='hidden' name='price_rule_id[]' value='" + rules[i].id + "'> </td>";
@@ -242,9 +248,9 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
                 }
                 tmpl += "</td><td><a href='/admin/workers/removeRulePrice/" + rules[i].id + "' class='delete_rule'>x</a></td></tr>";
             }
-
-            $(".price_rules_body").html(tmpl);
-
+            tmpl += "</tbody></table>";
+            $(".price_rules_edit_wrap").html(tmpl);
+            
             $(".delete_rule").on("click", function (e) {
                 e.preventDefault();
                 var href = $(this).attr("href");
@@ -258,10 +264,13 @@ $(".add_price_rule.cat4 input[type=submit]").on("click", function(e){
                 return false;
 
             })
-            return false;
+
         }
-        var tmp =   '<p class="empty">Пока нет ценовых правил</p>';
-        $(".price_rules_edit_wrap").html(tmp);
+        else {
+            var tmp =   '<p class="empty">Пока нет ценовых правил</p>';
+            $(".price_rules_edit_wrap").html(tmp);
+		}
+        return false;
 
     }
 
@@ -381,5 +390,28 @@ $("#save_changes").on("click",function(e) {
 		  }
 		});
 		return false;
+})
+
+$(".item.img").on("mouseleave", function () {
+    $(".imgAva").removeClass("hover");
+})
+
+$(".imgAva").on("click",function () {
+    $(this).addClass("hover");
+    var src = $(this).parent().data("src");
+    var idArray = location.href.split("/");
+    var id = idArray[idArray.length-1];
+    $(".avaImg").html("Сделать аватаркой").attr("class","imgAva");
+    $(this).html("Аватарка").attr("class","avaImg");
+    $.ajax({
+        url: "/admin/workers/addava/"+id,
+        type: "GET",
+        data: {logoAva: src},
+        success: function(data){
+			$(".ava img").attr("src", src);
+
+
+        }
+    });
 })
 

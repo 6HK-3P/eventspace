@@ -65,7 +65,6 @@ class AdminWorkerController extends Controller
         $addw->user_id = $addu->id;
         $addw->category_id = '4';
         $addw->city_id = $request->input('basic_city');
-        $addw->logo = '/static/img/111.png';
         $addw->about = $request->input('add_description');
         $addw->manager_id = $request->input('filter_admin_artist');
         $addw->manager_comment = $request->input('filter_comments_artist');
@@ -299,6 +298,13 @@ class AdminWorkerController extends Controller
         $worker->logo = json_encode($media);
         $worker->audio = json_encode($audio);
         $worker-> save();
+        return json_encode(true);
+    }
+// -------------- добавление аватарки  --------------
+    public function addAva(Request $request, $id){
+        $worker = Worker::find($id);
+        $worker->ava = $request->input('logoAva');
+        $worker->save();
         return json_encode(true);
     }
 }
