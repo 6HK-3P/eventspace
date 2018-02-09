@@ -7,6 +7,9 @@
         @if($id!=0)
         <div class="flex start tabs-cont">
             <div id="info" class="tabs active"><span>Информация</span></div>
+            @if($id!=0 && $cat->id == 6 )
+                <div id="cars" class="tabs"><span>Мои автомобили</span></div>
+            @endif
             <div id="price" class="tabs"><span>Ценообразование</span></div>
             <div id="portfolio" class="tabs"><span>Портфолио</span></div>
         </div>
@@ -38,9 +41,10 @@
                                 @endif
 
                             </div>
-                            @include('admin.addworker.filtres.repertoire')
-                            @include('admin.addworker.filtres.language')
-
+                            @if($cat->id == 5) @include('admin.addworker.filtres.conferance') @endif
+                            @if($cat->id == 4) @include('admin.addworker.filtres.repertoire') @endif
+                            @if($cat->id == 4 || $cat->id == 5) @include('admin.addworker.filtres.language') @endif
+                            @if($cat->id == 3) @include('admin.addworker.filtres.hall_vmestimost') @endif
                             <div class="profile_options_item">
                                 <h5>Менеджер</h5>
                                 @if($id>0)
@@ -134,6 +138,85 @@
                 </div>
             </form>
         </section>
+        @if($id!=0 && $cat->id == 6 )
+            <section class="cars tabs-body flex" style="display: none;">
+                <div class="add-artist-price " style=" width: 100%;">
+                    <h4>Добавьте машины</h4>
+
+                    <form action="#" id="add_cars" style="min-height: 100px;" name="add_cars" class="add_price_rule cat{{$cat->id}}" method="POST" >
+                        <div class="flex">
+                            {{csrf_field()}}
+                            <div class="profile_options_item">
+                                <h5>Имя автомобиля</h5><input type="text" style="width: 100%" name="name_car">
+                            </div>
+                            <div class="profile_options_item">
+                                <h5>Марка автомобиля</h5>
+                                <?php $cars_marks = \App\Workers_cars_mark::all(); ?>
+
+                                    <select style="padding: 12px" name="mark_car">
+                                        @foreach($cars_marks as $car_mark)
+                                            <option value="{{$car_mark->id}}">{{$car_mark->title}}</option>
+                                        @endforeach
+                                    </select>
+
+                            </div>
+                            <div class="profile_options_item">
+                                <h5>Цвет автомобиля</h5>
+                                <?php $cars_colors = \App\Workers_cars_color::all(); ?>
+                                    <select  style="padding: 12px" name="color_car">
+                                        @foreach($cars_colors as $car_color)
+                                            <option value="{{$car_color->id}}">{{$car_color->title}}</option>
+                                        @endforeach
+                                    </select>
+
+                            </div>
+
+
+                            <div class="profile_options_item">
+                                <h5>Тип автомобиля</h5>
+                                <?php $cars_colors = \App\Workers_cars_type::all(); ?>
+                                <select  style="padding: 12px" name="type_car">
+                                    @foreach($cars_colors as $car_color)
+                                        <option value="{{$car_color->id}}">{{$car_color->title}}</option>
+                                    @endforeach
+                                </select>
+
+                            </div>
+                            <div class="tizer-buttons flex"  style="height: 68px;margin-top: 48px;padding: 10px 0;box-sizing: border-box;">
+                                <input type="submit" class="submit" value="Добавить">
+                            </div>
+                        </div>
+
+                    </form>
+                    <div class="">
+                        <? $all_cars = \App\workers_car::where("worker_id", $id)->get(); $i=1; ?>
+                        <h4>Ваши автомобили</h4>
+                        <table class="price_rules cars_table" style="display:block; width:100%;">
+                            <thead>
+                                <td>№</td>
+                                <td>Имя автомобиля</td>
+                                <td>Марка автомобиля</td>
+                                <td>Тип автомобиля</td>
+                                <td>Цвет автомобиля</td>
+                                <td></td>
+                                <? $i++; ?>
+                            </thead>
+                            @foreach($all_cars as $car)
+                                <tr>
+                                    <td>{{$i}}</td>
+                                    <td>{{$car->name}}</td>
+                                    <td>{{\App\Workers_cars_mark::find($car->mark_id)->title}}</td>
+                                    <td>{{\App\Workers_cars_type::find($car->type_id)->title}}</td>
+                                    <td>{{\App\Workers_cars_color::find($car->color_id)->title}}</td>
+                                    <td><a href="">x</a></td>
+                                    <? $i++; ?>
+                                </tr>
+                            @endforeach
+                        </table>
+                    </div>
+                </div>
+            </section>
+        @endif
         @if($id!=0)
         <section class="price tabs-body flex" style="display: none;">
             <aside class="filter col30">
@@ -213,50 +296,9 @@
                                 <div class="flex start"><label>По</label> <input type="date" class="day_end" name="end_date"></div>
                             </div>
                         </div>
-                        <div id="add_type">
-                            <h6>Выберете услуги и укажите цены</h6>
-                            <div class="services_wrap">
-							<span class="ree">
-									Выберите хотя бы один тип
-							</span>
-                                <div>
-                                    <input type="checkbox" id="type_3" class="types" name="type_3" value="3">
-                                    <label for="type_3">Выступление весь  день </label>
-                                </div>
-                                <div class="prices service_type_3">
-                                    <div class="flex">
-                                        <div><label for="">Цена</label><input type="text" name="price_type_3"></div>
-                                        <div><label for="">Залог</label><input type="text" name="zalog_type_3"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="services_wrap">
-                                <div>
-                                    <input type="checkbox" id="type_2" class="types" name="type_2" value="2">
-                                    <label for="type_2">Выступление 2 часа</label>
-                                </div>
-                                <div class="prices service_type_2">
-                                    <div class="flex">
-                                        <div><label for="">Цена</label><input type="text" name="price_type_2"></div>
-                                        <div><label for="">Залог</label><input type="text" name="zalog_type_2"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="services_wrap last-child">
-                                <div>
-                                    <input type="checkbox" id="type_1" class="types" name="type_1" value="1">
-                                    <label for="type_1">Выступление 1 час</label>
-                                </div>
-                                <div class="prices service_type_1">
-                                    <div class="flex">
-                                        <div><label for="">Цена</label><input type="text" name="price_type_1"></div>
-                                        <div><label for="">Залог</label><input type="text" name="zalog_type_1"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="checkAll" data-id = "add_type">Отметить все</span>
-                            <span class="unCheckAll" data-id = "add_type">Cнять все</span>
-                        </div>
+                        @if($cat->id == 5 || $cat->id == 4) @include('admin.addworker.filtres.pricing.timing') @endif
+                        @if($cat->id == 1 || $cat->id == 2) @include('admin.addworker.filtres.pricing.timing_photo') @endif
+                        @if($cat->id == 3) @include('admin.addworker.filtres.pricing.hall') @endif
                         <input type="submit" value="Добавить" class="w100">
                     </div>
                 </form>

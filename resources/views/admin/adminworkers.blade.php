@@ -10,7 +10,7 @@
 
                     @foreach($allWorkers as $worker)
                     <li class="flex">
-                        <div class="artists-list-img"><img src="{{$worker->ava}}" alt=""></div>
+                        <div class="artists-list-img"><img src="{{count($worker->ava) ? $worker->ava : "/public/img/profile.svg"}}" alt=""></div>
                         <div class="artists-list-desc">
                             <h4>{{App\User::find($worker->user_id)->name}}</h4>
                             <p>

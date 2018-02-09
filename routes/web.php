@@ -38,6 +38,7 @@ Route::post('/admin/workers/update_pricing/{id}', 'AdminWorkerController@updateP
 Route::post('/admin/workers/addlogo/{cat}/{id}', 'AdminWorkerController@addLogo');
 Route::post('/admin/workers/addvideo/{cat}/{id}', 'AdminWorkerController@addVideo');
 Route::post('/admin/workers/addaudio/{cat}/{id}', 'AdminWorkerController@addAudio');
+Route::post('/admin/workers/addcar/{id}', 'AdminWorkerController@addCars');
 Route::get('/admin/workers/updateportfolio/{id}', 'AdminWorkerController@updatePortfolio');
 Route::get('/admin/workers/addava/{id}', 'AdminWorkerController@addAva');
 Route::get('/admin/workers/removeRulePrice/{id}', 'AdminWorkerController@removeRulePrice');

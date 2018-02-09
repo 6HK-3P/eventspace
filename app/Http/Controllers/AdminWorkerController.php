@@ -9,6 +9,7 @@ use App\Workers_categorie;
 use App\Workers_citie;
 use App\Workers_language;
 use App\Workers_musicians_type;
+use App\workers_car;
 use Illuminate\Http\Request;
 
 class AdminWorkerController extends Controller
@@ -30,10 +31,13 @@ class AdminWorkerController extends Controller
 
         //информация о исполнителе заносится в массив
         $array = [];
-        $array["lang"]=$request->input('lang');
-        $array["basic_lang"] = $request->input('main_lang');
-        $array["types"]=$request->input('type');
-        $array["basic_types"] = $request->input('filter_main_type_artist');
+        ($request->input('lang'))       ? $array["lang"] = $request->input('lang') : false;
+        ($request->input('main_lang'))  ? $array["basic_lang"] = $request->input('main_lang') : false;
+        ($request->input('type'))       ? $array["types"] = $request->input('type') : false;
+        ($request->input('types_conf')) ? $array["types_conf"] = $request->input('types_conf') : false ;
+        ($request->input('capacity_start')) ? $array["capacity"]["start"] = $request->input('capacity_start') : false ;
+        ($request->input('capacity_end')) ? $array["capacity"]["end"] = $request->input('capacity_end') : false ;
+        ($request->input('filter_main_type_artist')) ? $array["basic_types"] = $request->input('filter_main_type_artist') : false;
         //информация о телефонах заносится в массив
         $phonearray = [];
         $phonearray[0]["name"]=$request->input('contact-name1');
@@ -63,7 +67,7 @@ class AdminWorkerController extends Controller
         //добавление в воркерс
 
         $addw->user_id = $addu->id;
-        $addw->category_id = '4';
+        $addw->category_id = $cat;
         $addw->city_id = $request->input('basic_city');
         $addw->about = $request->input('add_description');
         $addw->manager_id = $request->input('filter_admin_artist');
@@ -143,23 +147,43 @@ class AdminWorkerController extends Controller
         $allprice = [];
         $alldeposit = [];
         $allcity = json_encode($request->input('city'));
+        if($request->input('price_type_1') || $request->input('price_type_2') || $request->input('price_type_3')){
+            for($i=3; $i>0; $i--) {
+                if($request->input('type_'.$i)){
+                    $allprice[] = $request->input('price_type_'.$i);
+                }
+                else{
+                    $allprice[] = "";
+                }
+            }
+            for($i=3; $i>0; $i--) {
+                if($request->input('type_'.$i)){
+                    $alldeposit[] = $request->input('zalog_type_'.$i);
+                }
+                else{
+                    $alldeposit[] = "";
+                }
+            }
+        }
 
-        for($i=3; $i>0; $i--) {
-            if($request->input('type_'.$i)){
-                $allprice[] = $request->input('price_type_'.$i);
-            }
-            else{
-                $allprice[] = "";
-            }
+        if($request->input('price_hall_2')){
+            $allprice[] = $request->input('price_hall_2');
+            $alldeposit[] = $request->input('price_hall_zalog_2');
         }
-        for($i=3; $i>0; $i--) {
-            if($request->input('type_'.$i)){
-                $alldeposit[] = $request->input('zalog_type_'.$i);
-            }
-            else{
-                $alldeposit[] = "";
-            }
+        else{
+            $allprice[] = "";
+            $alldeposit[] = "";
         }
+        if($request->input('price_hall_1')){
+            $allprice[] = $request->input('price_hall_1');
+            $alldeposit[] = $request->input('price_hall_zalog_1');
+        }
+        else{
+            $allprice[] = "";
+            $alldeposit[] = "";
+        }
+
+
         $addPricing = new Pricing();
         $addPricing->worker_id = $id;
         $addPricing->view = 'По месяцам';
@@ -224,7 +248,7 @@ class AdminWorkerController extends Controller
 
         $deleteRulePrice = Pricing::find($id);
         $deleteRulePrice->delete();
-        return true;
+        return json_encode(true);
 
     }
 
@@ -307,4 +331,16 @@ class AdminWorkerController extends Controller
         $worker->save();
         return json_encode(true);
     }
+
+    public function addCars(Request $request, $id){
+        $addCar = new workers_car;
+        ($request->input('name_car')) ? $addCar->name=$request->input('name_car') : "";
+        $addCar->type_id= $request->input('type_car');
+        $addCar->color_id= $request->input('color_car');
+        $addCar->mark_id = $request->input('mark_car');
+        $addCar->worker_id = $id;
+        $addCar->save();
+        return json_encode(true);
+    }
+
 }

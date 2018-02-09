@@ -1,6 +1,5 @@
 @if($id>0)
     <?php $addInfo = json_decode($allWorkerInfo->workers_additional_info);?>
-    @if($cat->id == 4 )
         <div class="profile_options_item ska">
             <span class="ree">
                 Выберите хотя бы один тип
@@ -19,10 +18,9 @@
                 @endforeach
             </ul>
         </div>
-    @endif
+
 @else
-    @if($cat->id == 4 )
-        <div class="profile_options_item ska">
+      <div class="profile_options_item ska">
             <span class="ree">
                 Выберите хотя бы один тип
 	        </span>
@@ -40,5 +38,5 @@
                 @endforeach
             </ul>
         </div>
-    @endif
+
 @endif
