@@ -52,4 +52,7 @@ Route::post('/admin/sms/add', 'AdminSmsController@addsms');
 
 Route::get('/product/{id}', 'ProductController@index');
 
+//Ценообразование Зала
+Route::get('/pricing/{param}/{id}', 'PricingController@getPricingInfoHall');
+
 Auth::routes();

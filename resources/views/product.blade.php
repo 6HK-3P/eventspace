@@ -4,7 +4,7 @@
     <div class="container flex al">
 
             <div class="content">
-                <h1 class="itemTitle">{{$InfoUsers['name']}}</h1>
+                <h1 class="itemTitle" data-worker="{{$InfoWorker->id}}">{{$InfoUsers['name']}}</h1>
                 <div class="owl-carousel">
                     <? $i = 1; ?>
                         @if($InfoWorker->logo)
@@ -69,7 +69,8 @@
                 @if ($InfoWorker->category_id == 3)
                         @include('filters.category_date')
                         <div class="drum__filter-form__item">
-                            <span>Вместимость: 100 - 300 чел.</span>
+                            <? $capacity = json_decode($InfoWorker->workers_additional_info); ?>
+                            <span>Вместимость: {{$capacity->capacity->start}} - {{$capacity->capacity->end}} чел.</span>
                         </div>
                         @include('filters.price_zal')
                 @endif
