@@ -199,7 +199,7 @@
                                 <td>Тип автомобиля</td>
                                 <td>Цвет автомобиля</td>
                                 <td></td>
-                                <? $i++; ?>
+
                             </thead>
                             @foreach($all_cars as $car)
                                 <tr>
@@ -299,6 +299,7 @@
                         @if($cat->id == 5 || $cat->id == 4) @include('admin.addworker.filtres.pricing.timing') @endif
                         @if($cat->id == 1 || $cat->id == 2) @include('admin.addworker.filtres.pricing.timing_photo') @endif
                         @if($cat->id == 3) @include('admin.addworker.filtres.pricing.hall') @endif
+                        @if($cat->id == 6) @include('admin.addworker.filtres.pricing.auto') @endif
                         <input type="submit" value="Добавить" class="w100">
                     </div>
                 </form>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Site_setting;
 use App\User;
 use App\Worker;
+use App\workers_car;
 use App\Workers_cars_color;
 use App\Workers_cars_mark;
 use App\Workers_cars_type;
@@ -42,8 +43,9 @@ class ProductController extends Controller
         $audiotype = Workers_musicians_type::all();
 
         $countcamers = Workers_count_camer::all();
-
-        return view("product")->with(["InfoUsers" => $allInfoUser, 'InfoWorker' => $allInfoWorker, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
+        //информация о машинах текущенго воркера
+        $allCarsWorker = workers_car::where('worker_id',$allInfoWorker->id)->get();
+        return view("product")->with(['allCarsWorker' => $allCarsWorker, 'InfoUsers' => $allInfoUser, 'InfoWorker' => $allInfoWorker, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
                                              'allcities' => $allcitie ,  'alltoasts' => $alltoast ,'alllanguages' => $alllanguage,
                                               'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype, 'allheads'=>$allhead]);
     }

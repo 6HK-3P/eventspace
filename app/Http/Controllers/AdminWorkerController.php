@@ -165,22 +165,29 @@ class AdminWorkerController extends Controller
                 }
             }
         }
+        if($request->input('hall_type_2')) {
+            if ($request->input('price_hall_2')) {
+                $allprice[] = $request->input('price_hall_2');
+                $alldeposit[] = $request->input('price_hall_zalog_2');
+            } else {
+                $allprice[] = "";
+                $alldeposit[] = "";
+            }
+        }
+        if($request->input('hall_type_1')) {
+            if ($request->input('price_hall_1')) {
+                $allprice[] = $request->input('price_hall_1');
+                $alldeposit[] = $request->input('price_hall_zalog_1');
+            } else {
+                $allprice[] = "";
+                $alldeposit[] = "";
+            }
+        }
 
-        if($request->input('price_hall_2')){
-            $allprice[] = $request->input('price_hall_2');
-            $alldeposit[] = $request->input('price_hall_zalog_2');
-        }
-        else{
-            $allprice[] = "";
-            $alldeposit[] = "";
-        }
-        if($request->input('price_hall_1')){
-            $allprice[] = $request->input('price_hall_1');
-            $alldeposit[] = $request->input('price_hall_zalog_1');
-        }
-        else{
-            $allprice[] = "";
-            $alldeposit[] = "";
+        if($request->input('auto_id')){
+
+            $allprice[] = $request->input('price_auto');
+            $alldeposit[] = $request->input('price_zalog_auto');
         }
 
 
@@ -200,6 +207,7 @@ class AdminWorkerController extends Controller
         $addPricing->date = $alldate;
         $addPricing->price = json_encode($allprice);
         $addPricing->deposit = json_encode($alldeposit);
+        $addPricing->info = ($request->input('auto_id')) ? $request->input('auto_id') : '';
         $addPricing -> save();
 
     }

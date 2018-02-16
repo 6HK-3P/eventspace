@@ -30,7 +30,7 @@
                  @endif
 
                  @if ($cat == 1) @include('filters.category_date')
-                                 @include('filters.category_duration')
+
                                  @include('filters.category_cities')
                  @endif
                  @if ($cat != 3) @include('filters.category_payment')

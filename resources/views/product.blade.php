@@ -7,29 +7,37 @@
                 <h1 class="itemTitle">{{$InfoUsers['name']}}</h1>
                 <div class="owl-carousel">
                     <? $i = 1; ?>
-                    <?  $LogoInfo = json_decode($InfoWorker->logo);?>
-                        @foreach($LogoInfo as $logos)
-                            @if($logos->type == "photo")
-                                <div data-hash="{{$i}}" class="owl-item" style="background-image: url({{ $logos->src }});"></div>
-                            @else
-                                <div data-hash="{{$i}}" class="owl-item" >
-                                    <iframe  width="100%" height="100%" src="{{ $logos->src }}" frameborder="0" allowfullscreen=""></iframe>
-                                </div>
-                            @endif
+                        @if($InfoWorker->logo)
+                            <?  $LogoInfo = json_decode($InfoWorker->logo);?>
+                            @foreach($LogoInfo as $logos)
+                                @if($logos->type == "photo")
+                                    <div data-hash="{{$i}}" class="owl-item" style="background-image: url({{ $logos->src }});"></div>
+                                @else
+                                    <div data-hash="{{$i}}" class="owl-item" >
+                                        <iframe  width="100%" height="100%" src="{{ $logos->src }}" frameborder="0" allowfullscreen=""></iframe>
+                                    </div>
+                                @endif
 
-                            <? $i++; ?>
-                        @endforeach
+                                <? $i++; ?>
+                            @endforeach
+                        @else
+                            <div data-hash="1" class="owl-item" style="background-image: url();"></div>
+                        @endif
                 </div>
                 <div class="minimg flex start">
                     <? $i = 1; ?>
-                    @foreach($LogoInfo as $logos)
-                            @if($logos->type == "photo")
-                                <a class="minimg-item @if($i == 1) active @endif" href="#{{$i}}" style="background-image: url({{ $logos->src }});"></a>
-                            @else
-                                <a class="minimg-item @if($i == 1) active @endif" href="#{{$i}}" style="background-image: url({{ $logos->poster }});"></a>
-                            @endif
-                            <? $i++; ?>
-                    @endforeach
+                    @if($InfoWorker->logo)
+                        @foreach($LogoInfo as $logos)
+                                @if($logos->type == "photo")
+                                    <a class="minimg-item @if($i == 1) active @endif" href="#{{$i}}" style="background-image: url({{ $logos->src }});"></a>
+                                @else
+                                    <a class="minimg-item @if($i == 1) active @endif" href="#{{$i}}" style="background-image: url({{ $logos->poster }});"></a>
+                                @endif
+                                <? $i++; ?>
+                        @endforeach
+                    @else
+                            <a class="minimg-item active" href="#1" style="background-image: url();"></a>
+                    @endif
                 </div>
                 <div class="flex valuation">
                     <div class="flex valuation-row start"><span class="rat">4.5</span><span class="fed">13</span></div>
@@ -45,47 +53,45 @@
             <strong class="drum__filter-title">Забронировать</strong>
 
             <form class="drum__filter-form bron">
-                @if ($InfoWorker->category_id == 6) @include('filters.category_car')
-                @include('filters.category_date')
-                @include('filters.category_cities')
+                @if ($InfoWorker->category_id == 6)
+
+                        @include('filters.category_date')
+                        @include('filters.category_cities')
+                        @include('filters.auto')
                 @endif
 
-                @if ($InfoWorker->category_id == 5) @include('filters.category_entertainer')
-                @include('filters.category_date')
-                @include('filters.category_cities')
+                @if ($InfoWorker->category_id == 5)
+                        @include('filters.category_date')
+                        @include('filters.times')
+                        @include('filters.category_cities')
                 @endif
 
-                @if ($InfoWorker->category_id == 3) @include('filters.category_date')
-                @include('filters.category_cities')
-                @include('filters.category_hall')
-                @endif
-                @if ($InfoWorker->category_id == 2) @include('filters.category_mediastudio')
-                @include('filters.category_date')
-                @include('filters.category_cities')
-                @endif
-                @if ($InfoWorker->category_id == 4) @include('filters.category_musician')
-                @include('filters.category_date')
-                @include('filters.category_cities')
+                @if ($InfoWorker->category_id == 3)
+                        @include('filters.category_date')
+                        <div class="drum__filter-form__item">
+                            <span>Вместимость: 100 - 300 чел.</span>
+                        </div>
+                        @include('filters.price_zal')
                 @endif
 
-                @if ($InfoWorker->category_id == 1) @include('filters.category_date')
-                @include('filters.category_duration')
-                @include('filters.category_cities')
+                @if ($InfoWorker->category_id == 2)
+                        @include('filters.category_date')
+                        @include('filters.category_cities')
+                        @include('filters.equipment')
                 @endif
 
-                <div class="drum__filter-form__item">
-                    <span>Личные данные</span>
-                    <div class="drum-form-content ld">
-                        <label>Имя</label><input type="text" name="name">
-                    </div>
-                    <div class="drum-form-content ld">
-                        <label>Телефон</label><input type="text" name="tel">
-                    </div>
-                    <p>Мы зарегистрием вас на сайте и пришлем пароль в смс-сообщении.</p>
-                    <div class="drum-form-content ld">
-                        <label>Комментарий</label><textarea name="commentBron" id="" cols="20" rows="3"></textarea>
-                    </div>
-                </div>
+                @if ($InfoWorker->category_id == 4)
+                        @include('filters.category_date')
+                        @include('filters.times')
+                        @include('filters.category_cities')
+                @endif
+
+                @if ($InfoWorker->category_id == 1)
+                        @include('filters.category_date')
+                        @include('filters.times')
+                        @include('filters.category_cities')
+                @endif
+
                 <div class="drum__filter-form__item filter-coast">
                     <div class="drum-form-content"><span>Гонорар</span> <span class="filter-coast">18900 ₽</span></div>
                     <div class="drum-form-content"><span>Залог</span> <span class="filter-coast">1890 ₽</span></div>
@@ -97,6 +103,36 @@
 
     </div>
     <div class="container">
+        @if($InfoWorker->category_id == 6)
+        <h1 class="itemTitle">Машины</h1>
+        <div class="audiorecords">
+            @if($allCarsWorker)
+                <div class="">
+                    <table class="price_rules cars_table" style="display:block; width:100%;">
+                        <thead>
+                        <td>№</td>
+                        <td>Имя автомобиля</td>
+                        <td>Марка автомобиля</td>
+                        <td>Тип автомобиля</td>
+                        <td>Цвет автомобиля</td>
+                        <? $i=1; ?>
+                        </thead>
+                        @foreach($allCarsWorker as $CarsWorker)
+                            <tr>
+                                <td>{{$i}}</td>
+                                <td>{{$CarsWorker->name}}</td>
+                                <td>{{\App\Workers_cars_mark::find($CarsWorker->mark_id)->title}}</td>
+                                <td>{{\App\Workers_cars_type::find($CarsWorker->type_id)->title}}</td>
+                                <td>{{\App\Workers_cars_color::find($CarsWorker->color_id)->title}}</td>
+                                <? $i++; ?>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+            @endif
+        </div>
+        @endif
+
         <h1 class="itemTitle">Аудиозаписи</h1>
         <div class="audiorecords">
             @if($InfoWorker->audio)
@@ -115,9 +151,8 @@
                     <?php $i++;?>
                 @endforeach
             @endif
-
-
         </div>
+
         <h1 class="itemTitle">Отзывы</h1>
         <form action="" class="feedbackForm">
             <h5>Оставьте отзыв</h5>

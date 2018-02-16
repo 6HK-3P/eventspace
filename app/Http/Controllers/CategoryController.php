@@ -131,15 +131,15 @@ class CategoryController extends Controller
                     $item->param2 = Workers_language::find($info->basic_lang*1)->name;
                 }
                 elseif($cat == 2){
-                    $item->param1 = Workers_video_qualitie::find($info->basic_quality*1)->title;
-                    $item->param2 = Workers_count_camer::find($info->count_camers*1)->title;
+                    //$item->param1 = Workers_video_qualitie::find($info->basic_quality*1)->title;
+                    //$item->param2 = Workers_count_camer::find($info->count_camers*1)->title;
                 }
                 elseif($cat == 5){
-                    $item->param1 = Workers_toastmaster_type::find($info->toastmaker_type*1)->title;
+                   print_r($info->types_conf);// $item->param1 = Workers_toastmaster_type::find($info->types_conf*1)->title;
                 }
                 elseif($cat == 6){
-                    $item->param1 = Workers_cars_mark::find($info->cars_mark*1)->title;
-                    $item->param2 = Workers_cars_color::find($info->cars_color*1)->title;
+                    //$item->param1 = Workers_cars_mark::find($info->cars_mark*1)->title;
+                    //$item->param2 = Workers_cars_color::find($info->cars_color*1)->title;
                 }
             }
         }

@@ -262,8 +262,70 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
 
     })
 
+    ////ДЛЯ АФТО СУКА
+
+    $(".add_price_rule.cat6 input[type=submit]").on("click", function(e){
+        e.preventDefault();
+        $(".price_rules_body").html();
+        $("#updatePrice").addClass("loader");
+        var idArray = location.href.split("/");
+        var id = idArray[idArray.length-1];
+        var error = new Object();
+        error.cities= [isCheck("city"), ""];
+        error.months = [isCheck("month"), ""];
+        error.dayStart = [isEmpty("day_start"), ".day_start"];
+        error.dayEnd = [isEmpty("day_end"), ".day_end"];
+        console.log(error);
+        if (error.cities[0]) {
+            $("#add_city .ree").show();
+        }
+        if (error.months[0] && $(".months").css("display") != "none") {
+            $("#add_interval .ree").show();
+        }
+
+        if(error.dayStart[0] && $(".calendarWrap").css("display") != "none"){
+            $(error.dayStart[1]).addClass("error");
+        }
+        if(error.dayEnd[0] && $(".calendarWrap").css("display") != "none"){
+            $(error.dayEnd[1]).addClass("error");
+        }
+        $(".add_price_rule input[type=checkbox]").on("change",function(){
+            $(this).parent().parent().find(".ree").hide();
+        })
+        if (((error.months[0]) && (error.dayStart[0]  ||  error.dayEnd[0]))  || error.cities[0]) {
+            var cat = idArray[idArray.length-2];
+
+            getPriceRules(cat);
+            return false;
+        }
+
+
+        $.when($.ajax({
+            url: "/admin/workers/price_add/"+id,
+            type: "POST",
+            data: $("#rule").serialize(),
+            complete: function(result){
+
+
+                $("#add_type input[type=checkbox]").change();
+                $(".unCheckAll").click();
+
+            }
+        })).then(function(){
+            var cat = idArray[idArray.length-2];
+
+            getPriceRules(cat);
+        });
+
+        $("#rule")[0].reset();
+        $("#rule label").removeAttr("class");
+
+        return false;
+
+    })
+
 	/*ОТПРАВКА БЛЯТЬ ОБНОВЛЕННЫХ ПРАВИЛД ЕБАНАВРОТ*/
-    $("#updatePrice.cat4 input[type=submit], #updatePrice.cat1 input[type=submit]").on("click", function(e){
+    $("#updatePrice.cat4 input[type=submit], #updatePrice.cat1 input[type=submit], #updatePrice.cat6 input[type=submit], #updatePrice.cat3 input[type=submit]").on("click", function(e){
         e.preventDefault();
         $(".price_rules_body").html();
         $("#updatePrice").addClass("loader");
@@ -286,29 +348,7 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
 
     })
 
-	/*Для залов*/
-    $("#updatePrice.cat3 input[type=submit]").on("click", function(e){
-        e.preventDefault();
-        $(".price_rules_body").html();
-        $("#updatePrice").addClass("loader");
-        var idArray = location.href.split("/");
-        var id = idArray[idArray.length-1];
 
-        $.ajax({
-            url: "/admin/workers/update_pricing/"+id,
-            type: "POST",
-            data: $("#updatePrice").serialize(),
-            complete: function(){
-                var cat = idArray[idArray.length-2];
-
-                getPriceRules(cat);
-            }
-        });
-
-
-        return false;
-
-    })
 	/*БУДАЛЕНИЕ БЛЯДСКИХ ПРАВИЛ*/
 
 
@@ -338,7 +378,7 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
                     case 3: bladePriceRulesHall(response);break;
                     case 4: bladePriceRules(response);break;
                     case 5: bladePriceRules(response);break;
-                    case 6: bladePriceRules(response);break;
+                    case 6: bladePriceRulesAuto(response);break;
                     default: bladePriceRules(response);break;
 				}
 
@@ -457,6 +497,82 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
                 }
                 if (deposit[0]) {
                     tmpl += "<div class='flex'><label>Аренда зала</label><input type='text' name='date_deposit_2_" + rules[i].id + "' class='table_price' value='" + deposit[0] + "'></div>";
+                }
+
+                tmpl += "</td><td><a href='/admin/workers/removeRulePrice/" + rules[i].id + "' class='delete_rule'>x</a></td></tr>";
+            }
+            tmpl += "</tbody></table>";
+            $(".price_rules_edit_wrap").html(tmpl);
+
+            $(".delete_rule").on("click", function (e) {
+                e.preventDefault();
+                var href = $(this).attr("href");
+                $.ajax({
+                    url: href,
+                    type: "GET",
+                    complete: function () {
+                        var cat = idArray[idArray.length-2];
+                        getPriceRules(cat);
+                    }
+                });
+                return false;
+
+            })
+
+        }
+        else {
+            var tmp =   '<p class="empty">Пока нет ценовых правил</p>';
+            $(".price_rules_edit_wrap").html(tmp);
+        }
+        return false;
+
+    }
+
+
+    function bladePriceRulesAuto(response) {
+        $(".price_rules_edit_wrap").html("");
+        var rules = response.rules;
+
+        if(rules.length>0) {
+
+            var tmpl = " <table class='price_rules'><thead><td>№</td><td> Авто </td><td>Вид</td> <td>Города</td> <td>Даты</td> <td>Цена</td> <td>Залог</td> <td></td></thead> <tbody class='price_rules_body'>";
+
+            for (var i = 0; i < rules.length; i++) {
+                var namesArray = document.getElementsByClassName("autoOption");
+                var name = "ss";
+                for (var j = 0; j < namesArray.length; j++){
+
+                    if (namesArray[j].value == parseInt(rules[i].info)) {
+                        name = namesArray[j].innerHTML;
+                        break;
+                    }
+                }
+
+
+                tmpl += "<tr>";
+                tmpl += "<td>" + (i + 1) + " <input type='hidden' name='price_rule_id[]' value='" + rules[i].id + "'> </td>";
+                tmpl += "<td>" + name + "</td>";
+                tmpl += "<td>" + rules[i].view + "</td>";
+                tmpl += "<td>" + rules[i].cities + "</td>";
+                if (rules[i].months) {
+                    tmpl += "<td>" + rules[i].months + "</td><td>";
+                }
+                else {
+                    var suka = JSON.parse(rules[i].date);
+                    tmpl += "<td>" + suka[0] + " - " + suka[1] + "</td><td>";
+                }
+                var price = JSON.parse(rules[i].price);
+
+                if (price[0]) {
+                    tmpl += "<input type='text' name='date_price_2_" + rules[i].id + "' class='table_price' value='" + price[0] + "'>";
+                }
+
+                tmpl += "</td><td>";
+
+                var deposit = JSON.parse(rules[i].deposit);
+
+                if (deposit[0]) {
+                    tmpl += "<input type='text' name='date_deposit_2_" + rules[i].id + "' class='table_price' value='" + deposit[0] + "'>";
                 }
 
                 tmpl += "</td><td><a href='/admin/workers/removeRulePrice/" + rules[i].id + "' class='delete_rule'>x</a></td></tr>";
