@@ -56,3 +56,4 @@ Route::get('/product/{id}', 'ProductController@index');
 Route::get('/pricing/{param}/{id}', 'PricingController@getPricingInfoHall');
 
 Auth::routes();
+Auth::logout();
