@@ -94,8 +94,8 @@
                 @endif
 
                 <div class="drum__filter-form__item filter-coast">
-                    <div class="drum-form-content"><span>Гонорар</span> <span class="filter-coast">18900 ₽</span></div>
-                    <div class="drum-form-content"><span>Залог</span> <span class="filter-coast">1890 ₽</span></div>
+                    <div class="drum-form-content"><span>Гонорар</span> <span id="price" class="filter-coast">0 ₽</span></div>
+                    <div class="drum-form-content"><span>Залог</span> <span id="deposit" class="filter-coast">0 ₽</span></div>
                 </div>
                 <button class="drum__filter-submit" type="submit">Забронировать</button>
             </form>
@@ -133,27 +133,27 @@
             @endif
         </div>
         @endif
+        @if($InfoWorker->audio)
+            <h1 class="itemTitle">Аудиозаписи</h1>
+            <div class="audiorecords">
 
-        <h1 class="itemTitle">Аудиозаписи</h1>
-        <div class="audiorecords">
-            @if($InfoWorker->audio)
-                <? $audios = json_decode($InfoWorker->audio); $i=1; ?>
-                @foreach($audios as $audio)
+                    <? $audios = json_decode($InfoWorker->audio); $i=1; ?>
+                    @foreach($audios as $audio)
 
-                <div id="audioplayer{{$i}}" class="audiorecord">
-                    <audio class="music" preload="true">
-                        <source src="{{$audio->link}}">
-                    </audio>
-                    <div class="flex start audiohead"><button class="pButton play"></button> {{$audio->name}}</div>
-                    <div class="timeline">
-                        <div class="playhead"></div>
+                    <div id="audioplayer{{$i}}" class="audiorecord">
+                        <audio class="music" preload="true">
+                            <source src="{{$audio->link}}">
+                        </audio>
+                        <div class="flex start audiohead"><button class="pButton play"></button> {{$audio->name}}</div>
+                        <div class="timeline">
+                            <div class="playhead"></div>
+                        </div>
                     </div>
-                </div>
-                    <?php $i++;?>
-                @endforeach
-            @endif
-        </div>
+                        <?php $i++;?>
+                    @endforeach
 
+            </div>
+            @endif
         <h1 class="itemTitle">Отзывы</h1>
         <form action="" class="feedbackForm">
             <h5>Оставьте отзыв</h5>

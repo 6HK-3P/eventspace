@@ -2737,3 +2737,56 @@ textarea:focus{
 	background-color: #fff;
 	z-index: 20;
 }
+.bron.loader{
+	position: relative;
+}
+.bron.loader::before{
+	content: '';
+	display: block;
+	min-height: 30vh;
+	width:100%;
+	background-image: url("../img/loader.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 100px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right:0;
+	background-color: #f3f3f3;
+	z-index: 20;
+}
+.line{
+	padding:5px;
+	margin-bottom: 10px;
+}
+.line-container{
+	border: 1px dotted #ccc;
+	padding:5px;
+	margin-bottom: 10px;
+	width: 100%;
+}
+.line-checked{
+	display: block;
+	opacity: 1 !important;
+	z-index: 1 !important;
+	position: relative !important;
+	margin-right: 5px;
+}
+
+.line .jq-radio{
+	margin-right: 10px;
+}
+.line i{
+	margin-left: 20px;
+}
+.line-container .drum-container{
+	display: none;
+}
+.line-container #second{
+	display: block;
+}
+.asd{
+	padding: 0 25px;
+}

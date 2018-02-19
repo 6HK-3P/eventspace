@@ -1,5 +1,6 @@
 <div class="drum__filter-form__item">
     <span>Стоимость</span>
+    {{csrf_field()}}
     <div class="drum-form-content">
         <div class="line-container">
             <div class="line"><label><input type="radio" id="firstType" class="typeHall" name="cost" data-id ="first" data-coast="0" data-deposit="0" value="1">Полное обслуживание <br><i>(средний чек на человека)</i></label></div>

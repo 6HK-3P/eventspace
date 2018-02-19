@@ -11,7 +11,7 @@ class PricingController extends Controller
         $price = '';
         $deposit = '';
         $data = $request->input('data');
-        $workerPricing = pricing::where('worker_id', $id)->where( 'view', 'По дням')->get();
+        $workerPricing = pricing::where('worker_id', $id)->where( 'view', 'По дням')->orderBy("id", "DESC")->get();
         foreach ($workerPricing as $pricings){
             $arrayData= json_decode($pricings->date);
             if(strtotime($arrayData[0]) <= strtotime($data) && strtotime($arrayData[1]) >= strtotime($data)){
@@ -24,7 +24,7 @@ class PricingController extends Controller
         }
 
         if(empty($price)){
-            $workerPricing = pricing::where('worker_id', $id)->where( 'view', 'По месяцам')->get();
+            $workerPricing = pricing::where('worker_id', $id)->where( 'view', 'По месяцам')->orderBy("id", "DESC")->get();
             $mesData = getdate(strtotime($data));
             foreach ($workerPricing as $pricings){
                 $arrayData= json_decode($pricings->date);
@@ -44,5 +44,10 @@ class PricingController extends Controller
         return (empty($price)) ? json_encode(false) : json_encode(["price"=>$price, "deposit"=>$deposit]);
 
 
+    }
+    public function getPricingInfoHallCategory(Request $request, $cat){
+        $param = $request->input("cost");
+
+        
     }
 }

@@ -92,7 +92,7 @@
                                 <article class="item-cart">
                                     <a href="/product/{{$items[$i]->id}}">
                                         
-                                        <div class="item-photo"  style="background-image: url(); Background-size: cover; Background-position: center center"></div>
+                                        <div class="item-photo"  style="background-image: url({{$items[$i]->worker->ava}}); Background-size: cover; Background-position: center center"></div>
                                     </a>
                                     <div class="item-desc">
                                         <div class="item-desc-params flex">
@@ -359,9 +359,14 @@
             document.getElementById('skip-value-lower'),
             document.getElementById('skip-value-upper')
         ];
+        var skipValues2 = [
+            document.getElementById('skip-value-lower2'),
+            document.getElementById('skip-value-upper2')
+        ];
 
         html5Slider.noUiSlider.on('update', function (values, handle) {
-            skipValues[handle].innerHTML = parseInt(values[handle]).toFixed();
+            skipValues[handle].innerHTML= parseInt(values[handle]).toFixed();
+            skipValues2[handle].value = parseInt(values[handle]).toFixed();
         });
 
 
