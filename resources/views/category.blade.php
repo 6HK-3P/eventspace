@@ -1,10 +1,12 @@
 @extends('layouts.head')
 @section('content')
 <main data-category="">
+    \
     <div class="container">
         <div class="drum__filter">
             <strong class="drum__filter-title">Уточните детали</strong>
-            <form class="drum__filter-form">
+            <form class="drum__filter-form" action="/category/{{$cat}}/search" method="POST">
+                {{ csrf_field()  }}
 
                  @if ($cat == 6) @include('filters.category_car')
                                  @include('filters.category_date')
@@ -195,7 +197,7 @@
         function mock(item) {
             var mock =	"<div class='podbor-item '>";
             mock += "<article class='item-cart'>";
-            mock += "<div class='item-photo' style='background-image: url("+item.worker.logo+")'></div>";
+            mock += "<div class='item-photo' style='background-image: url("+item.worker.ava+"); Background-size: cover; Background-position: center center'></div>";
             mock += "<div class='item-desc'>";
             mock += "<div class='item-desc-params flex'>";
             mock += "<div class='flex item-desc-params-left'>";

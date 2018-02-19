@@ -63,6 +63,7 @@ class RegisterController extends Controller
         return User::create([
             'phone' => $data['phone'],
             'root' => 1,
+            'password' => '123456'
         ]);
     }
 }

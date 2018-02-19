@@ -146,4 +146,34 @@ class CategoryController extends Controller
 
         return $items;
     }
+
+    public function searchCategory(Request $request, $cat){
+        $search = '';
+        $decod = '';
+        $i = 0;
+        if($cat == 3){
+            if($request->input('cities')) {
+                $search = Worker::where('category_id', $cat)->where('city_id', $request->input('cities'))->get();
+            }
+            if($request->input('min_capacity') && $request->input('max_capacity') ){
+                print_r($request->input('min_capacity'));
+                print_r($request->input('max_capacity'));
+                $search = Worker::where('category_id', $cat)->get();
+               // $search = Worker::where('category_id', $cat)->where('workers_additional_info->capacity->start', '<=', trim($request->input('min_capacity')))->where('workers_additional_info->capacity->end', '>=', trim($request->input('max_capacity')))->get();
+
+                //работает
+                foreach ($search as $searchs) {
+                    $decod[] = json_decode($searchs->workers_additional_info);
+                    if($decod[$i]->capacity->start <= $request->input('min_capacity') && $decod[$i]->capacity->end >= $request->input('max_capacity')){
+                        dump($searchs);
+                    }
+                    $i++;
+                }
+
+
+
+                dump($search);
+            }
+        }
+    }
 }

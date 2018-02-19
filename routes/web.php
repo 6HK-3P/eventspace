@@ -11,6 +11,9 @@
 |
 */
 
+Auth::routes();
+
+
 Route::get('/', 'MainController@index');
 Route::get('/category/{category}', 'CategoryController@index');
 
@@ -55,5 +58,12 @@ Route::get('/product/{id}', 'ProductController@index');
 //Ценообразование Зала
 Route::get('/pricing/{param}/{id}', 'PricingController@getPricingInfoHall');
 
-Auth::routes();
-Auth::logout();
+//поиск в категориях
+Route::post('/category/{cat}/search', 'CategoryController@searchCategory');
+
+
+
+Route::get('/logouts', function (){
+        \Illuminate\Support\Facades\Auth::logout();
+        return 1;
+});
