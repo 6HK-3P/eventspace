@@ -45,7 +45,8 @@ class ProductController extends Controller
         $countcamers = Workers_count_camer::all();
         //информация о машинах текущенго воркера
         $allCarsWorker = workers_car::where('worker_id',$allInfoWorker->id)->get();
-        return view("product")->with(['allCarsWorker' => $allCarsWorker, 'InfoUsers' => $allInfoUser, 'InfoWorker' => $allInfoWorker, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
+        $city = 1;
+        return view("product")->with([ 'city'=>$city, 'allCarsWorker' => $allCarsWorker, 'InfoUsers' => $allInfoUser, 'InfoWorker' => $allInfoWorker, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
                                              'allcities' => $allcitie ,  'alltoasts' => $alltoast ,'alllanguages' => $alllanguage,
                                               'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype, 'allheads'=>$allhead]);
     }

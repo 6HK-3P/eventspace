@@ -55,5 +55,10 @@ Route::get('/product/{id}', 'ProductController@index');
 //Ценообразование Зала
 Route::get('/pricing/{param}/{id}', 'PricingController@getPricingInfoHall');
 
+//Поиск по категории авто
+Route::get('/category/{category}/find', 'CategoryController@sortFilters');
+/*Цена авто*/
+Route::get('/car/pricing/{worker_id}', 'PricingController@getPricingInfoAuto');
+
 Auth::routes();
 Auth::logout();

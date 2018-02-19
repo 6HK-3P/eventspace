@@ -4,11 +4,15 @@
     <div class="container">
         <div class="drum__filter">
             <strong class="drum__filter-title">Уточните детали</strong>
-            <form class="drum__filter-form">
+            <?php $url = "http://".$_SERVER["HTTP_HOST"]."/category/".$category."/find"; ?>
+            <form class="drum__filter-form" action="{{$url}}" method="GET">
+                {{csrf_field()}}
+                 @if ($cat == 6)
+                    @include('filters.category_date')
+                    @include('filters.category_cities')
+                    @include('filters.category_car')
 
-                 @if ($cat == 6) @include('filters.category_car')
-                                 @include('filters.category_date')
-                                 @include('filters.category_cities')
+
                  @endif
 
                  @if ($cat == 5) @include('filters.category_entertainer')
@@ -76,8 +80,9 @@
             <? $k = 4; ?>
             @if (count($items))
                 @for($i=0; $i<$k; $i++)
-                    @foreach($teasers as $teaser)
-                        @if($teaser->position == $i+1)
+                    @if(count($teasers))
+                        @foreach($teasers as $teaser)
+                            @if($teaser->position == $i+1)
                             <div class="podbor-item ">
                                 <article class="tizers">
                                     <img class="item-photo" src="{{$teaser->logo}}">
@@ -85,8 +90,9 @@
                                 </article>
                             </div>
                             <?  $k--; ?>
-                        @endif
+                            @endif
                         @endforeach
+                        @endif
                             @if(isset($items[$i]))
                             <div class="podbor-item ">
                                 <article class="item-cart">
@@ -130,17 +136,19 @@
             @if (count($items)>$k)
                 <? $g =  $k+3 ?>
                     @for($i=$k; $i<$g; $i++)
-                        @foreach($teasers as $teaser)
-                            @if($teaser->position == $i+1)
-                                <div class="podbor-item ">
-                                    <article class="tizers">
-                                        <img class="item-photo" src="{{$teaser->logo}}">
-                                        <p>{{$teaser->text}}</p>
-                                    </article>
-                                </div>
-                                <? $g--; ?>
-                            @endif
-                        @endforeach
+                        @if(count($teasers))
+                            @foreach($teasers as $teaser)
+                                @if($teaser->position == $i+1)
+                                    <div class="podbor-item ">
+                                        <article class="tizers">
+                                            <img class="item-photo" src="{{$teaser->logo}}">
+                                            <p>{{$teaser->text}}</p>
+                                        </article>
+                                    </div>
+                                    <? $g--; ?>
+                                @endif
+                            @endforeach
+                        @endif
                         @if(isset($items[$i]))
                                 <div class="podbor-item ">
                                     <article class="item-cart">
@@ -187,8 +195,10 @@
 
     $(document).ready(function () {
         // получение  макс и мин
-        var min=0;
-        var max=10000;
+        var min = @if(isset($arenda_ot)) {{$arenda_ot}} @else 0 @endif;
+        var max = @if(isset($arenda_do)) {{$arenda_do}} @else 10000 @endif;
+        var min0 = @if(isset($min)) {{$min}} @else 0 @endif;
+        var max0 = @if(isset($max)) {{$max}} @else 10000 @endif;
         var price= [1];
 
 
@@ -226,7 +236,7 @@
             mock += "</div>";
             return mock;
         }
-
+        @if(count($teasers))
         function mockTeaser(teaser) {
             var mock = "<div class='podbor-item '>";
             mock +=  "<article class='tizers'>";
@@ -235,6 +245,7 @@
             mock +=  "</article></div>";
             return mock;
         }
+        @endif
         $("#search_form").on("submit", function (e) {
             e.preventDefault();
             return false;
@@ -351,8 +362,8 @@
             connect: true,
             step: 1000,
             range: {
-                'min': min, //сюда тоже
-                'max': max
+                'min': min0, //сюда тоже
+                'max': max0
             }
         });
         var skipValues = [

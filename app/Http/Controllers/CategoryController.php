@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\pricing;
 use App\Site_setting;
 use App\User;
+use App\workers_car;
 use App\Workers_cars_color;
 use App\Workers_cars_mark;
 use App\Workers_citie;
@@ -50,8 +52,22 @@ class CategoryController extends Controller
         $teasers = $result["teasers"];
         $items = $result["items"];
 
+        $worker_ids = Worker::where("category_id", $cat)->get()->pluck('id');
+        /*$min_price = pricing::whereIn("worker_id", $worker_ids)->orderBy("price->0")->first();*/
+        $items_price = pricing::whereIn("worker_id", $worker_ids)->get();
 
-        return view('category')->with(['items'=>$items, 'teasers'=>$teasers,'cat'=>$cat, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
+        $min = $items_price->sortBy(function($it) {
+            $elem = json_decode($it->price);
+            return $elem[0];
+        });
+
+
+        $minRes = json_decode($min[0]->price)[0];
+        $maxRes = json_decode($min[count($min)-1]->price)[0];
+
+        dump($min[5]);
+
+        return view('category')->with(['min'=> $minRes, 'max'=>$maxRes, 'city' => '1', 'items'=>$items, 'category'=>$category , 'teasers'=>$teasers, 'cat'=>$cat, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
                                              'allcities' => $allcitie ,  'alltoasts' => $alltoast ,'alllanguages' => $alllanguage,
                                               'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype, 'allheads'=>$allhead]);
 
@@ -145,5 +161,126 @@ class CategoryController extends Controller
         }
 
         return $items;
+    }
+
+
+
+    public function sortFilters(Request $request, $category){
+        $cat = $this->selectCategory($category);
+        $users = [];
+        switch ($cat){
+            case "1" : $users = $this->sortAuto($request, $cat); break;
+            case "2": $users = $this->sortAuto($request, $cat); break;
+            case "3": $users = $this->sortAuto($request, $cat); break;
+            case "5": $users = $this->sortAuto($request, $cat); break;
+            case "4": $users = $this->sortAuto($request, $cat); break;
+            case "6": $users = $this->sortAuto($request, $cat); break;
+            default:  $users = $this->sortAuto($request, $cat);
+        }
+        //вся информация которая в шапке
+        $allhead = Site_setting::all();
+
+        //всё про машины
+        $carstype = Workers_cars_type::all();
+        $carsmark = Workers_cars_mark::all();
+        $carscolor = Workers_cars_color::all();
+        //города
+        $allcitie = Workers_citie::all();
+        //тамада
+        $alltoast = Workers_toastmaster_type::all();
+        //язык
+        $alllanguage = Workers_language::all();
+        //съёмка
+        $videoe = Workers_video_equipment::all();
+        $videoq = Workers_video_qualitie::all();
+        //музыка
+        $audiotype = Workers_musicians_type::all();
+
+        $countcamers = Workers_count_camer::all();
+        $city = (!empty($request->input('cities'))) ? $request->input('cities') : 1;
+        dump($users);
+        return view('category')->with(['items'=>$users, 'category'=>$category ,  'teasers'=>[],
+            'cat'=>$cat, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
+            'allcities' => $allcitie ,  'alltoasts' => $alltoast ,'alllanguages' => $alllanguage,
+            'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype, 'allheads'=>$allhead,
+            'city'=> $city, 'data'=>$request->input("data"),'arenda_ot'=>$request->input("arenda_ot"),
+            'arenda_do'=>$request->input("arenda_do"), 'mark'=>$request->input("marks"),'type'=>$request->input("types"),
+            'color'=>$request->input("colors"),
+        ]);
+    }
+
+
+    private function sortAuto(Request $request, $cat){
+        $data = $request->input("data");
+        $city = $request->input("cities");
+        $price_ot = $request->input("arenda_ot");
+        $price_do = $request->input("arenda_do");
+        $mark = $request->input("marks");
+        $color = $request->input("colors");
+        $type = $request->input("types");
+
+        $result = workers_car::whereNotNull("worker_id");
+
+        if(!empty($color))  $result->whereIn("color_id", $color);
+        if(!empty($type))   $result->whereIn("type_id", $type);
+        if(!empty($mark))   $result->whereIn("mark_id", $mark);
+
+        $cars = $result->get();
+
+        $arrayCarIds = [];
+
+        foreach ($cars as $car){
+            $price = "";
+            $workerPricing = pricing::where("info",$car->id)->where( 'view', 'По дням')->orderBy("id", "DESC")->get();
+
+            foreach ($workerPricing as $pricings){
+                $arrayData= json_decode($pricings->date);
+                if(strtotime($arrayData[0]) <= strtotime($data) && strtotime($arrayData[1]) >= strtotime($data)) {
+                    $arrayCities = json_decode($pricings->city);
+                    foreach ($arrayCities as $c){
+                        if($c == $city){
+                            $arrayPrice = json_decode($pricings->price);
+                            $price = $arrayPrice[0];
+                            break;
+                        }
+                    }
+                }
+            }
+            if(empty($price)){
+                $workerPricing = pricing::where("info",$car->id)->where( 'view', 'По месяцам')->orderBy("id", "DESC")->get();
+                $mesData = getdate(strtotime($data));
+                foreach ($workerPricing as $pricings){
+                    $arrayData= json_decode($pricings->date);
+                    foreach ($arrayData as $month){
+
+                        if($month == $mesData["mon"]){
+                            $arrayCities = json_decode($pricings->city);
+                            foreach ($arrayCities as $c){
+                                if($c == $city){
+                                    $arrayPrice = json_decode($pricings->price);
+                                    $price = $arrayPrice[0];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($price >= $price_ot && $price <= $price_do){
+
+                    $arrayCarIds[] = $car->id;
+
+            }
+        }
+
+        if (count($arrayCarIds)){
+            $workerIds = workers_car::select("worker_id")->groupBy("worker_id")->whereIn("id",$arrayCarIds)->get()->pluck("worker_id");
+            $usersIds = Worker::select("user_id")->whereIn('id', $workerIds)->get()->pluck("user_id");
+            return User::whereIn("id",$usersIds)->get();
+        }
+
+
+
     }
 }

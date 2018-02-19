@@ -2213,7 +2213,11 @@ padding-right: 30px;
   box-shadow: 0 0 10px #ffd800;
   cursor: pointer;
 }
-
+.drum__filter-submit.disabled {
+	background-color: #CCCCCC;
+	border: 1px solid #CCCCCC;
+	box-shadow: 0 0 10px #CCCCCC;
+}
 /**
  * form styler
  * start
