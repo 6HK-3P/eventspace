@@ -3,7 +3,7 @@
     <span>Вместимость (чел.)</span>
     <div class="drum-form-content">
         <label style="width: 49%">
-            ОТ <input type="number" name="min_capactiy" id="min_capactiy" style="max-width: 60%" min=20 step="10">
+            ОТ <input type="number" name="min_capacity" id="min_capactiy" style="max-width: 60%" min=20 step="10">
         </label>
         <label style="width: 49%">
             ДО <input type="number" name="max_capacity" id="max_capacity" style="max-width: 60%" min=30 step="10">
