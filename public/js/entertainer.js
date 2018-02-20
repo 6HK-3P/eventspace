@@ -2,10 +2,16 @@ $(document).ready(function () {
 
     function getPrice(form) {
         var worker_id = $(".itemTitle").data("worker");
+        var category = $(".bron").data("category");
         var data = form.serialize();
-        var category =$(".bron").data("category");
+        var param = $(".hours:checked").val();
+        if(param == 3) {
+            var  val = $("#param").val();
+            param = (val == 1) ? 2 : 1;
+        }
+
         $.ajax({
-            url: "/"+category+"/pricing/"+worker_id+"/0",
+            url: "/"+category+"/pricing/"+worker_id+"/"+param,
             type: "GET",
             data: data,
             complete: function (data) {
@@ -24,6 +30,7 @@ $(document).ready(function () {
                     $(".drum__filter-submit").addClass("disabled");
                     $(".drum__filter-submit").html("Недоступно");
                 }
+
 
 
             }

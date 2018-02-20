@@ -10,15 +10,20 @@
             <form class="drum__filter-form" action="{{$url}}" method="GET">
                 {{csrf_field()}}
                  @if ($cat == 6)
+
                     @include('filters.category_date')
                     @include('filters.category_cities')
                     @include('filters.category_car')
 
                  @endif
 
-                 @if ($cat == 5) @include('filters.category_entertainer')
-                                 @include('filters.category_date')
-                                 @include('filters.category_cities')
+                 @if ($cat == 5)
+
+                    @include('filters.category_date')
+                    @include('filters.category_cities')
+                    @include('filters.category_entertainer')
+
+
                  @endif
 
                  @if ($cat == 3) @include('filters.category_date')

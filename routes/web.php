@@ -55,18 +55,13 @@ Route::post('/admin/sms/add', 'AdminSmsController@addsms');
 
 Route::get('/product/{id}', 'ProductController@index');
 
-//Ценообразование Зала
-Route::get('/pricing/{param}/{id}', 'PricingController@getPricingInfoHall');
 
 //
 //Поиск по категории авто
 Route::get('/category/{category}/find', 'CategoryController@sortFilters');
-/*Цена авто*/
-Route::get('/car/pricing/{worker_id}', 'PricingController@getPricingInfoAuto');
+/*Цена продукта*/
+Route::get('/{category}/pricing/{worker_id}/{param}', 'PricingController@getPricingInfo');
 
-Auth::routes();
-Auth::logout();
 
-//поиск в категориях
-Route::post('/category/{cat}/search', 'CategoryController@searchCategory');
+
 

@@ -1,21 +1,48 @@
 $(document).ready(function () {
 
     function getPrice(paramType, date, worker_id ,id) {
-
+        var category = $(".bron").data("category");
         $.ajax({
-            url: "/pricing/"+paramType+"/"+worker_id+"?data="+date,
+            url: "/"+category+"/pricing/"+worker_id+"/"+paramType+"?data="+date,
             type: "GET",
             complete: function (data) {
                 if(data["responseText"].length){
                     var result = JSON.parse(data["responseText"]);
 
                     if(id == "#second"){
-                        $("#secondType").data("coast", result["price"]).data("deposit", result["deposit"]);
+                        if(result) {
+                            $("#secondType").data("coast", result["price"]).data("deposit", result["deposit"]);
+
+                            $(".drum__filter-submit").removeAttr("disabled", "disabled");
+                            $(".drum__filter-submit").removeClass("disabled");
+                            $(".drum__filter-submit").html("Забронировать");
+                        }
+                        else {
+                            $("#secondType").data("coast", '0').data("deposit", '0');
+                            $(".drum__filter-submit").attr("disabled", "disabled");
+                            $(".drum__filter-submit").addClass("disabled");
+                            $(".drum__filter-submit").html("Недоступно");
+                        }
                         asd2();
                     }
                     else{
-                        $("#firstType").data("coast", result["price"]).data("deposit", result["deposit"]);
+                        if(result){
+                            $("#firstType").data("coast", result["price"]).data("deposit", result["deposit"]);
+                            $("#forman").html(result["price"] + " р.");
+
+                            $(".drum__filter-submit").removeAttr("disabled", "disabled");
+                            $(".drum__filter-submit").removeClass("disabled");
+                            $(".drum__filter-submit").html("Забронировать");
+                        }
+                        else {
+                            $("#firstType").data("coast", '0').data("deposit", '0');
+                            $("#forman").html("0 р.");
+                            $(".drum__filter-submit").attr("disabled", "disabled");
+                            $(".drum__filter-submit").addClass("disabled");
+                            $(".drum__filter-submit").html("Недоступно");
+                        }
                         asd();
+
                     }
 
                 }

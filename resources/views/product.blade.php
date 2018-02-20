@@ -52,7 +52,7 @@
         <div class="drum__filter">
             <strong class="drum__filter-title">Забронировать</strong>
 
-            <form class="drum__filter-form bron">
+            <form class="drum__filter-form bron" data-category = "{{$InfoWorker->category_id}}">
                 @if ($InfoWorker->category_id == 6)
 
                         @include('filters.category_date')
@@ -61,6 +61,7 @@
                 @endif
 
                 @if ($InfoWorker->category_id == 5)
+                        <script src="/public/js/entertainer.js"></script>
                         @include('filters.category_date')
                         @include('filters.times')
                         @include('filters.category_cities')
@@ -82,12 +83,14 @@
                 @endif
 
                 @if ($InfoWorker->category_id == 4)
+                        <script src="/public/js/entertainer.js"></script>
                         @include('filters.category_date')
                         @include('filters.times')
                         @include('filters.category_cities')
                 @endif
 
                 @if ($InfoWorker->category_id == 1)
+                        <script src="/public/js/entertainer.js"></script>
                         @include('filters.category_date')
                         @include('filters.times')
                         @include('filters.category_cities')

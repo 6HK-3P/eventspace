@@ -7,7 +7,7 @@
             <div id="first" class="drum-container">
                 <div class="drum-form-content asd">
                 <span style="width: 100%">
-                  Стоимость чека на человека - 850р
+                    Стоимость чека на человека - <i id="forman">0 р.</i>
                 </span>
                     <label style="width:100%">
                         Количество человек <input type="number"  id="count-people" min="1" max="{{$capacity->capacity->end}}"  name="count_people_wedding" style="max-width: 60%" >
