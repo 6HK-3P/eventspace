@@ -51,23 +51,9 @@ class CategoryController extends Controller
         $result = $this->sortAlphavit($cat, "ASC");
         $teasers = $result["teasers"];
         $items = $result["items"];
+        $minmax = $this->minmax($cat);
 
-        $worker_ids = Worker::where("category_id", $cat)->get()->pluck('id');
-        /*$min_price = pricing::whereIn("worker_id", $worker_ids)->orderBy("price->0")->first();*/
-        $items_price = pricing::whereIn("worker_id", $worker_ids)->get();
-
-        $min = $items_price->sortBy(function ($it) {
-            $elem = json_decode($it->price);
-            return $elem[0];
-        });
-
-
-        $minRes = json_decode($min[0]->price)[0];
-        $maxRes = json_decode($min[count($min) - 1]->price)[0];
-
-        dump($min[5]);
-
-        return view('category')->with(['min' => $minRes, 'max' => $maxRes, 'city' => '1', 'items' => $items, 'category' => $category, 'teasers' => $teasers, 'cat' => $cat, 'carstypes' => $carstype, 'carsmarks' => $carsmark, 'carscolors' => $carscolor,
+        return view('category')->with(['min' => $minmax["min"], 'max' => $minmax["max"], 'city' => '1', 'items' => $items, 'category' => $category, 'teasers' => $teasers, 'cat' => $cat, 'carstypes' => $carstype, 'carsmarks' => $carsmark, 'carscolors' => $carscolor,
             'allcities' => $allcitie, 'alltoasts' => $alltoast, 'alllanguages' => $alllanguage,
             'videose' => $videoe, 'videosq' => $videoq, 'audios' => $audiotype, 'allheads' => $allhead]);
 
@@ -83,6 +69,28 @@ class CategoryController extends Controller
 
     }
 
+    public function minmax($cat){
+        $worker_ids = Worker::where("category_id", $cat)->get()->pluck('id');
+        $items_price = pricing::whereIn("worker_id", $worker_ids)->get()->pluck('price');
+        $arrayPrice = [];
+        $max = 0;
+        $min = 0;
+        foreach ($items_price as $price){
+            $arrayPrice[] = json_decode($price)[0];
+        }
+        $max = collect($arrayPrice)->max();
+        $min = collect($arrayPrice)->min();
+        if ($min<1000){
+            $min = 0;
+        }
+        elseif ($min % 1000){
+            $min = floor($min/1000)*1000;
+        }
+        if ($max % 1000){
+            $max = ceil($max/1000)*1000;
+        }
+        return ["min"=>$min, "max"=>$max];
+    }
 
     public function sortAlphavit($cat, $order)
     {
@@ -196,7 +204,7 @@ class CategoryController extends Controller
                 $users = $this->sortAuto($request, $cat);
                 break;
             case "3":
-                $users = $this->sortAuto($request, $cat);
+                $users = $this->sortHalls($request, $cat);
                 break;
             case "5":
                 $users = $this->sortAuto($request, $cat);
@@ -230,9 +238,12 @@ class CategoryController extends Controller
         $audiotype = Workers_musicians_type::all();
 
         $countcamers = Workers_count_camer::all();
+
         $city = (!empty($request->input('cities'))) ? $request->input('cities') : 1;
-        dump($users);
-        return view('category')->with(['items' => $users, 'category' => $category, 'teasers' => [],
+
+        $minmax = $this->minmax($cat);
+
+        return view('category')->with(['min' => $minmax["min"], 'max' => $minmax["max"], 'items' => $users, 'category' => $category, 'teasers' => [],
             'cat' => $cat, 'carstypes' => $carstype, 'carsmarks' => $carsmark, 'carscolors' => $carscolor,
             'allcities' => $allcitie, 'alltoasts' => $alltoast, 'alllanguages' => $alllanguage,
             'videose' => $videoe, 'videosq' => $videoq, 'audios' => $audiotype, 'allheads' => $allhead,
@@ -313,11 +324,11 @@ class CategoryController extends Controller
             $usersIds = Worker::select("user_id")->whereIn('id', $workerIds)->get()->pluck("user_id");
             return User::whereIn("id", $usersIds)->get();
         }
-        return json_encode(false);
+        return false;
     }
 
 
-        public function searchCategory(Request $request, $cat)
+        public function sortHalls(Request $request, $cat)
         {
             $search = '';
             $decod = '';
@@ -330,7 +341,7 @@ class CategoryController extends Controller
                     print_r($request->input('min_capacity'));
                     print_r($request->input('max_capacity'));
                     $search = Worker::where('category_id', $cat)->get();
-                    // $search = Worker::where('category_id', $cat)->where('workers_additional_info->capacity->start', '<=', trim($request->input('min_capacity')))->where('workers_additional_info->capacity->end', '>=', trim($request->input('max_capacity')))->get();
+                    //$search = Worker::where('category_id', $cat)->where('workers_additional_info->capacity->start', '<=', trim($request->input('min_capacity')))->where('workers_additional_info->capacity->end', '>=', trim($request->input('max_capacity')))->get();
 
                     //работает
                     foreach ($search as $searchs) {
