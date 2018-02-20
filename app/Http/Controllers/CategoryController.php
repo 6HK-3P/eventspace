@@ -170,8 +170,6 @@ class CategoryController extends Controller
                     $i++;
                 }
 
-
-
                 dump($search);
             }
         }
