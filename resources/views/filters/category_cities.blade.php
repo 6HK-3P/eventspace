@@ -1,11 +1,11 @@
 
 <div class="drum__filter-form__item" id="cityChooser">
-    <span>Город базирования</span>
+    <span>Город свадьбы</span>
     <div class="drum-form-content">
-        <? $i=1; ?>
+
         @foreach($allcities as $cities)
         <label>
-            <input type="radio" name="cities" value="{{$i++}}">
+            <input type="radio" name="cities" @if(isset($city)) @if($city == $cities->id) checked @endif @endif value="{{$cities->id}}">
             {{$cities->title}}
         </label>
         @endforeach

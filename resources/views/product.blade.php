@@ -105,7 +105,7 @@
     </div>
     <div class="container">
         @if($InfoWorker->category_id == 6)
-        <h1 class="itemTitle">Машины</h1>
+        <h1 class="itemTitle" >Машины</h1>
         <div class="audiorecords">
             @if($allCarsWorker)
                 <div class="">
@@ -132,6 +132,7 @@
                 </div>
             @endif
         </div>
+            <script src="/public/js/cars.js"></script>
         @endif
         @if($InfoWorker->audio)
             <h1 class="itemTitle">Аудиозаписи</h1>
