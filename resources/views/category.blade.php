@@ -1,14 +1,21 @@
 @extends('layouts.head')
 @section('content')
 <main data-category="">
+    \
     <div class="container">
         <div class="drum__filter">
             <strong class="drum__filter-title">Уточните детали</strong>
-            <form class="drum__filter-form">
 
-                 @if ($cat == 6) @include('filters.category_car')
-                                 @include('filters.category_date')
-                                 @include('filters.category_cities')
+            <?php $url = "http://".$_SERVER["HTTP_HOST"]."/category/".$category."/find"; ?>
+            <form class="drum__filter-form" action="{{$url}}" method="GET">
+                {{csrf_field()}}
+                 @if ($cat == 6)
+                    @include('filters.category_date')
+                    @include('filters.category_cities')
+                    @include('filters.category_car')
+
+
+
                  @endif
 
                  @if ($cat == 5) @include('filters.category_entertainer')
@@ -76,8 +83,9 @@
             <? $k = 4; ?>
             @if (count($items))
                 @for($i=0; $i<$k; $i++)
-                    @foreach($teasers as $teaser)
-                        @if($teaser->position == $i+1)
+                    @if(count($teasers))
+                        @foreach($teasers as $teaser)
+                            @if($teaser->position == $i+1)
                             <div class="podbor-item ">
                                 <article class="tizers">
                                     <img class="item-photo" src="{{$teaser->logo}}">
@@ -85,14 +93,15 @@
                                 </article>
                             </div>
                             <?  $k--; ?>
-                        @endif
+                            @endif
                         @endforeach
+                        @endif
                             @if(isset($items[$i]))
                             <div class="podbor-item ">
                                 <article class="item-cart">
                                     <a href="/product/{{$items[$i]->id}}">
                                         
-                                        <div class="item-photo"  style="background-image: url(); Background-size: cover; Background-position: center center"></div>
+                                        <div class="item-photo"  style="background-image: url({{$items[$i]->worker->ava}}); Background-size: cover; Background-position: center center"></div>
                                     </a>
                                     <div class="item-desc">
                                         <div class="item-desc-params flex">
@@ -130,17 +139,19 @@
             @if (count($items)>$k)
                 <? $g =  $k+3 ?>
                     @for($i=$k; $i<$g; $i++)
-                        @foreach($teasers as $teaser)
-                            @if($teaser->position == $i+1)
-                                <div class="podbor-item ">
-                                    <article class="tizers">
-                                        <img class="item-photo" src="{{$teaser->logo}}">
-                                        <p>{{$teaser->text}}</p>
-                                    </article>
-                                </div>
-                                <? $g--; ?>
-                            @endif
-                        @endforeach
+                        @if(count($teasers))
+                            @foreach($teasers as $teaser)
+                                @if($teaser->position == $i+1)
+                                    <div class="podbor-item ">
+                                        <article class="tizers">
+                                            <img class="item-photo" src="{{$teaser->logo}}">
+                                            <p>{{$teaser->text}}</p>
+                                        </article>
+                                    </div>
+                                    <? $g--; ?>
+                                @endif
+                            @endforeach
+                        @endif
                         @if(isset($items[$i]))
                                 <div class="podbor-item ">
                                     <article class="item-cart">
@@ -187,15 +198,17 @@
 
     $(document).ready(function () {
         // получение  макс и мин
-        var min=0;
-        var max=10000;
+        var min = @if(isset($arenda_ot)) {{$arenda_ot}} @else 0 @endif;
+        var max = @if(isset($arenda_do)) {{$arenda_do}} @else 10000 @endif;
+        var min0 = @if(isset($min)) {{$min}} @else 0 @endif;
+        var max0 = @if(isset($max)) {{$max}} @else 10000 @endif;
         var price= [1];
 
 
         function mock(item) {
             var mock =	"<div class='podbor-item '>";
             mock += "<article class='item-cart'>";
-            mock += "<div class='item-photo' style='background-image: url("+item.worker.logo+")'></div>";
+            mock += "<div class='item-photo' style='background-image: url("+item.worker.ava+"); Background-size: cover; Background-position: center center'></div>";
             mock += "<div class='item-desc'>";
             mock += "<div class='item-desc-params flex'>";
             mock += "<div class='flex item-desc-params-left'>";
@@ -226,7 +239,7 @@
             mock += "</div>";
             return mock;
         }
-
+        @if(count($teasers))
         function mockTeaser(teaser) {
             var mock = "<div class='podbor-item '>";
             mock +=  "<article class='tizers'>";
@@ -235,6 +248,7 @@
             mock +=  "</article></div>";
             return mock;
         }
+        @endif
         $("#search_form").on("submit", function (e) {
             e.preventDefault();
             return false;
@@ -351,17 +365,22 @@
             connect: true,
             step: 1000,
             range: {
-                'min': min, //сюда тоже
-                'max': max
+                'min': min0, //сюда тоже
+                'max': max0
             }
         });
         var skipValues = [
             document.getElementById('skip-value-lower'),
             document.getElementById('skip-value-upper')
         ];
+        var skipValues2 = [
+            document.getElementById('skip-value-lower2'),
+            document.getElementById('skip-value-upper2')
+        ];
 
         html5Slider.noUiSlider.on('update', function (values, handle) {
-            skipValues[handle].innerHTML = parseInt(values[handle]).toFixed();
+            skipValues[handle].innerHTML= parseInt(values[handle]).toFixed();
+            skipValues2[handle].value = parseInt(values[handle]).toFixed();
         });
 
 

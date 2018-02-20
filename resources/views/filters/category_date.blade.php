@@ -3,7 +3,7 @@
     <span>Дата</span>
     <div class="drum-form-content">
         <label>
-            <input type="date" id="data" style="width: 125px;" value="{{date("Y-m-d")}}">
+            <input type="date" id="data" name="data" style="width: 125px;" @if(isset($data)) value="{{$data}}" @else value="{{date("Y-m-d")}}" @endif>
         </label>
     </div>
 </div>

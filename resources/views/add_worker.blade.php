@@ -223,6 +223,7 @@
                 <form action="#" id="rule" name="add_price_rule" class="add_price_rule cat{{$cat->id}}" method="POST">
                     {{ csrf_field() }}
                     <h4>Добавление цен</h4>
+
                     <div class="filter_wrap media price_option">
                         <p class="instruction1">Инструкция</p>
                         <p class="instruction2">Скрыть</p>
@@ -231,22 +232,7 @@
                             2. Выбрать <b>временной интервал по дням</b> с 1 января по 10 января.<br>
                             3. Выбрать <b>услугу</b> "Выступление на весь день" и указать <b>цену</b> и <b>залог</b></p>
                         <h5>Добавить цены</h5>
-                        <span class="desc_h5">на услуги в разных <b>городах</b> с учетом <b>сезонности</b></span>
-                        <div id="add_city" >
-							<span class="ree">
-								Выберите хотя бы один тип
-							</span>
-                            <h6>Выберите города с одинаковой ценой</h6>
-                            <? $k = 1; ?>
-                            @foreach($allcities as $cities)
-
-                            <div><input type="checkbox" id="city{{$k}}" name="city[]" class="city" value="{{$cities->id}}">
-                                <label for="city{{$k}}">{{$cities->title}}</label></div>
-                                <? $k++; ?>
-                            @endforeach
-                            <span class="checkAll" data-id = "add_city">Отметить все</span>
-                            <span class="unCheckAll" data-id = "add_city">Cнять все</span>
-                        </div>
+                        @if($cat->id != 3 ) @include('admin.addworker.filtres.cities') @endif
                         <div id="add_interval">
                             <h6>Выберите временной интервал</h6>
                             <div class="flex">

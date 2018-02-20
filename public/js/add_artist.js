@@ -206,15 +206,13 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
         var idArray = location.href.split("/");
         var id = idArray[idArray.length-1];
         var error = new Object();
-        error.cities= [isCheck("city"), ""];
+
         error.months = [isCheck("month"), ""];
         error.types = [isCheck("types_hall"), ""];
         error.dayStart = [isEmpty("day_start"), ".day_start"];
         error.dayEnd = [isEmpty("day_end"), ".day_end"];
         console.log(error);
-        if (error.cities[0]) {
-            $("#add_city .ree").show();
-        }
+
         if (error.months[0] && $(".months").css("display") != "none") {
             $("#add_interval .ree").show();
         }
@@ -230,7 +228,7 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
         $(".add_price_rule input[type=checkbox]").on("change",function(){
             $(this).parent().parent().find(".ree").hide();
         })
-        if (((error.months[0]) && (error.dayStart[0]  ||  error.dayEnd[0])) || error.types[0] || error.cities[0]) {
+        if (((error.months[0]) && (error.dayStart[0]  ||  error.dayEnd[0])) || error.types[0] ) {
             var cat = idArray[idArray.length-2];
 
             getPriceRules(cat);
@@ -271,14 +269,12 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
         var idArray = location.href.split("/");
         var id = idArray[idArray.length-1];
         var error = new Object();
-        error.cities= [isCheck("city"), ""];
+
         error.months = [isCheck("month"), ""];
         error.dayStart = [isEmpty("day_start"), ".day_start"];
         error.dayEnd = [isEmpty("day_end"), ".day_end"];
-        console.log(error);
-        if (error.cities[0]) {
-            $("#add_city .ree").show();
-        }
+        error.cities= [isCheck("city"), ""];
+
         if (error.months[0] && $(".months").css("display") != "none") {
             $("#add_interval .ree").show();
         }
@@ -292,7 +288,7 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
         $(".add_price_rule input[type=checkbox]").on("change",function(){
             $(this).parent().parent().find(".ree").hide();
         })
-        if (((error.months[0]) && (error.dayStart[0]  ||  error.dayEnd[0]))  || error.cities[0]) {
+        if (((error.months[0]) && (error.dayStart[0]  ||  error.dayEnd[0]) ) || error.cities[0]) {
             var cat = idArray[idArray.length-2];
 
             getPriceRules(cat);
@@ -366,6 +362,7 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
             cache: false,
             processData: false,
             complete: function (data) {
+                console.log(data);
                 if (data.responseText === '') {
 
                     return false;

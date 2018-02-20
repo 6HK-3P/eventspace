@@ -146,7 +146,15 @@ class AdminWorkerController extends Controller
         $alltime = '';
         $allprice = [];
         $alldeposit = [];
-        $allcity = json_encode($request->input('city'));
+        $allcity = "";
+
+        if($request->input('city')){
+            $allcity = json_encode($request->input('city'));
+        }
+        else{
+            $allcity =  json_encode([Worker::find($id)->city_id]);
+        }
+
         if($request->input('price_type_1') || $request->input('price_type_2') || $request->input('price_type_3')){
             for($i=3; $i>0; $i--) {
                 if($request->input('type_'.$i)){
@@ -211,6 +219,7 @@ class AdminWorkerController extends Controller
         $addPricing->deposit = json_encode($alldeposit);
         $addPricing->info = ($request->input('auto_id')) ? $request->input('auto_id') : '';
         $addPricing -> save();
+        return json_encode(true);
 
     }
 // --------------обновление ценовых правил в бд --------------
