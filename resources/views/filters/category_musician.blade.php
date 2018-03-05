@@ -4,7 +4,7 @@
     <div class="drum-form-content">
         @foreach($audios as $audio)
             <label>
-                <input type="checkbox">
+                <input type="checkbox" name="type_narrator[]" @if(isset($type_narrator)) @foreach($type_narrator as $type) @if($type == $audio->id) checked @endif @endforeach @endif value="{{$audio->id}}">
                 {{$audio->title}}
             </label>
         @endforeach
@@ -21,22 +21,10 @@
 
         @foreach($alllanguages as $language)
             <label>
-                <input type="checkbox">
+                <input type="checkbox" name="language_narrator[]" @if(isset($language_narrator)) @foreach($language_narrator as $lang) @if($lang == $language->id) checked @endif @endforeach @endif value="{{$language->id}}">
                 {{$language->name}}
             </label>
         @endforeach
 
-    </div>
-</div>
-
-<div class="drum__filter-form__item" id="order_duration_chooser">
-    <span>Продолжительсонсть заказа</span>
-    <div class="drum-form-content">
-        <label>
-            <input type="radio" name="duration" checked value="0"> Весь вечер
-        </label>
-        <label>
-            <input type="radio" name="duration" value="1"> По часам
-        </label>
     </div>
 </div>

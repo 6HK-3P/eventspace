@@ -34,9 +34,11 @@
                                  @include('filters.category_date')
                                  @include('filters.category_cities')
                  @endif
-                 @if ($cat == 4) @include('filters.category_musician')
-                                 @include('filters.category_date')
-                                 @include('filters.category_cities')
+                 @if ($cat == 4)
+                                @include('filters.category_date')
+                                @include('filters.category_cities')
+                                @include('filters.category_musician')
+
                  @endif
 
                  @if ($cat == 1) @include('filters.category_date')
@@ -114,7 +116,7 @@
                                                 <span class="feedbacks">666</span>
                                             </div>
                                             <div>
-                                                <span class="item-price">18900</span>
+                                                <span class="item-price">{{\App\Http\Controllers\ProductController::getPriceToday($items[$i]->worker->id)}} ₽</span>
                                             </div>
                                         </div>
                                         <div class="item-desc-text">
@@ -167,7 +169,8 @@
                                                     <span class="feedbacks">666</span>
                                                 </div>
                                                 <div>
-                                                    <span class="item-price">18900</span>
+
+                                                    <span class="item-price">{{\App\Http\Controllers\ProductController::getPriceToday($items[$i]->worker->id)}} ₽</span>
                                                 </div>
                                             </div>
                                             <div class="item-desc-text">

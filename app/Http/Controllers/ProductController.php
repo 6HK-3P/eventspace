@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\pricing;
 use App\Site_setting;
 use App\User;
 use App\Worker;
@@ -49,5 +50,56 @@ class ProductController extends Controller
         return view("product")->with([ 'city'=>$city, 'allCarsWorker' => $allCarsWorker, 'InfoUsers' => $allInfoUser, 'InfoWorker' => $allInfoWorker, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
                                              'allcities' => $allcitie ,  'alltoasts' => $alltoast ,'alllanguages' => $alllanguage,
                                               'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype, 'allheads'=>$allhead]);
+    }
+
+    public static function getPriceToday($id){
+        $worker = Worker::find($id);
+        $cat = $worker->category_id;
+        $price = 0;
+        switch ($cat){
+            case 1 : $price = self::getPriceTodayDefault($id, $worker); break;
+            case 2 : $price = self::getPriceTodayDefault($id, $worker); break;
+            case 3 : $price = self::getPriceTodayDefault($id, $worker); break;
+            case 4 : $price = self::getPriceTodayDefault($id, $worker); break;
+            case 5 : $price = self::getPriceTodayDefault($id, $worker); break;
+            case 6 : $price = self::getPriceTodayDefault($id, $worker); break;
+
+        }
+        return $price;
+    }
+    public static function getPriceTodayDefault($id, $worker){
+        $today = date('d.m.Y');
+        $base_city = $worker->city_id;
+        $index = 0; //Весь день
+        $price = 0;
+
+        $pricings = pricing::where("worker_id", $id)->where("view", "По дням")->get();
+        foreach ($pricings as $price_rule){
+           $cities = json_decode($price_rule->city);
+           if (in_array($base_city, $cities)){
+               $dates = json_decode($price_rule->date);
+               if (strtotime($today)<=$dates[1] && strtotime($today)>=$dates[0]){
+                   $prices= json_decode($price_rule->price);
+                   $price = $prices[$index];
+               }
+           }
+        }
+        if (!$price){
+            $pricings = pricing::where("worker_id", $id)->where("view", "По месяцам")->get();
+            foreach ($pricings as $price_rule){
+                $cities = json_decode($price_rule->city);
+                if (in_array($base_city, $cities)){
+                    $months = json_decode($price_rule->date);
+                    $todayMonth = getdate(strtotime($today));
+                    if (in_array($todayMonth["mon"], $months)){
+                        $prices= json_decode($price_rule->price);
+                        $price = $prices[$index];
+                    }
+                }
+            }
+        }
+
+        return $price;
+
     }
 }

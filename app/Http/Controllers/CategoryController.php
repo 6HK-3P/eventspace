@@ -198,7 +198,7 @@ class CategoryController extends Controller
         $users = [];
         switch ($cat) {
             case "1" :
-                $users = $this->sortAuto($request, $cat);
+                $users = $this->sortPhoto($request, $cat);
                 break;
             case "2":
                 $users = $this->sortAuto($request, $cat);
@@ -210,13 +210,13 @@ class CategoryController extends Controller
                 $users = $this->sortNarrator($request, $cat);
                 break;
             case "4":
-                $users = $this->sortAuto($request, $cat);
+                $users = $this->sortAudio($request, $cat);
                 break;
             case "6":
                 $users = $this->sortAuto($request, $cat);
                 break;
             default:
-                $users = $this->sortAuto($request, $cat);
+                $users = $this->sortPhoto($request, $cat);
         }
         //вся информация которая в шапке
         $allhead = Site_setting::all();
@@ -327,6 +327,9 @@ class CategoryController extends Controller
         }
         return false;
     }
+
+
+
 
 
         public function sortHalls(Request $request, $cat)
@@ -470,4 +473,185 @@ class CategoryController extends Controller
     }
 
 
+    public function sortPhoto(Request $request, $cat)
+    {
+        $data = $request->input('data');
+        $city = $request->input('cities');
+        $price_ot = $request->input('arenda_ot');
+        $price_do = $request->input('arenda_do');
+
+        $result = Worker::where('category_id', $cat)->get();
+
+        /*Нарыли ведущих - исполнителей в зависимости от типа. На выходе массив их id*/
+
+
+        $searchNarrType = [];
+        foreach ($result as $worker) {
+            $price = "";
+            $workerPricing = pricing::where("worker_id", $worker->id)->where('view', 'По дням')->orderBy("id", "DESC")->get();
+            foreach ($workerPricing as $pricings) {
+                $arrayData = json_decode($pricings->date);
+                if (strtotime($arrayData[0]) <= strtotime($data) && strtotime($arrayData[1]) >= strtotime($data)) {
+                    $arrayCities = json_decode($pricings->city);
+                    foreach ($arrayCities as $c) {
+                        if ($c == $city) {
+                            $arrayPrice = json_decode($pricings->price);
+                            $price = $arrayPrice[0];
+                            break;
+                        }
+                    }
+                }
+            }
+            if (empty($price)) {
+                $workerPricing = pricing::where("worker_id", $worker->id)->where('view', 'По месяцам')->orderBy("id", "DESC")->get();
+                $mesData = getdate(strtotime($data));
+                foreach ($workerPricing as $pricings) {
+                    $arrayData = json_decode($pricings->date);
+                    foreach ($arrayData as $month) {
+                        if ($month == $mesData["mon"]) {
+                            $arrayCities = json_decode($pricings->city);
+                            foreach ($arrayCities as $c) {
+                                if ($c == $city) {
+                                    $arrayPrice = json_decode($pricings->price);
+                                    $price = $arrayPrice[0];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            dump($price_ot);
+
+            if ($price >= $price_ot && $price <= $price_do) {
+                $searchNarrType[] = $worker->id;
+            }
+        }
+
+
+
+
+
+        if ($searchNarrType) {
+            $users_id = Worker::select('user_id')->whereIn('id', $searchNarrType)->get()->pluck('user_id');
+            return User::whereIn('id', $users_id)->get();
+        }
+
+
+
+
+    }
+
+
+
+    public function sortAudio(Request $request, $cat)
+    {
+
+
+        $typeNarr = ($request->input('type_narrator')) ? $request->input('type_narrator'): [];
+        $langNarr = ($request->input('language_narrator')) ? $request->input('language_narrator'): [];
+        $data = $request->input('data');
+        $city = $request->input('cities');
+        $price_ot = $request->input('arenda_ot');
+        $price_do = $request->input('arenda_do');
+        $searchNarrType = '';
+        $result = Worker::where('category_id', $cat)->get();
+
+        /*Нарыли ведущих - исполнителей в зависимости от типа. На выходе массив их id*/
+        if ((in_array("1", $typeNarr) && in_array("2", $typeNarr)) || count($typeNarr) == 0) {
+            $searchNarrType = Worker::where('category_id', $cat)->get()->pluck("id");
+        }
+        elseif (in_array("2", $typeNarr) && !in_array("1", $typeNarr)) {
+            foreach ($result as $sear) {
+                $searchs = json_decode($sear->workers_additional_info);
+                if (in_array("2" ,$searchs->types)) {
+                    $searchNarrType[] = $sear['id'];
+
+                }
+            }
+        }
+        elseif (in_array("1", $typeNarr) && !in_array("2", $typeNarr)) {
+            foreach ($result as $sear) {
+                $searchs = json_decode($sear->workers_additional_info);
+                if (in_array("1" ,$searchs->types)) {
+                    $searchNarrType[] = $sear['id'];
+
+                }
+            }
+        }
+
+
+        /*Нарыли ведущих - исполнителей в зависимости от языка и типа. На выходе массив их id*/
+        if (count($langNarr) != 0) {
+            $result = Worker::whereIn('id', $searchNarrType)->get();
+            $searchNarrType = [];
+            foreach ($result as $worker) {
+                $info = json_decode($worker->workers_additional_info);
+                $langArray = $info->lang;
+                for ($j = 0; $j < count($langNarr); $j++) {
+                    if (in_array($langNarr[$j], $langArray)) {
+                        $searchNarrType[] = $worker->id;
+                        break;
+                    }
+                }
+            }
+
+        }
+
+        $result = Worker::whereIn('id', $searchNarrType)->get();
+        $searchNarrType = [];
+        foreach ($result as $worker) {
+            $price = "";
+            $workerPricing = pricing::where("worker_id", $worker->id)->where('view', 'По дням')->orderBy("id", "DESC")->get();
+            foreach ($workerPricing as $pricings) {
+                $arrayData = json_decode($pricings->date);
+                if (strtotime($arrayData[0]) <= strtotime($data) && strtotime($arrayData[1]) >= strtotime($data)) {
+                    $arrayCities = json_decode($pricings->city);
+                    foreach ($arrayCities as $c) {
+                        if ($c == $city) {
+                            $arrayPrice = json_decode($pricings->price);
+                            $price = $arrayPrice[0];
+                            break;
+                        }
+                    }
+                }
+            }
+            if (empty($price)) {
+                $workerPricing = pricing::where("worker_id", $worker->id)->where('view', 'По месяцам')->orderBy("id", "DESC")->get();
+                $mesData = getdate(strtotime($data));
+                foreach ($workerPricing as $pricings) {
+                    $arrayData = json_decode($pricings->date);
+                    foreach ($arrayData as $month) {
+                        if ($month == $mesData["mon"]) {
+                            $arrayCities = json_decode($pricings->city);
+                            foreach ($arrayCities as $c) {
+                                if ($c == $city) {
+                                    $arrayPrice = json_decode($pricings->price);
+                                    $price = $arrayPrice[0];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($price >= $price_ot && $price <= $price_do) {
+                $searchNarrType[] = $worker->id;
+            }
+        }
+
+
+
+
+
+        if ($searchNarrType) {
+            $users_id = Worker::select('user_id')->whereIn('id', $searchNarrType)->get()->pluck('user_id');
+            return User::whereIn('id', $users_id)->get();
+        }
+
+
+
+
+    }
 }
