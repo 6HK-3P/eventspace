@@ -16,7 +16,7 @@ window.addEventListener("load", function(){
             type: "POST",
             data: $("#add_cars").serialize(),
             complete: function(result){
-                console.log(result);
+                renderCarsTabs(id);
 
             }
         })).then(function(){
@@ -25,7 +25,21 @@ window.addEventListener("load", function(){
 
         return false;
 
+
     })
+
+    function renderCarsTabs(id) {
+        $.ajax({
+            url: "/admin/workers/getCars/"+id,
+            type: "GET",
+            data: $("#add_cars").serialize(),
+            complete: function(result){
+                console.log(result);
+
+            }
+        });
+
+    }
 
 
     var arrayTabs = location.href.split("tab=");

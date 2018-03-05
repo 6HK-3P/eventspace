@@ -362,4 +362,9 @@ class AdminWorkerController extends Controller
         return json_encode(true);
     }
 
+    public function getCars($worker_id){
+        $cars = workers_car::where('worker_id', $worker_id)->get();
+        return json_encode($cars);
+    }
+
 }

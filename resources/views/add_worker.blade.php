@@ -143,7 +143,7 @@
                 <div class="add-artist-price " style=" width: 100%;">
                     <h4>Добавьте машины</h4>
 
-                    <form action="#" id="add_cars" style="min-height: 100px;" name="add_cars" class="add_price_rule cat{{$cat->id}}" method="POST" >
+                    <form action="#" id="add_cars" style="min-height: 100px;" name="add_cars" class="add_price_rule" method="POST" >
                         <div class="flex">
                             {{csrf_field()}}
                             <div class="profile_options_item">
