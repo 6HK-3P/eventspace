@@ -3,8 +3,9 @@
 
     <main class="container admin-main">
         <section class="artists">
-            <div class="flex"><div><h3>Исполнители - {{$cat->name}}</h3></div>
+            <div class="flex"><div><h3>Исполнители - {{$cat->name}}</h3></div><div><a class="new_artist" href="/admin/interval/{{$cat->id}}">Интервал цен</a></div>
                 <div><a class="new_artist" href="/admin/workers/add/{{$cat->id}}/0">+ Добавить нового</a></div></div>
+
             <div class="artists-list">
                 <ul>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Interval;
 use App\Pricing;
 use App\User;
 use App\Worker;
@@ -14,18 +15,34 @@ use Illuminate\Http\Request;
 
 class AdminWorkerController extends Controller
 {
-// --------------страница выбора категории воркеров--------------
+
+
+
+
+//------------------------------------страница выбора категории воркеров------------------------------------------------
     public function selectWorkers(){
 
         return view('admin.selectworkers');
     }
-// --------------получение из бд всех воркеров для вывода--------------
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//---------------------------получение из бд всех воркеров для вывода---------------------------------------------------
     public function getWorkers($id=4){
         $cat = Workers_categorie::find($id);
         $allWorkers = Worker::where('category_id', $id)->paginate(5);
         return view('admin.adminworkers')->with(['cat'=>$cat, 'allWorkers'=>$allWorkers]);
     }
-// --------------добавление в бд новой информации о воркере или добавление нового воркера--------------
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//----------------добавление в бд новой информации о воркере или добавление нового воркера------------------------------
     public function addw(Request $request,  $cat, $id)
     {
 
@@ -77,7 +94,13 @@ class AdminWorkerController extends Controller
         $addw->save();
         return redirect('/admin/workers/add/'.$cat.'/'.$addw->id);
     }
-// --------------вывод информации на страницу Информация--------------
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//----------------------------------вывод информации на страницу Информация---------------------------------------------
     public function addz($cat, $id)
     {
 
@@ -92,18 +115,24 @@ class AdminWorkerController extends Controller
         $audiotype = workers_musicians_type::all();
         //язык
         $alllanguage = workers_language::all();
-
-       $allPricingInfo = Pricing::all();
-
+        //все ценообразования
+        $allPricingInfo = Pricing::all();
+        //все менеджеры
         $managers = User::where("root",2)->get();
 
 
         return view('add_worker')->with(['allcities' => $allcitie, 'audiotypes' => $audiotype, 'alllanguages' => $alllanguage,"managers"=> $managers,
                                                'allWorkerInfo' => $allWorkerInfo, 'id'=> $id, 'cat' =>$cat, 'AllPricing' => $allPricingInfo ]);
     }
+//----------------------------------------------------------------------------------------------------------------------
 
-// --------------получить из бд все ценовые правила--------------
+
+
+
+
+//-----------------------------получить из бд все ценовые правила-------------------------------------------------------
     public function getPriceRules($id){
+
         $ruleprice = Pricing::where('worker_id', $id)->get();
         foreach ($ruleprice as $rule){
             $rule->cities = [];
@@ -140,8 +169,13 @@ class AdminWorkerController extends Controller
         echo json_encode(["rules"=>$ruleprice],JSON_UNESCAPED_UNICODE);
 
     }
+//----------------------------------------------------------------------------------------------------------------------
 
-// --------------добавление в бд нового ценового правила--------------
+
+
+
+
+//----------------------------------добавление в бд нового ценового правила---------------------------------------------
     public function pricing(Request $request, $id){
         $alltime = '';
         $allprice = [];
@@ -150,11 +184,14 @@ class AdminWorkerController extends Controller
 
         if($request->input('city')){
             $allcity = json_encode($request->input('city'));
-        }
+        }                                                              //выбор городов
         else{
             $allcity =  json_encode([Worker::find($id)->city_id]);
         }
 
+
+
+        //------------------ добавление цен для всех--------------------------------
         if($request->input('price_type_1') || $request->input('price_type_2') || $request->input('price_type_3')){
             for($i=3; $i>0; $i--) {
                 if($request->input('type_'.$i)){
@@ -173,6 +210,12 @@ class AdminWorkerController extends Controller
                 }
             }
         }
+        //-------------------------------------------------------------------------------
+
+
+
+
+        //------------------ добавление цен для залов--------------------------------
         if($request->input('hall_type_2') || $request->input('hall_type_1')) {
             if ($request->input('hall_type_2')) {
                 if ($request->input('price_hall_2')) {
@@ -193,12 +236,17 @@ class AdminWorkerController extends Controller
                 $alldeposit[] = "";
             }
         }
+        //-------------------------------------------------------------------------------
 
+
+
+        //------------------ добавление цен для автомобилей--------------------------------
         if($request->input('auto_id')){
 
             $allprice[] = $request->input('price_auto');
             $alldeposit[] = $request->input('price_zalog_auto');
         }
+        //-------------------------------------------------------------------------------
 
 
         $addPricing = new Pricing();
@@ -218,16 +266,23 @@ class AdminWorkerController extends Controller
         $addPricing->price = json_encode($allprice);
         $addPricing->deposit = json_encode($alldeposit);
         $addPricing->info = ($request->input('auto_id')) ? $request->input('auto_id') : '';
-        $addPricing -> save();
+        $addPricing->save();
         return json_encode(true);
 
     }
-// --------------обновление ценовых правил в бд --------------
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//------------------------------------обновление ценовых правил в бд----------------------------------------------------
     public function updatePricing(Request $request){
-        $price_id_array = $request->input('price_rule_id');
-        foreach ($price_id_array as $price_id){
+        $price_id_array = $request->input('price_rule_id'); // выбираем все айдишники ценовых правил с формы
+        foreach ($price_id_array as $price_id){                 // обращаемся к каждому ценовому правилу отдельно
             $updateDeposit = [];
             $updatePrice = [];
+            //--------------добавление основной цены--------------
             $name = "date_price_3_".$price_id;
             if($request->input($name)){
                 $updatePrice[] = $request->input($name);
@@ -240,7 +295,11 @@ class AdminWorkerController extends Controller
             if($request->input($name)){
                 $updatePrice[] = $request->input($name);
             }
-            //-------------------
+            //----------------------------------------------------
+
+
+
+            //----------------добавление залога-------------------
             $name = "date_deposit_3_".$price_id;
             if($request->input($name)){
                 $updateDeposit[] = $request->input($name);
@@ -253,6 +312,9 @@ class AdminWorkerController extends Controller
             if($request->input($name)){
                 $updateDeposit[] = $request->input($name);
             }
+            //----------------------------------------------------
+
+
 
             $updatePricing = Pricing::find($price_id);
             $updatePricing->price = json_encode($updatePrice);
@@ -262,7 +324,13 @@ class AdminWorkerController extends Controller
 
         return json_encode(true);
     }
-// --------------удаление ценового правила-----------------
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//---------------------------------------удаление ценового правила------------------------------------------------------
     public function removeRulePrice($id){
 
         $deleteRulePrice = Pricing::find($id);
@@ -270,15 +338,26 @@ class AdminWorkerController extends Controller
         return json_encode(true);
 
     }
+//----------------------------------------------------------------------------------------------------------------------
 
-// --------------удаление воркера и юзера--------------
+
+
+
+
+//---------------------------------удаление воркера и юзера-------------------------------------------------------------
     public function deleteWorker(Request $request, $cat, $id){
         $idW = Worker::find($id)->user_id;
         $delUser = User::find($idW)->delete();
         $delWorkerk = Worker::find($id)->delete();
         return redirect('/admin/workers/'.$cat);
     }
-// --------------добавление фотки бд нового ценооброзования--------------
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//-----------------------------------------добавление фотки бд----------------------------------------------------------
    public function addLogo(Request $request,$cat, $id){
        $images = $request->add_foto;
        $worker = Worker::find($id);
@@ -296,10 +375,13 @@ class AdminWorkerController extends Controller
        $worker-> save();
        return redirect('/admin/workers/add/'.$cat.'/'.$id.'?tab=3');
    }
+//----------------------------------------------------------------------------------------------------------------------
 
-// --------------добавление видео в  бд--------------
 
 
+
+
+//-------------------------------------добавление видео в  бд-----------------------------------------------------------
     public function addVideo(Request $request,$cat, $id){
         $worker = Worker::find($id);
         $arrayVideo = json_decode($worker->logo);
@@ -313,9 +395,13 @@ class AdminWorkerController extends Controller
         $worker-> save();
         return redirect('/admin/workers/add/'.$cat.'/'.$id.'?tab=3');
     }
+//----------------------------------------------------------------------------------------------------------------------
 
-// --------------добавление аудио в бд  --------------
 
+
+
+
+//--------------------------------------добавление аудио в бд-----------------------------------------------------------
     public function addAudio(Request $request,$cat, $id){
         $audios = $request->add_audio;
         $worker = Worker::find($id);
@@ -332,8 +418,13 @@ class AdminWorkerController extends Controller
         $worker-> save();
         return redirect('/admin/workers/add/'.$cat.'/'.$id.'?tab=3');
     }
+//----------------------------------------------------------------------------------------------------------------------
 
-// --------------обновление аудио и видео в бд  --------------
+
+
+
+
+//-------------------------------------обновление аудио и видео в бд----------------------------------------------------
     public function updatePortfolio(Request $request, $id){
         $worker = Worker::find($id);
         $media = $request->input('media');
@@ -343,7 +434,13 @@ class AdminWorkerController extends Controller
         $worker-> save();
         return json_encode(true);
     }
-// -------------- добавление аватарки  --------------
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//-------------------------------------------добавление аватарки--------------------------------------------------------
     public function addAva(Request $request, $id){
         $worker = Worker::find($id);
         $worker->ava = $request->input('logoAva');
@@ -366,5 +463,9 @@ class AdminWorkerController extends Controller
         $cars = workers_car::where('worker_id', $worker_id)->get();
         return json_encode($cars);
     }
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
 
 }

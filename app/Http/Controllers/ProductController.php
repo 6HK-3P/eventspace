@@ -21,6 +21,12 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+
+
+
+
+
+//---------------------------------------Получение всей информации о всём-----------------------------------------------
     public function index($id){
         $allInfoUser = User::find($id);
         $allInfoWorker = Worker::where('user_id',$allInfoUser['id'])->first();
@@ -51,7 +57,13 @@ class ProductController extends Controller
                                              'allcities' => $allcitie ,  'alltoasts' => $alltoast ,'alllanguages' => $alllanguage,
                                               'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype, 'allheads'=>$allhead]);
     }
+//----------------------------------------------------------------------------------------------------------------------
 
+
+
+
+
+//---------------------------------Получение цены на сегоднящний день---------------------------------------------------
     public static function getPriceToday($id){
         $worker = Worker::find($id);
         $cat = $worker->category_id;
@@ -62,11 +74,18 @@ class ProductController extends Controller
             case 3 : $price = self::getPriceTodayDefault($id, $worker); break;
             case 4 : $price = self::getPriceTodayDefault($id, $worker); break;
             case 5 : $price = self::getPriceTodayDefault($id, $worker); break;
-            case 6 : $price = self::getPriceTodayDefault($id, $worker); break;
+            case 6 : $price = self::getPriceTodayAuto($id, $worker); break;
 
         }
         return $price;
     }
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//----------------------------------Получение сегоднящней цены для всех-------------------------------------------------
     public static function getPriceTodayDefault($id, $worker){
         $today = date('d.m.Y');
         $base_city = $worker->city_id;
@@ -100,6 +119,61 @@ class ProductController extends Controller
         }
 
         return $price;
+    }
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//-------------------------------Получение цены на сегодня для автомобиля-----------------------------------------------
+    public static function getPriceTodayAuto($id, $worker){
+        $today = date('d.m.Y');
+        $base_city = $worker->city_id;
+        $index = 0; //Весь день
+        $price = 0;
+        $maxL = 0;
+        $pricings = pricing::where("worker_id", $id)->where("view", "По дням")->get();
+
+        foreach ($pricings as $price_rule){
+            $cities = json_decode($price_rule->city);
+            if (in_array($base_city, $cities) && $price_rule->info == 1){
+                $dates = json_decode($price_rule->date);
+                if (strtotime($today)<=$dates[1] && strtotime($today)>=$dates[0]){
+                    $prices= json_decode($price_rule->price);
+                    $price = $prices[$index];
+                }
+            }
+        }
+        if (!$price){
+            $pricings = pricing::where("worker_id", $id)->where("view", "По месяцам")->get();
+
+            foreach ($pricings as $price_rule){
+                if($price_rule->info <  $maxL){
+                    $maxL = $price_rule->info;
+                }
+
+                $cities = json_decode($price_rule->city);
+                if (in_array($base_city, $cities) && $price_rule->info == 1){
+                    $months = json_decode($price_rule->date);
+                    $todayMonth = getdate(strtotime($today));
+                    if (in_array($todayMonth["mon"], $months)){
+                        $prices= json_decode($price_rule->price);
+                        $price = $prices[$index];
+                    }
+                }
+            }
+
+        }
+
+        return $price;
 
     }
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
 }

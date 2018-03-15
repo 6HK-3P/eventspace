@@ -29,7 +29,7 @@
 
 <header class="container main-header">
     <div class="main-header-top flex">
-        <div class="main-header-top-logo"><img src="/public/img/logo.png" alt=""></div>
+        <div class="main-header-top-logo"><a href="/"><img src="/public/img/logo.png" alt=""></a></div>
         <div class="main-header-top-com">
             <?php $settings = new App\Http\Controllers\SettingsController(); ?>
             <div><p>{{$settings::getNumber()}}</p></div>

@@ -60,6 +60,9 @@ Route::get('/category/{category}/find', 'CategoryController@sortFilters');
 /*Цена продукта*/
 Route::get('/{category}/pricing/{worker_id}/{param}', 'PricingController@getPricingInfo');
 
-
+// обновление интервала
+// обновление интервала
+Route::get('/admin/interval/{cat}', 'SettingsController@getInterval');
+Route::post('/admin/add_interval/{cat}', 'SettingsController@addInterval');
 
 

@@ -24,6 +24,10 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
 
+
+
+
+//---------------------------------------Индексовая страница------------------------------------------------------------
     public function index($category = "car")
     {
         //вся информация которая в шапке
@@ -58,8 +62,13 @@ class CategoryController extends Controller
             'videose' => $videoe, 'videosq' => $videoq, 'audios' => $audiotype, 'allheads' => $allhead]);
 
     }
+//----------------------------------------------------------------------------------------------------------------------
 
 
+
+
+
+//------------------------------------Сортировка на странице выбора воркера---------------------------------------------
     public function sort(Request $request)
     {
         $cat = $request->input("cat");
@@ -68,7 +77,13 @@ class CategoryController extends Controller
         echo json_encode($result, JSON_UNESCAPED_UNICODE);
 
     }
+//----------------------------------------------------------------------------------------------------------------------
 
+
+
+
+
+//------------------------------------Округление значений палзунка------------------------------------------------------
     public function minmax($cat){
         $worker_ids = Worker::where("category_id", $cat)->get()->pluck('id');
         $items_price = pricing::whereIn("worker_id", $worker_ids)->get()->pluck('price');
@@ -91,7 +106,13 @@ class CategoryController extends Controller
         }
         return ["min"=>$min, "max"=>$max];
     }
+//----------------------------------------------------------------------------------------------------------------------
 
+
+
+
+
+//---------------------------------Сортировка по алфавиту на странице выбор воркера-------------------------------------
     public function sortAlphavit($cat, $order)
     {
         $items = User::whereHas('worker', function ($q) use ($cat) {
@@ -102,8 +123,13 @@ class CategoryController extends Controller
 
         return ["teasers" => $teasers, 'items' => $items];
     }
+//----------------------------------------------------------------------------------------------------------------------
 
 
+
+
+
+//-------------------------------------Получение всех воркеров выбранной категории для вывода---------------------------
     public function getWorkers(Request $request)
     {
         $cat = $request->input("cat");
@@ -118,7 +144,13 @@ class CategoryController extends Controller
 
         echo json_encode(["teasers" => $teasers, "items" => $items], JSON_UNESCAPED_UNICODE);
     }
+//----------------------------------------------------------------------------------------------------------------------
 
+
+
+
+
+//--------------------------------------Поиск по имени воркера----------------------------------------------------------
     public function search(Request $request)
     {
 
@@ -134,8 +166,13 @@ class CategoryController extends Controller
 
         echo json_encode(["teasers" => $teasers, 'items' => $items], JSON_UNESCAPED_UNICODE);
     }
+//----------------------------------------------------------------------------------------------------------------------
 
 
+
+
+
+//----------------------------------------Преоброзование категорий в id-------------------------------------------------
     public function selectCategory($category)
     {
         switch ($category) {
@@ -162,8 +199,13 @@ class CategoryController extends Controller
         }
         return $cat;
     }
+//----------------------------------------------------------------------------------------------------------------------
 
 
+
+
+
+//-------------------------------------Получение основной информации о воркере для вывода на карточку-------------------
     public function getAdditionalInfo($items, $cat)
     {
         if (count($items)) {
@@ -188,10 +230,13 @@ class CategoryController extends Controller
 
         return $items;
     }
+//----------------------------------------------------------------------------------------------------------------------
 
-//
 
 
+
+
+//--------------------------------------------Общая сортировка по выбранным пунктам в фильтрах--------------------------
     public function sortFilters(Request $request, $category)
     {
         $cat = $this->selectCategory($category);
@@ -252,8 +297,13 @@ class CategoryController extends Controller
             'color' => $request->input("colors"), 'language_narrator' => $request->input("language_narrator"), 'type_narrator' => $request->input("type_narrator")
         ]);
     }
+//----------------------------------------------------------------------------------------------------------------------
 
 
+
+
+
+//------------------------------------------Сортировка для автомобилей--------------------------------------------------
     private function sortAuto(Request $request, $cat)
     {
         $data = $request->input("data");
@@ -275,6 +325,8 @@ class CategoryController extends Controller
         $arrayCarIds = [];
 
         foreach ($cars as $car) {
+
+//---------------------------Получение ценнообразований по дням---------------------------------------
             $price = "";
             $workerPricing = pricing::where("info", $car->id)->where('view', 'По дням')->orderBy("id", "DESC")->get();
 
@@ -291,6 +343,9 @@ class CategoryController extends Controller
                     }
                 }
             }
+
+
+//-----------------------Если ценообразования по дня отсутствуют то по месяцам--------------------------
             if (empty($price)) {
                 $workerPricing = pricing::where("info", $car->id)->where('view', 'По месяцам')->orderBy("id", "DESC")->get();
                 $mesData = getdate(strtotime($data));
@@ -311,7 +366,7 @@ class CategoryController extends Controller
                     }
                 }
             }
-
+//-------------------------------------------------------------------------------------------------------
 
             if ($price >= $price_ot && $price <= $price_do) {
 
@@ -327,11 +382,13 @@ class CategoryController extends Controller
         }
         return false;
     }
+//----------------------------------------------------------------------------------------------------------------------
 
 
 
 
 
+//--------------------------------------------Сортировка для залов------------------------------------------------------
         public function sortHalls(Request $request, $cat)
         {
             $search = '';
@@ -351,18 +408,24 @@ class CategoryController extends Controller
                     foreach ($search as $searchs) {
                         $decod[] = json_decode($searchs->workers_additional_info);
                         if ($decod[$i]->capacity->start <= $request->input('min_capacity') && $decod[$i]->capacity->end >= $request->input('max_capacity')) {
-                            dump($searchs);
+
                         }
                         $i++;
                     }
 
 
-                    dump($search);
+
                 }
             }
 
         }
+//----------------------------------------------------------------------------------------------------------------------
 
+
+
+
+
+//--------------------------------Сортировка для ведущих----------------------------------------------------------------
     public function sortNarrator(Request $request, $cat)
     {
         $typeNarr = ($request->input('type_narrator')) ? $request->input('type_narrator'): [];
@@ -471,8 +534,13 @@ class CategoryController extends Controller
 
 
     }
+//----------------------------------------------------------------------------------------------------------------------
 
 
+
+
+
+//--------------------------------------Сортировка для фотографов-------------------------------------------------------
     public function sortPhoto(Request $request, $cat)
     {
         $data = $request->input('data');
@@ -521,33 +589,26 @@ class CategoryController extends Controller
                     }
                 }
             }
-            dump($price_ot);
 
             if ($price >= $price_ot && $price <= $price_do) {
                 $searchNarrType[] = $worker->id;
             }
         }
 
-
-
-
-
         if ($searchNarrType) {
             $users_id = Worker::select('user_id')->whereIn('id', $searchNarrType)->get()->pluck('user_id');
             return User::whereIn('id', $users_id)->get();
         }
-
-
-
-
     }
+//----------------------------------------------------------------------------------------------------------------------
 
 
 
+
+
+//---------------------------------Сортировка для музыкантов------------------------------------------------------------
     public function sortAudio(Request $request, $cat)
     {
-
-
         $typeNarr = ($request->input('type_narrator')) ? $request->input('type_narrator'): [];
         $langNarr = ($request->input('language_narrator')) ? $request->input('language_narrator'): [];
         $data = $request->input('data');
@@ -642,16 +703,14 @@ class CategoryController extends Controller
         }
 
 
-
-
-
         if ($searchNarrType) {
             $users_id = Worker::select('user_id')->whereIn('id', $searchNarrType)->get()->pluck('user_id');
             return User::whereIn('id', $users_id)->get();
         }
 
-
-
-
     }
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
 }

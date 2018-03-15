@@ -14,5 +14,6 @@
                 <a href="/admin/workers/6" class="auto">Автомобили</a>
             </div>
         </section>
+
     </main>
 @endsection

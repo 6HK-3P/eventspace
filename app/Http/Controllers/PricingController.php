@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class PricingController extends Controller
 {
+
+
+
+
+//-------------Получение цены на выбранный день и по выбранным пунктам на странице продукта-----------------------------
     public function getPricingInfo(Request $request, $category, $worker_id, $param)
     {
 
@@ -36,9 +41,13 @@ class PricingController extends Controller
         return $result;
 
     }
+//----------------------------------------------------------------------------------------------------------------------
 
 
 
+
+
+//--------------------------------------------Получение цены по критериям для залов-------------------------------------
     public function getPricingInfoHall(Request $request, $param, $id){
         $price = '';
         $deposit = '';
@@ -77,9 +86,13 @@ class PricingController extends Controller
 
 
     }
+//----------------------------------------------------------------------------------------------------------------------
 
 
 
+
+
+//----------------------------------------Получение цен по критериям для авто-------------------------------------------
     public function getPricingInfoAuto(Request $request, $worker_id){
         $price = '';
         $deposit = '';
@@ -131,7 +144,13 @@ class PricingController extends Controller
 
 
     }
+//----------------------------------------------------------------------------------------------------------------------
 
+
+
+
+
+//---------------------------------------Получение цен по критериям для остальных---------------------------------------
     public function getPricingInfoEntertainer(Request $request, $worker_id, $param){
 
         $price = '';
@@ -183,7 +202,11 @@ class PricingController extends Controller
         }
 
         return (empty($price)) ? json_encode(false) : json_encode(["price"=>$price, "deposit"=>$deposit]);
-
-
     }
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
 }
