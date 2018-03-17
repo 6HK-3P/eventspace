@@ -148,7 +148,7 @@ window.addEventListener("load", function(){
 
 
 /*Отправка ценового правила блять в базу */
-$(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=submit], .add_price_rule.cat5 input[type=submit] ").on("click", function(e){
+$(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=submit], .add_price_rule.cat5 input[type=submit], .add_price_rule.cat2 input[type=submit] ").on("click", function(e){
 		e.preventDefault();
     $(".price_rules_body").html();
     $("#updatePrice").addClass("loader");
@@ -335,7 +335,7 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
     })
 
 	/*ОТПРАВКА БЛЯТЬ ОБНОВЛЕННЫХ ПРАВИЛД ЕБАНАВРОТ*/
-    $("#updatePrice.cat4 input[type=submit], #updatePrice.cat1 input[type=submit], #updatePrice.cat6 input[type=submit], #updatePrice.cat3 input[type=submit]").on("click", function(e){
+    $("#updatePrice.cat1 input[type=submit], #updatePrice.cat2 input[type=submit], #updatePrice.cat3 input[type=submit], #updatePrice.cat4 input[type=submit], #updatePrice.cat5 input[type=submit], #updatePrice.cat6 input[type=submit]").on("click", function(e){
         e.preventDefault();
         $(".price_rules_body").html();
         $("#updatePrice").addClass("loader");
@@ -385,7 +385,7 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
 				$("#updatePrice").removeClass("loader")
                 switch (parseInt(param)){
 					case 1: bladePriceRules(response);break;
-                    case 2: bladePriceRules(response);break;
+                    case 2: bladePriceRulesVideo(response);break;
                     case 3: bladePriceRulesHall(response);break;
                     case 4: bladePriceRules(response);break;
                     case 5: bladePriceRules(response);break;
@@ -472,7 +472,107 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
         return false;
 
     }
+    function switchVideoType(id) {
+        var str = "";
+        switch (id){
+            case 1: str = "3х камерная"; break;
+            case 2: str = "2х камерная"; break;
+            case 3: str = "Однокамерная"; break;
+            case 4: str = "3х камерная + кран"; break;
+            case 5: str = "2х камерная + кран"; break;
+            case 6: str = "3х камерная + кран + квадрокоптер"; break;
+            case 7: str = "2х камерная + кран + квадрокоптер"; break;
+            case 8: str = "3х камерная + квадрокоптер"; break;
+            case 9: str = "2х камерная + квадрокоптер"; break;
+            default:  str = "";
 
+        }
+        return str;
+    }
+    function switchVideoQuality(id) {
+        var str = "";
+        switch (id){
+            case 1: str = "FullHD"; break;
+            case 2: str = "4K"; break;
+            default:  str = "";
+
+        }
+        return str;
+    }
+    /*ЗАШАБЛОНЬ БЛЯДСКИЕ ПРАВИЛА VIDEO*/
+    function bladePriceRulesVideo(response) {
+        $(".price_rules_edit_wrap").html("");
+        var rules = response.rules;
+
+        if(rules.length>0) {
+
+            var tmpl = " <table class='price_rules'><thead><td>№</td><td>Вид</td> <td>Города</td> <td>Даты</td> <td>Цена</td> <td>Залог</td> <td></td></thead> <tbody class='price_rules_body'>";
+            for (var i = 0; i < rules.length; i++) {
+                tmpl += "<tr>";
+                tmpl += "<td>" + (i + 1) + " <input type='hidden' name='price_rule_id[]' value='" + rules[i].id + "'> </td>";
+                tmpl += "<td>" + rules[i].view + "</td>";
+                tmpl += "<td>" + rules[i].cities + "</td>";
+                if (rules[i].months) {
+                    tmpl += "<td>" + rules[i].months + "</td><td>";
+                }
+                else {
+                    var suka = JSON.parse(rules[i].date);
+                    tmpl += "<td>" + suka[0] + " - " + suka[1] + "</td><td>";
+                }
+                var types = JSON.parse(rules[i].info);
+
+                var str = switchVideoType(parseInt(types[0]));
+                var quality = switchVideoQuality(parseInt(types[1]));
+                    tmpl +="<p>Съемка - "+str+" </p>";
+                    tmpl +="<p>Качество - "+quality+" </p>";
+                var price = JSON.parse(rules[i].price);
+
+                if (price[0]) {
+
+                    tmpl += "<div class='flex'><label>День / Вечер</label><input type='text' name='date_price_1_" + rules[i].id + "' class='table_price' value='" + price[0] + "'></div>";
+                }
+                if (price[1]) {
+                    tmpl += "<div class='flex'><label>2 часа</label><input type='text' name='date_price_2_" + rules[i].id + "' class='table_price' value='" + price[1] + "'></div>";
+                }
+
+                tmpl += "</td><td>";
+                tmpl +="<p>Съемка - "+str+"</p>";
+                tmpl +="<p>Качество - "+quality+" </p>";
+                var deposit = JSON.parse(rules[i].deposit);
+                if (deposit[0]) {
+                    tmpl += "<div class='flex'><label>День / Вечер</label><input type='text' name='date_deposit_1_" + rules[i].id + "' class='table_price' value='" + deposit[0] + "'></div>";
+                }
+                if (deposit[1]) {
+                    tmpl += "<div class='flex'><label>2 часа</label><input type='text' name='date_deposit_2_" + rules[i].id + "' class='table_price' value='" + deposit[1] + "'></div>";
+                }
+                tmpl += "</td><td><a href='/admin/workers/removeRulePrice/" + rules[i].id + "' class='delete_rule'>x</a></td></tr>";
+            }
+            tmpl += "</tbody></table>";
+            $(".price_rules_edit_wrap").html(tmpl);
+
+            $(".delete_rule").on("click", function (e) {
+                e.preventDefault();
+                var href = $(this).attr("href");
+                $.ajax({
+                    url: href,
+                    type: "GET",
+                    complete: function () {
+                        var cat = idArray[idArray.length-2];
+                        getPriceRules(cat);
+                    }
+                });
+                return false;
+
+            })
+
+        }
+        else {
+            var tmp =   '<p class="empty">Пока нет ценовых правил</p>';
+            $(".price_rules_edit_wrap").html(tmp);
+        }
+        return false;
+
+    }
     function bladePriceRulesHall(response) {
         $(".price_rules_edit_wrap").html("");
         var rules = response.rules;

@@ -1237,7 +1237,7 @@ padding-right: 30px;
     border-bottom: 23px solid #ffd800;
     transform: rotate(-19deg);
    }
-   .prices input[type = text]{
+   .prices input[type = text], .prices_video input[type = text]{
    	width: 48%
    }
   .price_option h5{
@@ -1484,7 +1484,7 @@ padding-right: 30px;
 	border-radius: 0 !important;
 }
 /**/
-.add-artist-orders .order-table-body .order-table-col3,  .lk .order-table-col4, {
+.add-artist-orders .order-table-body .order-table-col3,  .lk .order-table-col4 {
  width: 20%
 }
 .add-artist-orders .order-table-body .order-table-col4, .lk .order-table-col3{
