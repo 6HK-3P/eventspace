@@ -41,40 +41,25 @@
 
         </div>
         <div class="main-header-top-company"><a href="#">Компания</a></div>
-        <div class="main-header-top-lk"><a href="/lk">Личный кабинет</a>
-            <div class="login" style="display: none;">
-                <div class="flex center tabsL"><span class="active" data-tab="loginForm">Вход</span><span data-tab="regForm">Регистрация</span></div>
-                <form action="#" method="POST" id="loginForm">
-                    <div class="flex"><label>Телефон</label><input type="text" class="tel" placeholder="+7 925 075-82-81"> </div>
-                    <div class="flex"><label>Пароль</label><input type="password"></div>
-                    <div class="flex">
-                        <div class="notfound">Мы не нашли номера телефона в базе <br> Пожалуйста, <span class="reg">зарегистрируйтесь</span></div>
-                        <button type="submit">Войти</button>
-                    </div>
-                </form>
-                <form action="#" method="POST" id="regForm" style="display:none">
-                    <div class="flex"><label>Телефон</label><input class="tel" type="text" placeholder="+7 925 075-82-81"> </div>
-                    <div class="flex">
-                        <div class="notfound">Ваш номер уже используется <br> Пожалуйста, <span class="log">войдите</span></div>
-                        <button type="submit">Получить смс</button>
-                    </div>
-                </form>
-            </div>
+        <div class="main-header-top-lk"><a href="{{ route('logout') }}"
+                                           onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                Выход
+            </a>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                {{ csrf_field() }}
+            </form>
         </div>
     </div>
 
     <div class="main-header-bottom">
-        <div class="index-menu flex">
-            <a href="/category/photographers" class="photographer">Фотографы</a>
-            <a href="/category/video" class="videographer">Видеостудии</a>
-            <a href="/category/halls" class="halls">Залы</a>
-            <a href="/category/musicians" class="artists">Музыканты</a>
-            <a href="/category/toastmakers" class="conferance">Ведущие</a>
-            <a href="/category/cars" class="auto">Автомобили</a>
+        <div class="main-header-bottom">
+            <h1>{{\Illuminate\Support\Facades\Auth::user()->name}}</h1>
         </div>
 
     </div>
- 
+
 </header>
 
 @yield('content')

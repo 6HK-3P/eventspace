@@ -71,12 +71,20 @@ class AdminWorkerController extends Controller
             $addu = User::find($addw->user_id);
         }else{
             $addw = new Worker;
-            $addu = new User;
+            $all_phone = User::all();
+            foreach ($all_phone as $phone){
+                if($request->input('login') == $phone->phone){
+                    $addu = User::find($phone->id);
+                }else{
+                    $addu = new User;
+                }
+            }
+
         }
         //добавление в user
         $addu->phone = $request->input('login');
         if(!empty($request->input('password'))){
-            $addu->password = $request->input('password');
+            $addu->password = bcrypt($request->input('password'));
         }
         $addu->root = '1';
         $addu->name = $request->input('add_title');
@@ -358,7 +366,7 @@ class AdminWorkerController extends Controller
 
 
 //-----------------------------------------добавление фотки бд----------------------------------------------------------
-   public function addLogo(Request $request,$cat, $id){
+   public function addLogo(Request $request,$cat, $id, $ids){
        $images = $request->add_foto;
        $worker = Worker::find($id);
        $arrayPhoto = json_decode($worker->logo);
@@ -373,7 +381,11 @@ class AdminWorkerController extends Controller
        }
        $worker->logo = json_encode($arrayPhoto);
        $worker-> save();
-       return redirect('/admin/workers/add/'.$cat.'/'.$id.'?tab=3');
+       if($ids == 0) {
+           return redirect('/admin/workers/add/' . $cat . '/' . $id . '?tab=3');
+       }elseif ($ids == 1){
+           return redirect('/lk');
+       }
    }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -382,7 +394,7 @@ class AdminWorkerController extends Controller
 
 
 //-------------------------------------добавление видео в  бд-----------------------------------------------------------
-    public function addVideo(Request $request,$cat, $id){
+    public function addVideo(Request $request,$cat, $id, $ids){
         $worker = Worker::find($id);
         $arrayVideo = json_decode($worker->logo);
         $srcRequest = $request->input('video_src');
@@ -393,7 +405,11 @@ class AdminWorkerController extends Controller
         $arrayVideo[] = [ "type" => "video", "src" => $srcVideo, "poster"=>$srcImg];
         $worker->logo = json_encode($arrayVideo);
         $worker-> save();
-        return redirect('/admin/workers/add/'.$cat.'/'.$id.'?tab=3');
+        if($ids == 0) {
+            return redirect('/admin/workers/add/' . $cat . '/' . $id . '?tab=3');
+        }elseif ($ids == 1){
+            return redirect('/lk');
+        }
     }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -402,7 +418,7 @@ class AdminWorkerController extends Controller
 
 
 //--------------------------------------добавление аудио в бд-----------------------------------------------------------
-    public function addAudio(Request $request,$cat, $id){
+    public function addAudio(Request $request,$cat, $id, $ids){
         $audios = $request->add_audio;
         $worker = Worker::find($id);
         $arrayAudio = json_decode($worker->audio);
@@ -416,7 +432,11 @@ class AdminWorkerController extends Controller
         }
         $worker->audio = json_encode($arrayAudio);
         $worker-> save();
-        return redirect('/admin/workers/add/'.$cat.'/'.$id.'?tab=3');
+        if($ids == 0) {
+            return redirect('/admin/workers/add/' . $cat . '/' . $id . '?tab=3');
+        }elseif ($ids == 1){
+            return redirect('/lk');
+        }
     }
 //----------------------------------------------------------------------------------------------------------------------
 

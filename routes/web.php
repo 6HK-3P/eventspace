@@ -12,9 +12,9 @@
 */
 
 Auth::routes();
-
-
 Route::get('/', 'MainController@index');
+
+Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/category/{category}', 'CategoryController@index');
 
 
@@ -38,9 +38,9 @@ Route::post('/admin/workers/add/{cat}/{id}', 'AdminWorkerController@addw');
 Route::get('/admin/workers/add/{cat}/{id}/delete', 'AdminWorkerController@deleteWorker');
 Route::post('/admin/workers/price_add/{id}', 'AdminWorkerController@pricing');
 Route::post('/admin/workers/update_pricing/{id}', 'AdminWorkerController@updatePricing');
-Route::post('/admin/workers/addlogo/{cat}/{id}', 'AdminWorkerController@addLogo');
-Route::post('/admin/workers/addvideo/{cat}/{id}', 'AdminWorkerController@addVideo');
-Route::post('/admin/workers/addaudio/{cat}/{id}', 'AdminWorkerController@addAudio');
+Route::post('/admin/workers/addlogo/{cat}/{id}/{ids}', 'AdminWorkerController@addLogo');
+Route::post('/admin/workers/addvideo/{cat}/{id}/{ids}', 'AdminWorkerController@addVideo');
+Route::post('/admin/workers/addaudio/{cat}/{id}/{ids}', 'AdminWorkerController@addAudio');
 Route::post('/admin/workers/addcar/{id}', 'AdminWorkerController@addCars');
 Route::get('/admin/workers/getCars/{worker_id}', 'AdminWorkerController@getCars');
 Route::get('/admin/workers/updateportfolio/{id}', 'AdminWorkerController@updatePortfolio');
@@ -66,3 +66,7 @@ Route::get('/admin/interval/{cat}', 'SettingsController@getInterval');
 Route::post('/admin/add_interval/{cat}', 'SettingsController@addInterval');
 
 
+
+//личный кабинет
+Route::get('/lk', 'LkController@index');
+Route::post('/lk/add_worker/{cat}/{id}', 'LkController@addWorker');

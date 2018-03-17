@@ -25,9 +25,9 @@
                         @if($worker_min->worker_min != null)
                             <div class="podbor-item">
 
-                                <a href="#" class="items-category">{{\App\Workers_categorie::find($worker_min->worker_min->category_id)->name}}</a>
+                                <a href="/product/{{$worker_min->worker_min->user->id}}" class="items-category">{{\App\Workers_categorie::find($worker_min->worker_min->category_id)->name}}</a>
                                 <article class="item-cart">
-                                    <a href="#">
+                                    <a href="/product/{{$worker_min->worker_min->user->id}}">
                                         <div class="item-photo" style="background-image: url({{$worker_min->worker_min->ava}}); Background-size: cover; Background-position: center center"></div>
                                     </a>
                                     <div class="item-desc">
@@ -63,9 +63,9 @@
                         @if($worker_norm->worker_norm != null)
                             <div class="podbor-item">
 
-                                <a href="#" class="items-category">{{\App\Workers_categorie::find($worker_norm->worker_norm->category_id)->name}}</a>
+                                <a href="/product/{{$worker_norm->worker_norm->user->id}}" class="items-category">{{\App\Workers_categorie::find($worker_norm->worker_norm->category_id)->name}}</a>
                                 <article class="item-cart">
-                                    <a href="#">
+                                    <a href="/product/{{$worker_norm->worker_norm->user->id}}">
                                         <div class="item-photo" style="background-image: url({{$worker_norm->worker_norm->ava}}); Background-size: cover; Background-position: center center"></div>
                                     </a>
                                     <div class="item-desc">
@@ -101,9 +101,9 @@
                         @if($worker_max->worker_max != null)
                             <div class="podbor-item">
 
-                                <a href="#" class="items-category">{{\App\Workers_categorie::find($worker_max->worker_max->category_id)->name}}</a>
+                                <a href="/product/{{$worker_max->worker_max->user->id}}" class="items-category">{{\App\Workers_categorie::find($worker_max->worker_max->category_id)->name}}</a>
                                 <article class="item-cart">
-                                    <a href="#">
+                                    <a href="/product/{{$worker_max->worker_max->user->id}}">
                                         <div class="item-photo" style="background-image: url({{$worker_max->worker_max->ava}}); Background-size: cover; Background-position: center center"></div>
                                     </a>
                                     <div class="item-desc">
@@ -160,7 +160,7 @@
                 </div>
 
                 <div class="c30">
-                    <img src="/static/img/P1.png" height="146" width="365">
+                    <img src="/public/img/P1.png" height="146" width="365">
                     <p>Наша задача – сделать рынок свадебных услуг максимально <b>прозрачным</b> и <b>удобным</b>. </p>
                     <p>Радик Бегов, <i>основатель</i></p>
                 </div>
@@ -169,7 +169,7 @@
         <section class="step">
             <div class="container flex">
                 <div class="c30">
-                    <img src="/static/img/g1.png" alt="">
+                    <img src="/public/img/g1.png" alt="">
                     <div class="step-desc">
                         <h6 class="index-h6">Выберите исполнителя, подходящего вам <br>по бюджету.</h6>
                         <p>У нас прямые контакты с исполнителями, поэтому мы договариваемся о минимальных единых ценах для
@@ -178,7 +178,7 @@
                 </div>
 
                 <div class="c30">
-                    <img src="/static/img/g2.png" alt="">
+                    <img src="/public/img/g2.png" alt="">
                     <div class="step-desc">
                         <h6 class="index-h6">На странице исполнителя <br>выберете услугу и дату, <br>и нажмите кнопку <br>«Забронировать».
                         </h6>
@@ -187,7 +187,7 @@
                     </div>
                 </div>
                 <div class="c30">
-                    <img src="/static/img/g3.png" alt="">
+                    <img src="/public/img/g3.png" alt="">
                     <div class="step-desc">
                         <h6 class="index-h6">Внесите предоплату<br>
                             исполнителю (около 3000 руб.) <br>
@@ -335,8 +335,8 @@
                             прозрачнее и удобнее станет рынок свадебных услуг.</p>
                     </div>
                     <div class="c34">
-                        <img src="/static/img/xer1.png" alt=""><br>
-                        <img src="/static/img/xer2.png" alt="">
+                        <img src="/public/img/xer1.png" alt=""><br>
+                        <img src="/public/img/xer2.png" alt="">
                     </div>
                 </div>
             </div>
