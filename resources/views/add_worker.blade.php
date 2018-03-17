@@ -43,6 +43,7 @@
                             </div>
                             @if($cat->id == 5) @include('admin.addworker.filtres.conferance') @endif
                             @if($cat->id == 4) @include('admin.addworker.filtres.repertoire') @endif
+                            @if($cat->id == 2) @include('admin.addworker.filtres.typevideo') @endif
                             @if($cat->id == 4 || $cat->id == 5) @include('admin.addworker.filtres.language') @endif
                             @if($cat->id == 3) @include('admin.addworker.filtres.hall_vmestimost') @endif
                             <div class="profile_options_item">
@@ -283,7 +284,8 @@
                             </div>
                         </div>
                         @if($cat->id == 5 || $cat->id == 4) @include('admin.addworker.filtres.pricing.timing') @endif
-                        @if($cat->id == 1 || $cat->id == 2) @include('admin.addworker.filtres.pricing.timing_photo') @endif
+                        @if($cat->id == 1) @include('admin.addworker.filtres.pricing.timing_photo') @endif
+                        @if($cat->id == 2) @include('admin.addworker.filtres.pricing.timing_video') @endif
                         @if($cat->id == 3) @include('admin.addworker.filtres.pricing.hall') @endif
                         @if($cat->id == 6) @include('admin.addworker.filtres.pricing.auto') @endif
                         <input type="submit" value="Добавить" class="w100">

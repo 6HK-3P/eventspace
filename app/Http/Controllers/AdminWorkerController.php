@@ -48,10 +48,15 @@ class AdminWorkerController extends Controller
 
         //информация о исполнителе заносится в массив
         $array = [];
-        ($request->input('lang'))       ? $array["lang"] = $request->input('lang') : false;
-        ($request->input('main_lang'))  ? $array["basic_lang"] = $request->input('main_lang') : false;
-        ($request->input('type'))       ? $array["types"] = $request->input('type') : false;
-        ($request->input('types_conf')) ? $array["types_conf"] = $request->input('types_conf') : false ;
+        ($request->input('lang'))        ? $array["lang"] = $request->input('lang') : false;
+        ($request->input('kvadro'))      ? $array["kvadro"] = $request->input('kvadro') : false;
+        ($request->input('kran'))        ? $array["kran"] = $request->input('kran') : false;
+        ($request->input('4K'))          ? $array["k"] = $request->input('4K') : false;
+        ($request->input('count_camers'))? $array["count_camers"] = json_encode($request->input('count_camers')) : false;
+        ($request->input('fullHD'))      ? $array["fullHD"] = $request->input('fullHD') : false;
+        ($request->input('main_lang'))   ? $array["basic_lang"] = $request->input('main_lang') : false;
+        ($request->input('type'))        ? $array["types"] = $request->input('type') : false;
+        ($request->input('types_conf'))  ? $array["types_conf"] = $request->input('types_conf') : false ;
         ($request->input('capacity_start')) ? $array["capacity"]["start"] = $request->input('capacity_start') : false ;
         ($request->input('capacity_end')) ? $array["capacity"]["end"] = $request->input('capacity_end') : false ;
         ($request->input('filter_main_type_artist')) ? $array["basic_types"] = $request->input('filter_main_type_artist') : false;
@@ -181,7 +186,7 @@ class AdminWorkerController extends Controller
         $allprice = [];
         $alldeposit = [];
         $allcity = "";
-
+        $info = "";
         if($request->input('city')){
             $allcity = json_encode($request->input('city'));
         }                                                              //выбор городов
@@ -248,6 +253,27 @@ class AdminWorkerController extends Controller
         }
         //-------------------------------------------------------------------------------
 
+        //------------------ добавление цен для видеостудий--------------------------------
+        if($request->input('type_price')){
+            $info = json_encode([$request->input('type_price'), $request->input('type_moving')]);
+            for($i=3; $i>1; $i--) {
+                if($request->input('type_'.$i)){
+                    $allprice[] = $request->input('price_type_'.$i);
+                }
+                else{
+                    $allprice[] = "";
+                }
+            }
+            for($i=3; $i>0; $i--) {
+                if($request->input('type_'.$i)){
+                    $alldeposit[] = $request->input('zalog_type_'.$i);
+                }
+                else{
+                    $alldeposit[] = "";
+                }
+            }
+        }
+        //-------------------------------------------------------------------------------
 
         $addPricing = new Pricing();
         $addPricing->worker_id = $id;
@@ -266,6 +292,7 @@ class AdminWorkerController extends Controller
         $addPricing->price = json_encode($allprice);
         $addPricing->deposit = json_encode($alldeposit);
         $addPricing->info = ($request->input('auto_id')) ? $request->input('auto_id') : '';
+        $addPricing->info =  $info;
         $addPricing->save();
         return json_encode(true);
 
