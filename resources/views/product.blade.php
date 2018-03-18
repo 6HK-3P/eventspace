@@ -41,7 +41,7 @@
                 </div>
                 <div class="flex valuation">
                     <div class="flex valuation-row start"><span class="rat">4.5</span><span class="fed">13</span></div>
-                    <span class="cost">18900 ₽</span>
+
                 </div>
                 <div class="itemDescriprion">
                     <p>
@@ -77,9 +77,12 @@
                 @endif
 
                 @if ($InfoWorker->category_id == 2)
+                        <script src="/public/js/video.js"></script>
                         @include('filters.category_date')
                         @include('filters.category_cities')
+                        @include('filters.times_video')
                         @include('filters.equipment')
+
                 @endif
 
                 @if ($InfoWorker->category_id == 4)
@@ -200,5 +203,6 @@
             </div>
         </form>
     </div>
+
 </main>
 @endsection

@@ -2797,3 +2797,10 @@ textarea:focus{
 .asd{
 	padding: 0 25px;
 }
+.types_moves{
+	display: block;
+}
+.types_moves label{
+	display: block;
+	width:100%;
+}

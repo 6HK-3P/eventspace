@@ -246,7 +246,7 @@ class CategoryController extends Controller
                 $users = $this->sortPhoto($request, $cat);
                 break;
             case "2":
-                $users = $this->sortAuto($request, $cat);
+                $users = $this->sortVideo($request, $cat);
                 break;
             case "3":
                 $users = $this->sortHalls($request, $cat);
@@ -583,6 +583,120 @@ class CategoryController extends Controller
                                     $arrayPrice = json_decode($pricings->price);
                                     $price = $arrayPrice[0];
                                     break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($price >= $price_ot && $price <= $price_do) {
+                $searchNarrType[] = $worker->id;
+            }
+        }
+
+        if ($searchNarrType) {
+            $users_id = Worker::select('user_id')->whereIn('id', $searchNarrType)->get()->pluck('user_id');
+            return User::whereIn('id', $users_id)->get();
+        }
+    }
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//--------------------------------------Сортировка для видеостудий-------------------------------------------------------
+    public function sortVideo(Request $request, $cat)
+    {
+        $kran = ($request->input('kran')) ? "kran" : false ;
+        $kvadro = ($request->input('kvadro')) ? "kvadro" : false ;
+        $k = ($request->input('k')) ? "k" : false ;
+        $FullHD = ($request->input('FullHD')) ? "fullHD" : false ;
+        $count_camera_wedding = $request->input('count_camera_wedding');
+        $data = $request->input('data');
+        $city = $request->input('cities');
+        $price_ot = $request->input('arenda_ot');
+        $price_do = $request->input('arenda_do');
+        $diapazone = [];
+        $quality = ($request->input('quality'))? $request->input('quality'): ["1"];
+        $result = Worker::where('category_id', $cat)->get();
+
+        switch ($count_camera_wedding){
+            case "1" : $diapazone = [3]; break;
+            case "2" : $diapazone = [2,5,7,9]; break;
+            case "3" : $diapazone = [1,4,6,8]; break;
+        }
+
+
+        if($kvadro || $kran){
+            if (!($kvadro && $kran)){
+                if($kvadro){
+                    $key = array_search('4',$diapazone);
+                    if($key) unset($diapazone[$key]) ;
+                    $key = array_search('5',$diapazone);
+                    if($key) unset($diapazone[$key]) ;
+                }
+                if($kran){
+                    $key = array_search('8',$diapazone);
+                    if($key) unset($diapazone[$key]) ;
+                    $key = array_search('9',$diapazone);
+                    if($key) unset($diapazone[$key]) ;
+                }
+                $key = array_search('6',$diapazone);
+                if($key) unset($diapazone[$key]) ;
+                $key = array_search('7',$diapazone);
+                if($key) unset($diapazone[$key]) ;
+            }
+        }
+        
+
+
+        /*Нарыли ведущих - исполнителей в зависимости от типа. На выходе массив их id*/
+
+
+        $searchNarrType = [];
+        foreach ($result as $worker) {
+            $price = "";
+            $workerPricing = pricing::where("worker_id", $worker->id)->where('view', 'По дням')->orderBy("id", "DESC")->get();
+            foreach ($workerPricing as $pricings) {
+                $arrayData = json_decode($pricings->date);
+                if (strtotime($arrayData[0]) <= strtotime($data) && strtotime($arrayData[1]) >= strtotime($data)) {
+                    $arrayCities = json_decode($pricings->city);
+                    foreach ($arrayCities as $c) {
+                        if ($c == $city) {
+                            $tp = json_decode($pricings->info)[0];
+                            if (in_array($tp, $diapazone)){
+                                $tp2 = json_decode($pricings->info)[1];
+                                if (in_array($tp2, $quality)) {
+                                    $arrayPrice = json_decode($pricings->price);
+                                    $price = $arrayPrice[0];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (empty($price)) {
+                $workerPricing = pricing::where("worker_id", $worker->id)->where('view', 'По месяцам')->orderBy("id", "DESC")->get();
+                $mesData = getdate(strtotime($data));
+                foreach ($workerPricing as $pricings) {
+                    $arrayData = json_decode($pricings->date);
+                    foreach ($arrayData as $month) {
+                        if ($month == $mesData["mon"]) {
+                            $arrayCities = json_decode($pricings->city);
+                            foreach ($arrayCities as $c) {
+                                if ($c == $city) {
+                                    $tp = json_decode($pricings->info)[0];
+                                    if (in_array($tp, $diapazone)){
+                                        $tp2 = json_decode($pricings->info)[1];
+                                        if (in_array($tp2, $quality)) {
+                                            $arrayPrice = json_decode($pricings->price);
+                                            $price = $arrayPrice[0];
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }

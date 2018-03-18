@@ -21,7 +21,7 @@ class PricingController extends Controller
                 $result = $this->getPricingInfoEntertainer($request, $worker_id, $param);
                 break;
             case "2":
-                $result = $this->sortAuto($request, $category);
+                $result = $this->getPricingInfoVideo($request, $worker_id, $param);
                 break;
             case "3":
                 $result = $this->getPricingInfoHall($request, $param, $worker_id);
@@ -36,7 +36,7 @@ class PricingController extends Controller
                 $result = $this->getPricingInfoAuto($request, $worker_id);
                 break;
             default:
-                $result = $this->sortAuto($request, $category);
+                $result = $this->getPricingInfoAuto($request, $category);
         }
         return $result;
 
@@ -204,6 +204,75 @@ class PricingController extends Controller
         return (empty($price)) ? json_encode(false) : json_encode(["price"=>$price, "deposit"=>$deposit]);
     }
 //----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//---------------------------------------Получение цен по критериям для остальных---------------------------------------
+    public function getPricingInfoVideo(Request $request, $worker_id, $param){
+
+        $price = '';
+        $deposit = '';
+        $data = $request->input('data');
+        $type = $request->input('type_moving');
+        $quality = $request->input('quality');
+        $city= $request->input('cities');
+
+        $workerPricing = pricing::where('worker_id', $worker_id)->where( 'view', 'По дням')->orderBy("id", "DESC")->get();
+        foreach ($workerPricing as $pricings){
+            $arrayInfo= json_decode($pricings->info);
+            if($arrayInfo[0] == $type && $arrayInfo[1] == $quality){
+                $arrayData= json_decode($pricings->date);
+                if(strtotime($arrayData[0]) <= strtotime($data) && strtotime($arrayData[1]) >= strtotime($data)){
+                    $arrayCities = json_decode($pricings->city);
+                    foreach ($arrayCities as $c){
+                        if($c == $city) {
+                            $arrayPrice = json_decode($pricings->price);
+                            $price = $arrayPrice[$param];
+                            $arrayDeposit = json_decode($pricings->deposit);
+                            $deposit = $arrayDeposit[$param];
+                            break;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        if(empty($price)){
+            $workerPricing = pricing::where('worker_id', $worker_id)->where( 'view', 'По месяцам')->orderBy("id", "DESC")->get();
+            $mesData = getdate(strtotime($data));
+            foreach ($workerPricing as $pricings){
+                $arrayInfo= json_decode($pricings->info);
+                if($arrayInfo[0] == $type && $arrayInfo[1] == $quality) {
+                    $arrayData = json_decode($pricings->date);
+                    foreach ($arrayData as $month) {
+                        if ($month == $mesData["mon"]) {
+                            $arrayCities = json_decode($pricings->city);
+                            foreach ($arrayCities as $c) {
+                                if ($c == $city) {
+                                    $arrayPrice = json_decode($pricings->price);
+                                    if (!empty($arrayPrice[$param])) {
+                                        $price = $arrayPrice[$param];
+                                        $arrayDeposit = json_decode($pricings->deposit);
+                                        $deposit = $arrayDeposit[$param];
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        return (empty($price)) ? json_encode(false) : json_encode(["price"=>$price, "deposit"=>$deposit]);
+    }
+//----------------------------------------------------------------------------------------------------------------------
+
 
 
 
