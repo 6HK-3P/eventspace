@@ -38,7 +38,15 @@
 
         </div>
         <div class="main-header-top-company"><a href="#">Компания</a></div>
-        <div class="main-header-top-lk"><a href="#">Личный кабинет</a>
+        <div class="main-header-top-lk"><a href="{{ route('logout') }}"
+                                           onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                Выход
+            </a>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                {{ csrf_field() }}
+            </form>
             <div class="login" style="display: none;">
                 <div class="flex center tabsL"><span class="active" data-tab="loginForm">Вход</span><span data-tab="regForm">Регистрация</span></div>
                 <form action="#" method="POST" id="loginForm">
@@ -61,6 +69,7 @@
     </div>
     <main class="container admin-main">
         <div class="main-header-bottom">
+            @if(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->root == 3 )
             <h1>Управление сайтом</h1>
             <nav class="flex">
                 <div><a href="/admin">Шапка, тизеры и футер</a></div>
@@ -70,6 +79,10 @@
                 <div><a href="/admin/feedback">Отзывы</a></div>
                 <div><a href="/admin/sms">Смс</a></div>
             </nav>
+            @else
+                <h1>{{\Illuminate\Support\Facades\Auth::user()->name}}</h1>
+            @endif
+
         </div>
     </main>
 

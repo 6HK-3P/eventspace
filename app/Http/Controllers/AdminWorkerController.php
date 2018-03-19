@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Interval;
+use App\Order;
 use App\Pricing;
 use App\User;
 use App\Worker;
@@ -12,6 +13,8 @@ use App\Workers_language;
 use App\Workers_musicians_type;
 use App\workers_car;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminWorkerController extends Controller
 {
@@ -71,25 +74,40 @@ class AdminWorkerController extends Controller
 
         $addw = '';
         $addu = '';
-        if($id!=0){
+        if(Auth::user() && Auth::user()->root == 1){
+
             $addw = Worker::find($id);
-            $addu = User::find($addw->user_id);
-        }else{
-            $addw = new Worker;
-            $all_phone = User::all();
-            foreach ($all_phone as $phone){
-                if($request->input('login') == $phone->phone){
-                    $addu = User::find($phone->id);
-                }else{
-                    $addu = new User;
+            $addu = User::find(Auth::user()->id);
+            print_r($request->input('password_old'));
+            //добавление в user
+            if(!empty($request->input('password_old'))){
+                if(Hash::check($request->input('password_old'),$addu->password )&& $request->input('password_new') == $request->input('password_copy')) {
+                    $addu->password = bcrypt($request->input('password_new'));
                 }
             }
 
         }
-        //добавление в user
-        $addu->phone = $request->input('login');
-        if(!empty($request->input('password'))){
-            $addu->password = bcrypt($request->input('password'));
+        elseif(Auth::user() && Auth::user()->root == 3){
+
+            if($id!=0){
+                $addw = Worker::find($id);
+                $addu = User::find($addw->user_id);
+            }else{
+                $addw = new Worker;
+                $all_phone = User::all();
+                foreach ($all_phone as $phone){
+                    if($request->input('login') == $phone->phone){
+                        $addu = User::find($phone->id);
+                    }else{
+                        $addu = new User;
+                    }
+                }
+            }
+                //добавление в user
+                $addu->phone = $request->input('login');
+                if(!empty($request->input('password'))){
+                    $addu->password = bcrypt($request->input('password'));
+                }
         }
         $addu->root = '1';
         $addu->name = $request->input('add_title');
@@ -105,6 +123,10 @@ class AdminWorkerController extends Controller
         $addw->worker_contacts = json_encode($phonearray);
         $addw->workers_additional_info = json_encode($array);
         $addw->save();
+
+        if(Auth::user() && Auth::user()->root == 1){
+            return redirect("lk/$cat/$id");
+        }
         return redirect('/admin/workers/add/'.$cat.'/'.$addw->id);
     }
 //----------------------------------------------------------------------------------------------------------------------
@@ -116,7 +138,11 @@ class AdminWorkerController extends Controller
 //----------------------------------вывод информации на страницу Информация---------------------------------------------
     public function addz($cat, $id)
     {
-
+        if(!Auth::user()){
+            return redirect('/login');
+        }elseif (empty(Auth::user()->worker->id)){
+            return redirect('/');
+        }
         $allWorkerInfo = '';
         $cat = Workers_categorie::find($cat);
         if($id > 0){
@@ -132,10 +158,12 @@ class AdminWorkerController extends Controller
         $allPricingInfo = Pricing::all();
         //все менеджеры
         $managers = User::where("root",2)->get();
+        //все заказы
+        $all_orders = Order::all();
 
 
         return view('add_worker')->with(['allcities' => $allcitie, 'audiotypes' => $audiotype, 'alllanguages' => $alllanguage,"managers"=> $managers,
-                                               'allWorkerInfo' => $allWorkerInfo, 'id'=> $id, 'cat' =>$cat, 'AllPricing' => $allPricingInfo ]);
+                                               'allWorkerInfo' => $allWorkerInfo, 'id'=> $id, 'cat' =>$cat, 'AllPricing' => $allPricingInfo, "AllOrders" => $all_orders ]);
     }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -393,7 +421,7 @@ class AdminWorkerController extends Controller
 
 
 //-----------------------------------------добавление фотки бд----------------------------------------------------------
-   public function addLogo(Request $request,$cat, $id, $ids){
+   public function addLogo(Request $request,$cat, $id){
        $images = $request->add_foto;
        $worker = Worker::find($id);
        $arrayPhoto = json_decode($worker->logo);
@@ -408,10 +436,10 @@ class AdminWorkerController extends Controller
        }
        $worker->logo = json_encode($arrayPhoto);
        $worker-> save();
-       if($ids == 0) {
+       if(Auth::user()->root == 1) {
+           return redirect("/lk/$cat/$id");
+       }else{
            return redirect('/admin/workers/add/' . $cat . '/' . $id . '?tab=3');
-       }elseif ($ids == 1){
-           return redirect('/lk');
        }
    }
 //----------------------------------------------------------------------------------------------------------------------
@@ -421,7 +449,7 @@ class AdminWorkerController extends Controller
 
 
 //-------------------------------------добавление видео в  бд-----------------------------------------------------------
-    public function addVideo(Request $request,$cat, $id, $ids){
+    public function addVideo(Request $request,$cat, $id){
         $worker = Worker::find($id);
         $arrayVideo = json_decode($worker->logo);
         $srcRequest = $request->input('video_src');
@@ -432,10 +460,10 @@ class AdminWorkerController extends Controller
         $arrayVideo[] = [ "type" => "video", "src" => $srcVideo, "poster"=>$srcImg];
         $worker->logo = json_encode($arrayVideo);
         $worker-> save();
-        if($ids == 0) {
+        if(Auth::user()->root == 1) {
+            return redirect("/lk/$cat/$id");
+        }else{
             return redirect('/admin/workers/add/' . $cat . '/' . $id . '?tab=3');
-        }elseif ($ids == 1){
-            return redirect('/lk');
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
@@ -445,7 +473,7 @@ class AdminWorkerController extends Controller
 
 
 //--------------------------------------добавление аудио в бд-----------------------------------------------------------
-    public function addAudio(Request $request,$cat, $id, $ids){
+    public function addAudio(Request $request,$cat, $id){
         $audios = $request->add_audio;
         $worker = Worker::find($id);
         $arrayAudio = json_decode($worker->audio);
@@ -459,10 +487,10 @@ class AdminWorkerController extends Controller
         }
         $worker->audio = json_encode($arrayAudio);
         $worker-> save();
-        if($ids == 0) {
+        if(Auth::user()->root == 1) {
+            return redirect("/lk/$cat/$id");
+        }else{
             return redirect('/admin/workers/add/' . $cat . '/' . $id . '?tab=3');
-        }elseif ($ids == 1){
-            return redirect('/lk');
         }
     }
 //----------------------------------------------------------------------------------------------------------------------

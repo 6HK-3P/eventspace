@@ -13,7 +13,7 @@
             </div>
             <div id="add_video">
                 <h5>Видео</h5>
-                <form action="/admin/workers/addvideo/{{$cat->id}}/{{$id}}/0" enctype="multipart/form-data" class="media" method="POST">
+                <form action="/admin/workers/addvideo/{{$cat->id}}/{{$id}}" enctype="multipart/form-data" class="media" method="POST">
                     {{ csrf_field() }}
                     <input type="text" required name="video_src" placeholder="Вставьте ссылку (youtube, vimeo)">
                     <input type="submit" name="new_media" value="Добавить">
@@ -23,7 +23,7 @@
             <div id="add_photo">
                 <h5>Фото</h5>
                 <div class="flex start">
-                    <form action="/admin/workers/addlogo/{{$cat->id}}/{{$id}}/0" enctype="multipart/form-data" class="media" method="POST">
+                    <form action="/admin/workers/addlogo/{{$cat->id}}/{{$id}}" enctype="multipart/form-data" class="media" method="POST">
                         {{ csrf_field() }}
                         <input type="file" name="add_foto[]" required class="w100" multiple accept="image/*,image/jpeg">
                         <input type="submit" name="new_media" class="w100" value="Загрузить">
@@ -32,7 +32,7 @@
             </div>
 
             <div id="add_audio">
-                <form action="/admin/workers/addaudio/{{$cat->id}}/{{$id}}/0" enctype="multipart/form-data" class="audio" method="POST">
+                <form action="/admin/workers/addaudio/{{$cat->id}}/{{$id}}" enctype="multipart/form-data" class="audio" method="POST">
                     {{ csrf_field() }}
                     <h5>Аудио </h5>
                     <input type="file" required name="add_audio[]" class="w100" multiple accept="mp3">

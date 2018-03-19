@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Order;
 use App\pricing;
 use App\Site_setting;
 use App\User;
@@ -18,6 +19,7 @@ use App\Workers_toastmaster_type;
 use App\Workers_video_equipment;
 use App\Workers_video_qualitie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -170,6 +172,48 @@ class ProductController extends Controller
 
     }
 //----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//---------------------------Добавление заказа--------------------------------------------------------------------------
+    public function addOrders(Request $request, $id){
+        $worker_id =  Worker::where("user_id", $id)->first();
+        $cat = $worker_id->category_id;
+        $new_order = new Order();
+        $info["data"] = $request->input('data');
+        $info["city"] = $request->input('cities');
+        $hours = $request->input('hours');
+        $count_hours = $request->input('hours_count');
+        $param = 0;
+        if($cat == 1 || $cat == 4 || $cat == 5){
+            if($hours == 3) {
+               $param = ($count_hours == 1) ? 2 : 1;
+            }
+        }
+        $info["time"] = $param;
+        $price_info = PricingController::getPricingInfo($request, $cat, $worker_id->id, $param);
+        $info["price"] = json_decode($price_info)->price;
+        $info["deposit"] = json_decode($price_info)->deposit;
+
+        $new_order->infos = json_encode($info);
+        $new_order->status = 1;
+        $new_order->user_id = Auth::user()->id;
+
+        $new_order->worker_id = $worker_id->id;
+        $new_order->save();
+        return redirect("/product/$id");
+
+    }
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
 
 
 

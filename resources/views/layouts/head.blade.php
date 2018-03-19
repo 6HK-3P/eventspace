@@ -42,7 +42,16 @@
 
         </div>
         <div class="main-header-top-company"><a href="#">Компания</a></div>
-        <div class="main-header-top-lk"><a href="/lk/{{\Illuminate\Support\Facades\Auth::user()->worker->category_id}}/{{\Illuminate\Support\Facades\Auth::user()->worker->id}}">Личный кабинет</a>
+        <div class="main-header-top-lk">
+            @if(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->root == 3)
+                <a href="/admin">
+            @elseif(!empty(\Illuminate\Support\Facades\Auth::user()->worker->id))
+                <a href="/lk/{{\Illuminate\Support\Facades\Auth::user()->worker->category_id}}/{{\Illuminate\Support\Facades\Auth::user()->worker->id}}">
+            @else
+                <a href="/lk/0/0">
+            @endif
+                    Личный кабинет
+                </a>
             <div class="login" style="display: none;">
                 <div class="flex center tabsL"><span class="active" data-tab="loginForm">Вход</span><span data-tab="regForm">Регистрация</span></div>
                 <form action="#" method="POST" id="loginForm">

@@ -5,7 +5,7 @@
     <section class="add-artist">
         @if($id!=0)
             <div class="flex start tabs-cont">
-                @if(\Illuminate\Support\Facades\Auth::user()->worker->id)
+                @if(\Illuminate\Support\Facades\Auth::user()->root != 3)
                     <div id="calendar" class="tabs active"><span>Календарь</span></div>
 
                     <div id="orders" class="tabs"><span>Мои заказы</span></div>
@@ -17,8 +17,12 @@
                 <div id="price" class="tabs "><span>Ценообразование</span></div>
                 <div id="portfolio" class="tabs"><span>Портфолио</span></div>
             </div>
+        @else
+            <div class="flex start tabs-cont">
+                <div id="info" class="tabs "><span>Информация</span></div>
+            </div>
         @endif
-        @if(\Illuminate\Support\Facades\Auth::user()->worker->id)
+        @if(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->worker->id)
                 @include('pack.calendar')
                 @include('pack.orders')
         @endif

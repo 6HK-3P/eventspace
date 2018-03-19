@@ -1,4 +1,4 @@
-<section class="info tabs-body" style="display: none;">
+<section class="info tabs-body"  @if(\Illuminate\Support\Facades\Auth::user()->root == 3) style="display: block;" @else style="display: none;"  @endif>
     <form action="/admin/workers/add/{{$cat->id}}/{{$id}}" enctype="multipart/form-data" class="options flex" method="POST">
         {{csrf_field()}}
         <aside class="filter col30">
@@ -68,17 +68,27 @@
 
                 </div>
             </div>
+            @if(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->root == 3)
+                <div class="autoriz">
+                    <h4>Параметры авторизации</h4>
+                    <div class="flex wrap">
+                        <div><p>Логин (Номер телефона)</p><input type="text" name="login"  class = "contact-tel"  placeholder="+7 988-888-22-22" @if($id !=0) value="{{$allWorkerInfo->user->phone}}"@endif></div>
+                        <div><p>Пароль</p><input type="password" maxlength="12" id="password" class="password" name="password"></div>
+                        <div><p>Повторите пароль</p><input type="password" maxlength="12" class="password_copy" id="password_copy" name="password_copy"></div>
+                    </div>
 
-            <div class="autoriz">
-                <h4>Параметры авторизации</h4>
-                <div class="flex wrap">
-                    <div><p>Логин (Номер телефона)</p><input type="text" name="login"  class = "contact-tel"  placeholder="+7 988-888-22-22" @if($id !=0) value="{{$allWorkerInfo->user->phone}}"@endif></div>
-                    <div><p>Пароль</p><input type="password" maxlength="12" id="password" class="password" name="password"></div>
-                    <div><p>Повторите пароль</p><input type="password" maxlength="12" class="password_copy" id="password_copy" name="password_copy"></div>
                 </div>
+            @elseif(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->root == 1)
+                <div class="autoriz lk">
+                    <h4>Сменить пароль</h4>
+                    <div class="flex wrap">
+                        <div><p>Старый пароль</p><input type="password" maxlength="12" id="password" class="password" name="password_old"></div>
+                        <div><p>Новый пароль</p><input type="password" maxlength="12" id="password" class="password" name="password_new"></div>
+                        <div><p>Повторите новый пароль</p><input type="password" maxlength="12" class="password_copy" id="password_copy" name="password_copy"></div>
+                    </div>
 
-            </div>
-
+                </div>
+            @endif
             <div id="contacts_peoples" class="flex wrap">
 
                 @if($id !=0)

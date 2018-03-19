@@ -1,4 +1,4 @@
-<section class="calendar tabs-body flex" style="display: block;">
+<section class="calendar tabs-body flex"  @if(\Illuminate\Support\Facades\Auth::user()->root != 3) style="display: block;" @else style="display: none;"  @endif>
     <h4>Календарь занятости</h4>
     <div id="calendarWrap">
         <h5>Выберите дни, в которые Вы заняты</h5>

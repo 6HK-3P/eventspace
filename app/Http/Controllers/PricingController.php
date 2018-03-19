@@ -12,31 +12,31 @@ class PricingController extends Controller
 
 
 //-------------Получение цены на выбранный день и по выбранным пунктам на странице продукта-----------------------------
-    public function getPricingInfo(Request $request, $category, $worker_id, $param)
+    public static function getPricingInfo(Request $request, $category, $worker_id, $param)
     {
 
         $result = [];
         switch ($category) {
             case "1" :
-                $result = $this->getPricingInfoEntertainer($request, $worker_id, $param);
+                $result = self::getPricingInfoEntertainer($request, $worker_id, $param);
                 break;
             case "2":
-                $result = $this->getPricingInfoVideo($request, $worker_id, $param);
+                $result = self::getPricingInfoVideo($request, $worker_id, $param);
                 break;
             case "3":
-                $result = $this->getPricingInfoHall($request, $param, $worker_id);
+                $result = self::getPricingInfoHall($request, $param, $worker_id);
                 break;
             case "5":
-                $result = $this->getPricingInfoEntertainer($request, $worker_id, $param);
+                $result = self::getPricingInfoEntertainer($request, $worker_id, $param);
                 break;
             case "4":
-                $result = $this->getPricingInfoEntertainer($request, $worker_id, $param);
+                $result = self::getPricingInfoEntertainer($request, $worker_id, $param);
                 break;
             case "6":
-                $result = $this->getPricingInfoAuto($request, $worker_id);
+                $result = self::getPricingInfoAuto($request, $worker_id);
                 break;
             default:
-                $result = $this->getPricingInfoAuto($request, $category);
+                $result = self::getPricingInfoAuto($request, $category);
         }
         return $result;
 
@@ -48,7 +48,7 @@ class PricingController extends Controller
 
 
 //--------------------------------------------Получение цены по критериям для залов-------------------------------------
-    public function getPricingInfoHall(Request $request, $param, $id){
+    public static function getPricingInfoHall(Request $request, $param, $id){
         $price = '';
         $deposit = '';
         $data = $request->input('data');
@@ -93,7 +93,7 @@ class PricingController extends Controller
 
 
 //----------------------------------------Получение цен по критериям для авто-------------------------------------------
-    public function getPricingInfoAuto(Request $request, $worker_id){
+    public static function getPricingInfoAuto(Request $request, $worker_id){
         $price = '';
         $deposit = '';
         $data = $request->input('data');
@@ -151,7 +151,7 @@ class PricingController extends Controller
 
 
 //---------------------------------------Получение цен по критериям для остальных---------------------------------------
-    public function getPricingInfoEntertainer(Request $request, $worker_id, $param){
+    public static function getPricingInfoEntertainer(Request $request, $worker_id, $param){
 
         $price = '';
         $deposit = '';
@@ -210,7 +210,7 @@ class PricingController extends Controller
 
 
 //---------------------------------------Получение цен по критериям для остальных---------------------------------------
-    public function getPricingInfoVideo(Request $request, $worker_id, $param){
+    public static function getPricingInfoVideo(Request $request, $worker_id, $param){
 
         $price = '';
         $deposit = '';

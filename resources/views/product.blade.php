@@ -52,7 +52,8 @@
         <div class="drum__filter">
             <strong class="drum__filter-title">Забронировать</strong>
 
-            <form class="drum__filter-form bron" data-category = "{{$InfoWorker->category_id}}">
+            <form class="drum__filter-form bron" data-category = "{{$InfoWorker->category_id}}" method="POST" action="/orders/add/{{$InfoUsers->id}}">
+                {{csrf_field()}}
                 @if ($InfoWorker->category_id == 6)
 
                         @include('filters.category_date')
