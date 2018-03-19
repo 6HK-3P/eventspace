@@ -19,7 +19,7 @@ $(document).ready(function () {
                     $(".drum__filter-submit").removeAttr("disabled", "disabled");
                     $(".drum__filter-submit").removeClass("disabled");
                     $(".drum__filter-submit").html("Забронировать");
-                    
+
                 }
                 else{
                     $("#price").html(0 + " ₽");

@@ -68,5 +68,5 @@ Route::post('/admin/add_interval/{cat}', 'SettingsController@addInterval');
 
 
 //личный кабинет
-Route::get('/lk', 'LkController@index');
+Route::get('/lk/{cat}/{id}', 'AdminWorkerController@addz');
 Route::post('/lk/add_worker/{cat}/{id}', 'LkController@addWorker');

@@ -54,9 +54,10 @@
     .datepicker--cell.-current-.-in-range- {
       color: #4EB5E6; }
   .datepicker--cell.-in-range- {
-    background: rgba(92, 196, 239, 0.1);
-    color: #4a4a4a;
-    border-radius: 0; }
+    background: rgb(255, 122, 125);
+    color: #ffffff;
+    border-radius: 0;
+    border: 1px solid red; }
     .datepicker--cell.-in-range-.-focus- {
       background-color: rgba(92, 196, 239, 0.2); }
   .datepicker--cell.-disabled- {
@@ -149,8 +150,8 @@
     .-selected-.-focus-.datepicker--cell-day.-other-month-, .-selected-.-focus-.datepicker--cell-year.-other-decade- {
       background: #8ad5f4; }
   .-in-range-.datepicker--cell-day.-other-month-, .-in-range-.datepicker--cell-year.-other-decade- {
-    background-color: rgba(92, 196, 239, 0.1);
-    color: #cccccc; }
+    background-color: rgb(255, 122, 125);
+    color: #fff; }
     .-in-range-.-focus-.datepicker--cell-day.-other-month-, .-in-range-.-focus-.datepicker--cell-year.-other-decade- {
       background-color: rgba(92, 196, 239, 0.2); }
   .datepicker--cell-day.-other-month-:empty, .datepicker--cell-year.-other-decade-:empty {
