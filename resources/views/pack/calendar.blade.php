@@ -5,5 +5,6 @@
         <div class="datepicker-here"></div>
         <p class="calendar-desc flex start"><span class="busy-day"></span> <span>Дата забронирована. На эту дату пользователи не могут заказать Ваши услуги.</span></p>
     </div>
+    <button id="saveCalendar">Сохранить</button>
 </section>
 <script src="/public/js/calendar.js"></script>

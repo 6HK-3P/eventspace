@@ -25,7 +25,7 @@ class AdminUserController extends Controller
         $addMans->name = $request->input('meneger_name');
         $addMans->phone = $request->input('meneger_phone');
         $addMans->password = $request->input('meneger_password');
-        $addMans->root = 2;
+        $addMans->root = 3;
         $addMans->save();
         return redirect('/admin/user');
     }

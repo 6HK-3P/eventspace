@@ -33,6 +33,9 @@ Route::get('/admin/user', 'AdminUserController@user');
 Route::get('/admin/workers', 'AdminWorkerController@selectworkers');
 Route::get('/admin/workers/{id}', 'AdminWorkerController@getWorkers');
 Route::get('/admin/workers/add/{cat}/{id}', 'AdminWorkerController@addz');
+Route::get('/admin/workers/addBusyDate/{id}', 'AdminWorkerController@addBusyDate');
+Route::get('/admin/workers/getBusyDates/{id}', 'AdminWorkerController@getBusyDates');
+
 Route::get('/admin/workers/getRulePrice/{id}', 'AdminWorkerController@getPriceRules');
 Route::post('/admin/workers/add/{cat}/{id}', 'AdminWorkerController@addw');
 Route::get('/admin/workers/add/{cat}/{id}/delete', 'AdminWorkerController@deleteWorker');

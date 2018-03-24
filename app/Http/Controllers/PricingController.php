@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\pricing;
+use App\Workers_calendar;
 use Illuminate\Http\Request;
 
 class PricingController extends Controller
@@ -15,29 +16,39 @@ class PricingController extends Controller
     public static function getPricingInfo(Request $request, $category, $worker_id, $param)
     {
 
-        $result = [];
-        switch ($category) {
-            case "1" :
-                $result = self::getPricingInfoEntertainer($request, $worker_id, $param);
-                break;
-            case "2":
-                $result = self::getPricingInfoVideo($request, $worker_id, $param);
-                break;
-            case "3":
-                $result = self::getPricingInfoHall($request, $param, $worker_id);
-                break;
-            case "5":
-                $result = self::getPricingInfoEntertainer($request, $worker_id, $param);
-                break;
-            case "4":
-                $result = self::getPricingInfoEntertainer($request, $worker_id, $param);
-                break;
-            case "6":
-                $result = self::getPricingInfoAuto($request, $worker_id);
-                break;
-            default:
-                $result = self::getPricingInfoAuto($request, $category);
+        $result = json_encode(false);
+        $data = date("d.m.Y",strtotime($request->input('data')));
+        $calendar = Workers_calendar::where("worker_id", $worker_id)->first();
+        $arrayDates = [];
+        if(count($calendar)){
+            $arrayDates = json_decode($calendar->dates);
         }
+            if(!in_array($data, $arrayDates)){
+                switch ($category) {
+                    case "1" :
+                        $result = self::getPricingInfoEntertainer($request, $worker_id, $param);
+                        break;
+                    case "2":
+                        $result = self::getPricingInfoVideo($request, $worker_id, $param);
+                        break;
+                    case "3":
+                        $result = self::getPricingInfoHall($request, $param, $worker_id);
+                        break;
+                    case "5":
+                        $result = self::getPricingInfoEntertainer($request, $worker_id, $param);
+                        break;
+                    case "4":
+                        $result = self::getPricingInfoEntertainer($request, $worker_id, $param);
+                        break;
+                    case "6":
+                        $result = self::getPricingInfoAuto($request, $worker_id);
+                        break;
+                    default:
+                        $result = self::getPricingInfoAuto($request, $category);
+                }
+            }
+
+
         return $result;
 
     }
