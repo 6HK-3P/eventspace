@@ -60,7 +60,7 @@
                     switch ($id_status){
                         case 1: $actions = "Разрешить оплату"; $actions_id = 1; break;
                         case 2: $actions = "Напомнить об оплате";  $actions_id = 2; break;
-                        case 3: $actions = "Предложить скидку"; $actions_id = 3; break;
+                        case 3: $actions = ""; $actions_id = 3; break;
                         case 4: $actions = "";  $actions_id = 4; break;
                         case 5: $actions = "";  $actions_id = 5; break;
                         case 6: $actions = "В архив"; $actions_id = 6; break;

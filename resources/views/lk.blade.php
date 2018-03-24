@@ -26,7 +26,7 @@
                                 <span class="order-table-col1-params-price2">{{$select_info_order->price}}</span>
                             </b>
                         </p>
-                        @if($order->status == 4 || $order->status == 6)
+                        @if(($order->status == 4 || $order->status == 6) && strtotime($select_info_order->data) <= strtotime(date("Y-m-d")))
                             <p><b>Контакты исполнителя для связи</b></p>
                             <p>{{\App\User::find(\App\Worker::find($order->worker_id)->manager_id)->phone}} - {{\App\User::find(\App\Worker::find($order->worker_id)->manager_id)->name}}</p><br>
                             <h3 class="zag">Оставьте отзыв</h3>
@@ -58,7 +58,7 @@
                                 Оплатите залог - {{$select_info_order->deposit}}
                             </a>
                         @endif
-                        @if($order->status == 4 || $order->status == 6)
+                        @if(($order->status == 4 || $order->status == 6) && strtotime($select_info_order->data) <= strtotime(date("Y-m-d")))
 
                                     <a href="" class="edit disabled">Оплачено 1800₽</a>
                                     <a href="" class="edit">Оставить отзыв</a>
