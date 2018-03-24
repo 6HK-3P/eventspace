@@ -55,7 +55,7 @@
 
     <div class="main-header-bottom">
         <div class="main-header-bottom">
-            <h1>{{\Illuminate\Support\Facades\Auth::user()->name}}</h1>
+            <h1>Здравствуйте {{\Illuminate\Support\Facades\Auth::user()->name}}</h1>
         </div>
 
     </div>

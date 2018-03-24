@@ -48,6 +48,7 @@ Route::get('/admin/workers/addava/{id}', 'AdminWorkerController@addAva');
 Route::get('/admin/workers/removeRulePrice/{id}', 'AdminWorkerController@removeRulePrice');
 //Админка Заказы
 Route::get('/admin/order', 'AdminOrderController@order');
+Route::post('/admin/update_order/{id}', 'AdminOrderController@updateOrder');
 //Админка Отзывы
 Route::get('/admin/feedback', 'AdminFeedbackController@feedback');
 //Админка Смс
@@ -69,4 +70,5 @@ Route::post('/admin/add_interval/{cat}', 'SettingsController@addInterval');
 Route::post('/orders/add/{id}', 'ProductController@addOrders');
 //личный кабинет
 Route::get('/lk/{cat}/{id}', 'AdminWorkerController@addz');
+Route::get('/lk/', 'LkController@index');
 Route::post('/lk/add_worker/{cat}/{id}', 'LkController@addWorker');

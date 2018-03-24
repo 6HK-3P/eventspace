@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Order;
 use App\pricing;
 use App\User;
 use App\Worker;
@@ -18,31 +19,10 @@ class LkController extends Controller
         if(!Auth::user()){
             return redirect('/login');
         }
-        $worker_id = Worker::where('user_id', Auth::user()->id)->first();
-        $flag = 0;
-        if(empty($worker_id)){
-            return redirect('/');
-        }else{
-            $flag = 1;
-        }
-        $id = $worker_id->id;
-        //город
-        $allcitie = workers_citie::all();
-        //музыка тайп
-        $audiotype = workers_musicians_type::all();
-        //язык
-        $alllanguage = workers_language::all();
-        //все ценообразования
-        $allPricingInfo = pricing::all();
-        //все менеджеры
-        $managers = User::where("root",2)->get();
-        $sel_pricing = pricing::where('worker_id', $worker_id->id)->get();
 
+        $select_orders = Order::where("user_id", Auth::user()->id)->get();
 
-
-
-        return view('lk.lk')->with(['allcities' => $allcitie, 'audiotypes' => $audiotype, 'alllanguages' => $alllanguage,"managers"=> $managers,
-            "flag" => $flag, 'AllPricing' => $allPricingInfo, 'id'=>$id, 'allWorkerInfo' => $worker_id ]);
+        return view('lk')->with(["SelOrder" => $select_orders]);
     }
 
 

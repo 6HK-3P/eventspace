@@ -47,6 +47,8 @@
                 <a href="/admin">
             @elseif(!empty(\Illuminate\Support\Facades\Auth::user()->worker->id))
                 <a href="/lk/{{\Illuminate\Support\Facades\Auth::user()->worker->category_id}}/{{\Illuminate\Support\Facades\Auth::user()->worker->id}}">
+            @elseif(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->root == 1)
+                <a href="/lk/">
             @else
                 <a href="/lk/0/0">
             @endif
