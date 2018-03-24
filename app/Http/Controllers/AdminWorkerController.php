@@ -7,6 +7,8 @@ use App\Order;
 use App\Pricing;
 use App\User;
 use App\Worker;
+use App\Worker_calendar;
+use App\Workers_calendar;
 use App\Workers_categorie;
 use App\Workers_citie;
 use App\Workers_language;
@@ -15,6 +17,10 @@ use App\workers_car;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+
+use DateTime;
+use DatePeriod;
+use DateInterval;
 
 class AdminWorkerController extends Controller
 {
@@ -541,6 +547,78 @@ class AdminWorkerController extends Controller
 //----------------------------------------------------------------------------------------------------------------------
 
 
+
+
+//-------------------Добавление зантяых дней с календаря------------------------------------------------
+    public function addBusyDate(Request $request, $worker_id){
+
+        $dates =  json_decode($request->input("dates"));
+        $calendar = Workers_calendar::where("worker_id", $worker_id )->first();
+
+        if (count($calendar)){
+            $worker_dates = json_decode($calendar->dates);
+            $worker_dates = (count($worker_dates)) ? $worker_dates : [];
+            $result = $this->getDiapazone($dates, $worker_dates);
+            $calendar->dates = json_encode($result["dates"]);
+        }
+        else{
+            $calendar = new Workers_calendar();
+            $calendar->worker_id = $worker_id;
+            $calendar->dates = json_encode($dates);
+        }
+        $calendar->save();
+        $this->getBusyDates($worker_id);
+
+    }
+
+    public function getDiapazone($dates, $worker_dates){
+          $d = getdate(strtotime($dates[0]));
+          $month = $d["mon"];
+          $year = $d["year"];
+          $newArray = [];
+          foreach ($worker_dates as $key => $worker_date){
+              $monthData = getdate(strtotime($worker_date));
+              if (!$monthData["mon"] == $month && !$monthData["year"] == $year){
+                  $newArray[] = $worker_date;
+              }
+          }
+          $worker_dates = $newArray;
+          foreach ($dates as $date){
+                  $worker_dates[] = $date;
+          }
+
+
+          return ["dates"=>$worker_dates];
+    }
+
+    public function getBusyDates($worker_id){
+        $month =  date("n");
+        $year  =  date("Y");
+
+        $calendar = Workers_calendar::where("worker_id", $worker_id )->first();
+        $selected_dates = [];
+        $sort_dates = [];
+        $sort_m = [];
+
+        if (count($calendar)){
+            if (!empty($calendar->dates)){
+                $dates = json_decode($calendar->dates);
+                foreach ($dates as $key => $date){
+                    $monthData = getdate(strtotime($date));
+                    if ($monthData["mon"] >= $month && $monthData["year"] >= $year){
+                        $sort_dates[] = $date;
+                        $sort_m[] = $monthData["mon"];
+                    }
+                }
+                asort($sort_m,  SORT_NUMERIC);
+                foreach ($sort_m as $key => $m){
+                    $selected_dates[] = $sort_dates[$key];
+                }
+            }
+
+        }
+        return json_encode($selected_dates);
+    }
 
 
 }
