@@ -66,6 +66,7 @@
                         case 6: $actions = "В архив"; $actions_id = 4; break;
                         case 7: $actions = "В архив"; $actions_id = 4; break;
                         case 8: $actions = "Вернуть в активные"; $actions_id = 5; break;
+                        case 9: $actions = "В архив"; $actions_id = 4; break;
                     } ?>
                     <?
                         $color = "#ffd800";

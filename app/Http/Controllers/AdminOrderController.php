@@ -21,7 +21,7 @@ class AdminOrderController extends Controller
             case 3: $action_system = $this->set_info_payment($order_id); break; /*доступно пользователю*/
             case 4: $action_system = $this->put_in_archive($order_id); break; /*доступно админу и воркеру*/
             case 5: $action_system = $this->remove_in_archive($order_id); break; /*доступно админу и воркеру*/
-            case 6: $action_system = $this->cancel_payment($order_id); break; /*доступно админу*/
+            case 6: $action_system = $this->cancel_payment($order_id); break; /*внутреняя хня*/
             case 7: $action_system = $this->add_feedback($order_id); break; /*доступно пользователю*/
         }
     }
@@ -37,14 +37,12 @@ class AdminOrderController extends Controller
     /*-----------------------Напомнить о предоплате----------------------------*/
     public function ping_payment($order_id){
         $order = Order::find($order_id);
-        $data = json_decode($order->infos)->data;
+        $data = date("Y-m-d", strtotime($order->updated_at));
         $endData = strtotime("+1 day" , $data);
         $now = strtotime(date("Y-m-d"));
         $action_system = ['Дату уже заняли так как с заказа прошло более суток'];
         /*Тут надо отправлять смску заказчику о том что время ожидания предоплаты подходит к концу*/
-
-
-        if ($now >= $endData){
+        if (($order->status == 2 || $order->status == 3) && $now >= $endData){
             $res = $this->check_order($order_id);
             if ($res["id"]){
                 $action_system = ['Отправлено смс с напоминанием об оплате'];
@@ -60,6 +58,7 @@ class AdminOrderController extends Controller
     /*-----------------------Проверяем не совершил ли кто другой заказ и оплату на эту дату----------------------------*/
     public function check_order($order_id){
         $order = Order::find($order_id);
+        $action = ['id'=>1, 'info'=>'Дата свободна'];
         $data = json_decode($order->infos)->data;
         $other_orders = Order::where('id',"!=", $order->id)->whereIn('status', [4,6,7])->where('worker_id', $order->worker_id)->where('infos->data', $data)->get();
         if (count($other_orders)){
@@ -67,11 +66,10 @@ class AdminOrderController extends Controller
             /*Закрываем этот заказ*/
             $this->cancel_payment($order_id);
         }
-        else{
-            $action = ['id'=>1, 'info'=>'Дата свободна'];
-        }
+
         return $action;
     }
+
     /*-----------------------Заказчик совершил оплату----------------------------*/
     public function set_info_payment($order_id){
         $order = Order::find($order_id);
@@ -111,6 +109,7 @@ class AdminOrderController extends Controller
         /*Так как этот гандон не успел вовремя оплатить*/
         /*Статус будет меняться при заказе и оплате этого заказа другого заказчика*/
         /*Либо если сам воркер отметил в календаре что дата занята*/
+        /*Либо если сам админ напомнил об оплате а дата занята*/
         /*--------------------------------*/
         /*Если чел совершает заказ и делает предоплату а на ту дату что он хочет занять уже кто то сделал заказ*/
         /*Но не сделал предоплату хотя прошло более одного дня*/
