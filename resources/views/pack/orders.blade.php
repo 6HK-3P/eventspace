@@ -4,7 +4,7 @@
             <h4>Ваши заказы</h4>
             <div class="order-table-head lk flex"><div class="order-table-col1">Заказ</div><div class="order-table-col3">Статус</div><div class="order-table-col4">Действие</div></div>
             @foreach($AllOrders as $Orders)
-                @if($Orders->user_id == \Illuminate\Support\Facades\Auth::user()->id)
+                @if($Orders->worker_id == \Illuminate\Support\Facades\Auth::user()->worker->id)
                 <? $info_order = json_decode($Orders->infos);
                 $times = "";
                     switch ($info_order->time){
