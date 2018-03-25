@@ -50,8 +50,9 @@ Route::get('/admin/workers/updateportfolio/{id}', 'AdminWorkerController@updateP
 Route::get('/admin/workers/addava/{id}', 'AdminWorkerController@addAva');
 Route::get('/admin/workers/removeRulePrice/{id}', 'AdminWorkerController@removeRulePrice');
 //Админка Заказы
-Route::get('/admin/order', 'AdminOrderController@order');
-Route::post('/admin/update_order/{id}', 'AdminOrderController@updateOrder');
+Route::get('/admin/order', 'AdminOrderController@get_orders');
+Route::post('/admin/update_order/{id}/{action}', 'AdminOrderController@updateOrder');
+
 //Админка Отзывы
 Route::get('/admin/feedback', 'AdminFeedbackController@feedback');
 //Админка Смс

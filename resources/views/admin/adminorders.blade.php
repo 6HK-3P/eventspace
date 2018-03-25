@@ -52,22 +52,30 @@
                         <p>{{\App\User::find($order->user_id)->phone}}</p>
                     </div>
                     <div class="order-table-col3">
-                        <span href="#" class="stages-stage1" style="color: {{\App\Order_statuse::find($order->status)->colorcode}}">{{\App\Order_statuse::find($order->status)->name}}</span>
+                        <span href="#" class="stages-stage1" style="color: {{\App\Order_status::find($order->status)->colorcode}}">{{\App\Order_status::find($order->status)->name}}</span>
                     </div>
-                    <? $id_status = \App\Order_statuse::find($order->status)->id;
+                    <? $id_status = $order->status;
                     $actions = "";
                     $actions_id = "";
                     switch ($id_status){
                         case 1: $actions = "Разрешить оплату"; $actions_id = 1; break;
                         case 2: $actions = "Напомнить об оплате";  $actions_id = 2; break;
-                        case 3: $actions = ""; $actions_id = 3; break;
-                        case 4: $actions = "";  $actions_id = 4; break;
-                        case 5: $actions = "";  $actions_id = 5; break;
-                        case 6: $actions = "В архив"; $actions_id = 6; break;
-                        case 7: $actions = "В архив"; $actions_id = 7; break;
-                        case 8: $actions = "Вернуть в активные"; $actions_id = 8; break;
+                        case 3: $actions = "Напомнить об оплате";  $actions_id = 2; break;
+                        case 4: $actions = "";  $actions_id = 0; break;
+                        case 5: $actions = "";  $actions_id = 0; break;
+                        case 6: $actions = "В архив"; $actions_id = 4; break;
+                        case 7: $actions = "В архив"; $actions_id = 4; break;
+                        case 8: $actions = "Вернуть в активные"; $actions_id = 5; break;
                     } ?>
-                    <div class="order-table-col4">@if(!empty($actions))<a href="/admin/update_order/{{$actions_id}}" class="edit">{{$actions}}</a>@endif</div>
+                    <?
+                        $color = "#ffd800";
+                        if (($id_status == 6 || $id_status == 7) && $order->in_archive == 1){
+                            $actions = "Вернуть в активные"; $actions_id = 5;
+                            $color = "#ccc";
+                        }
+
+                    ?>
+                    <div class="order-table-col4">@if(!empty($actions))<a href="/admin/update_order/{{$order->id}}/{{$actions_id}}" style="background-color: {{$color}} " class="edit">{{$actions}}</a>@endif</div>
                 </div>
             @endforeach
         </section>
