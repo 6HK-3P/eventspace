@@ -53,6 +53,7 @@ Route::get('/admin/workers/removeRulePrice/{id}', 'AdminWorkerController@removeR
 Route::get('/admin/order', 'AdminOrderController@get_orders');
 Route::post('/admin/update_order/{id}/{action}', 'AdminOrderController@updateOrder');
 
+Route::get('/admin/order/check/{order_id}', 'AdminOrderController@check_order');
 //Админка Отзывы
 Route::get('/admin/feedback', 'AdminFeedbackController@feedback');
 //Админка Смс

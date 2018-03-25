@@ -37,14 +37,41 @@ class AdminOrderController extends Controller
     /*-----------------------Напомнить о предоплате----------------------------*/
     public function ping_payment($order_id){
         $order = Order::find($order_id);
-        /*Проверяем не совершил ли кто другой заказ и оплату на эту дату*/
+        $data = json_decode($order->infos)->data;
+        $endData = strtotime("+1 day" , $data);
+        $now = strtotime(date("Y-m-d"));
+        $action_system = ['Дату уже заняли так как с заказа прошло более суток'];
         /*Тут надо отправлять смску заказчику о том что время ожидания предоплаты подходит к концу*/
-        /*А если прошло более 1 дня о том что уже кто то другой может занять дату соверши оплату пока не заняли*/
-        $order->save();
-        $action_system = ['Отправлено смс с напоминанием об оплате'];
+
+
+        if ($now >= $endData){
+            $res = $this->check_order($order_id);
+            if ($res["id"]){
+                $action_system = ['Отправлено смс с напоминанием об оплате'];
+                /*А если прошло более 1 дня о том что уже кто то другой может занять дату соверши оплату пока не заняли*/
+            }
+            /*Либо заказ закрывается*/
+        }
+
+
         return $action_system;
     }
 
+    /*-----------------------Проверяем не совершил ли кто другой заказ и оплату на эту дату----------------------------*/
+    public function check_order($order_id){
+        $order = Order::find($order_id);
+        $data = json_decode($order->infos)->data;
+        $other_orders = Order::where('id',"!=", $order->id)->whereIn('status', [4,6,7])->where('worker_id', $order->worker_id)->where('infos->data', $data)->get();
+        if (count($other_orders)){
+            $action = ['id'=>0, 'info'=>'Заказ создан'];
+            /*Закрываем этот заказ*/
+            $this->cancel_payment($order_id);
+        }
+        else{
+            $action = ['id'=>1, 'info'=>'Дата свободна'];
+        }
+        return $action;
+    }
     /*-----------------------Заказчик совершил оплату----------------------------*/
     public function set_info_payment($order_id){
         $order = Order::find($order_id);
@@ -79,6 +106,7 @@ class AdminOrderController extends Controller
     /*-----------------------Кто то другой успел сделать заказ до предоплаты--------------------*/
     public function cancel_payment($order_id){
         $order = Order::find($order_id);
+        $order->status = 9;
         /*Тут надо отправлять смску заказчику о том что товар уже заняли на эту дату*/
         /*Так как этот гандон не успел вовремя оплатить*/
         /*Статус будет меняться при заказе и оплате этого заказа другого заказчика*/
@@ -93,7 +121,7 @@ class AdminOrderController extends Controller
 
 
     /*-----------------------Кто то другой успел сделать заказ до предоплаты--------------------*/
-    public function add_FeedBack($order_id){
+    public function add_feedBack($order_id){
         $order = Order::find($order_id);
         /*Тут надо вызывать метод FeedBack контроллера и оставлять отзыв с оценкой*/
         $order->status = 7;
