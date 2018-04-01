@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Comment;
 use App\Order;
 use App\pricing;
 use App\Site_setting;
@@ -30,6 +31,8 @@ class ProductController extends Controller
 
 //---------------------------------------Получение всей информации о всём-----------------------------------------------
     public function index($id){
+        $worker_id = Worker::where('user_id', $id)->first();
+        $select_comment = Comment::where('worker_id', $worker_id->id)->orderBy('id','desc')->get();
         $allInfoUser = User::find($id);
         $allInfoWorker = Worker::where('user_id',$allInfoUser['id'])->first();
 
@@ -55,7 +58,7 @@ class ProductController extends Controller
         //информация о машинах текущенго воркера
         $allCarsWorker = workers_car::where('worker_id',$allInfoWorker->id)->get();
         $city = 1;
-        return view("product")->with([ 'city'=>$city, 'allCarsWorker' => $allCarsWorker, 'InfoUsers' => $allInfoUser, 'InfoWorker' => $allInfoWorker, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
+        return view("product")->with(['SelComment' => $select_comment, 'city'=>$city, 'allCarsWorker' => $allCarsWorker, 'InfoUsers' => $allInfoUser, 'InfoWorker' => $allInfoWorker, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
                                              'allcities' => $allcitie ,  'alltoasts' => $alltoast ,'alllanguages' => $alllanguage,
                                               'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype, 'allheads'=>$allhead]);
     }

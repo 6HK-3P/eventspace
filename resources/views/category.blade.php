@@ -112,8 +112,12 @@
                                     <div class="item-desc">
                                         <div class="item-desc-params flex">
                                             <div class="flex item-desc-params-left">
-                                                <span class="rating">4.5</span>
-                                                <span class="feedbacks">666</span>
+                                                <? $selwork = \App\Worker::where('user_id', $items[$i]->id)->first();
+                                                $countcomments = \App\Comment::where('worker_id', $selwork->id)->get();
+                                                $avgmark = \App\Comment::select('mark')->where('worker_id', $selwork->id)->get()->avg('mark');
+                                                ?>
+                                                <span class="rating">{{$avgmark}}</span>
+                                                <span class="feedbacks">{{count($countcomments)}}</span>
                                             </div>
                                             <div>
                                                 <span class="item-price">{{\App\Http\Controllers\ProductController::getPriceToday($items[$i]->worker->id)}} ₽</span>

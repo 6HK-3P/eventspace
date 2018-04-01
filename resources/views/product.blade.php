@@ -163,10 +163,20 @@
             </div>
             @endif
         <h1 class="itemTitle">Отзывы</h1>
-        <form action="" class="feedbackForm">
+            <?
+            $userid = '';
+            $user = '';
+            if(\Illuminate\Support\Facades\Auth::user()){
+                $userid = \Illuminate\Support\Facades\Auth::user()->id;
+                $user = \Illuminate\Support\Facades\Auth::user();
+            }
+            $info_order = \App\Order::where('user_id', $userid)->whereIn('status', [4,6])->get();
+            ?>
+        <form action="/add_feedback/{{$userid}}/{{$InfoWorker->id}}" class="feedbackForm" method="POST">
+            {{csrf_field()}}
             <h5>Оставьте отзыв</h5>
             <div class="flex">
-                <textarea name="feedback" class="text-feed"  cols="60" rows="10" placeholder="напишите отзыв тут"></textarea>
+                <textarea name="feedback" class="text-feed"  cols="60" rows="10" placeholder="напишите отзыв тут" required></textarea>
                 <div class="notes">
                     <p>Отзывы на нашем сайте честные, объективные и конкретные. Пожалуйста, подробно опишите, что понравилось, а что можно улучшить. Отзыв будут видеть все посетители Ивент Спейс</p>
                     <p>Чтобы наши отзывы были честными и объективными, мы даем возможность комментирования только тем, пользователям, которые сделали заказ у этого исполнителя.</p>
@@ -179,30 +189,36 @@
                     <input type="radio" name="ocenka" id="ocenka1" value="1"> <label for="ocenka1" data-val=1></label>
                     <input type="radio" name="ocenka" id="ocenka2" value="2"> <label for="ocenka2" data-val=2></label>
                     <input type="radio" name="ocenka" id="ocenka3" value="3"> <label for="ocenka3" data-val=3></label>
-                    <input type="radio" name="ocenka" id="ocenka4" value="4" checked> <label for="ocenka4" data-val=4></label>
+                    <input type="radio" name="ocenka" id="ocenka4" value="4"> <label for="ocenka4" data-val=4></label>
                     <input type="radio" name="ocenka" id="ocenka5" value="5"> <label for="ocenka5" data-val=5></label>
                 </div>
-                <button class="drum__filter-submit feed-sub" type="submit">Отправить отзыв</button>
-            </div>
-            <div class="allfeed">
-                <div class="allfeed-item">
-                    <div class="flex start  allfeed-item-title">
-                        <span class="name">Зарема</span>
-                        <div class="cc flex">
-                            <label class="active"></label>
-                            <label class="active"></label>
-                            <label class="active"></label>
-                            <label class="active"></label>
-                            <label class=""></label>
-                        </div>
-                        <span class="data">25 января 2017</span>
-                    </div>
-                    <p>
-                        Возможно исполнение на русском языке. Поем народные песни под аккомпанимент барабана, клавишных и двух струнных. Всего 5 человек. Есть свое оборудование, трек-лист обсуждается предварительно. Возможно исполнение на русском языке.
-                    </p>
-                </div>
+                <button class="drum__filter-submits @if(empty($user) || !count($info_order)) disabled @endif feed-sub" @if(empty($user) || !count($info_order)) disabled @endif type="submit">
+                    Отправить отзыв
+                </button>
             </div>
         </form>
+
+            <div class="allfeed">
+                    @foreach($SelComment as $comment)
+                <div class="allfeed-item">
+                    <div class="flex start  allfeed-item-title">
+                        <span class="name">{{\App\User::find($comment->user_id)->name}}</span>
+                        <div class="cc flex">
+                            <label  class="@if($comment->mark == 1 || $comment->mark == 2 ||$comment->mark == 3 ||$comment->mark == 4 ||$comment->mark == 5) active @endif"></label>
+                            <label class="@if($comment->mark == 2 ||$comment->mark == 3 ||$comment->mark == 4 ||$comment->mark == 5) active @endif"></label>
+                            <label class="@if($comment->mark == 3 ||$comment->mark == 4 ||$comment->mark == 5) active @endif"></label>
+                            <label class="@if($comment->mark == 4 ||$comment->mark == 5) active @endif"></label>
+                            <label class="@if($comment->mark == 5) active @endif"></label>
+                        </div>
+                        <span class="data">{{date('d m Y',strtotime($comment->created_at))}}</span>
+                    </div>
+                    <p>
+                    {{$comment->comments}}
+                    </p>
+                </div>
+                @endforeach
+            </div>
+
     </div>
 
 </main>

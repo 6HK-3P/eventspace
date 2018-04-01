@@ -56,6 +56,7 @@ Route::post('/admin/update_order/{id}/{action}', 'AdminOrderController@updateOrd
 Route::get('/admin/order/check/{order_id}', 'AdminOrderController@check_order');
 //Админка Отзывы
 Route::get('/admin/feedback', 'AdminFeedbackController@feedback');
+Route::post('/add_feedback/{user_id}/{worker_id}', 'AdminFeedbackController@addFeedback');
 //Админка Смс
 Route::get('/admin/sms', 'AdminSmsController@sms');
 Route::post('/admin/sms/add', 'AdminSmsController@addsms');
