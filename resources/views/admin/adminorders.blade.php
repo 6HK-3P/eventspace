@@ -6,9 +6,9 @@
             <p>Показать только:</p>
             <p class="stages">
                 @foreach($AllStatus as $status)
-                    <a href="#" class="stages-stage{{$status->id}}" style="color: {{$status->colorcode}}">{{$status->name}}</a>
+                    <a href="?status={{$status->id}}" class="stages-stage{{$status->id}}" style="color: {{$status->colorcode}}">{{$status->name}}</a>
             @endforeach
-            <p class="stages-all"><a href="#">Показать все</a></p>
+            <p class="stages-all"><a href="/admin/order">Показать все</a></p>
         </div>
         <section class="main-orders">
             <div class="order-table-head flex">

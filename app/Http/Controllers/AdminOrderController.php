@@ -8,8 +8,13 @@ use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
 {
-    public function get_orders(){
-        $all_orders = Order::all();
+    public function get_orders(Request $request){
+        if($request->status){
+            $all_orders = Order::where('status', $request->status)->get();
+
+        }else {
+            $all_orders = Order::all();
+        }
         $all_status = Order_status::all();
         return view('admin.adminorders')->with(["AllOrder" => $all_orders, "AllStatus" => $all_status]);
     }

@@ -4,10 +4,14 @@
     <section class="artists">
         <div class="statuses">
             <p>Показать только:</p>
-            <p class="feed flex"><a href="#" class="feed-one"></a><a href="#" class="feed-two"></a> <a href="#"
-                                                                                                       class="feed-three"></a>
-                <a href="#" class="feed-four"></a> <a href="#" class="feed-five"></a></p>
-            <p class="stages-all"><a href="#">Показать все</a></p>
+            <p class="feed flex">
+                <a href="?mark=1" class="feed-one"></a>
+                <a href="?mark=2" class="feed-two"></a>
+                <a href="?mark=3" class="feed-three"></a>
+                <a href="?mark=4" class="feed-four"></a>
+                <a href="?mark=5" class="feed-five"></a>
+            </p>
+            <p class="stages-all"><a href="/admin/feedback/">Показать все</a></p>
         </div>
         <section class="main-orders">
             <div class="order-table-head flex">

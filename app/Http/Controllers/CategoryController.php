@@ -163,7 +163,10 @@ class CategoryController extends Controller
 
         $items = $this->getAdditionalInfo($items, $cat);
         $teasers = Teaser::where("position", "<=", "7")->get();
-
+        foreach ( $items as $item){
+            $test = $item->worker->comment;
+        }
+        $test = null;
         echo json_encode(["teasers" => $teasers, 'items' => $items], JSON_UNESCAPED_UNICODE);
     }
 //----------------------------------------------------------------------------------------------------------------------
@@ -288,13 +291,32 @@ class CategoryController extends Controller
 
         $minmax = $this->minmax($cat);
 
-        return view('category')->with(['min' => $minmax["min"], 'max' => $minmax["max"], 'items' => $users, 'category' => $category, 'teasers' => [],
-            'cat' => $cat, 'carstypes' => $carstype, 'carsmarks' => $carsmark, 'carscolors' => $carscolor,
-            'allcities' => $allcitie, 'alltoasts' => $alltoast, 'alllanguages' => $alllanguage,
-            'videose' => $videoe, 'videosq' => $videoq, 'audios' => $audiotype, 'allheads' => $allhead,
-            'city' => $city, 'data' => $request->input("data"), 'arenda_ot' => $request->input("arenda_ot"),
-            'arenda_do' => $request->input("arenda_do"), 'mark' => $request->input("marks"), 'type' => $request->input("types"),
-            'color' => $request->input("colors"), 'language_narrator' => $request->input("language_narrator"), 'type_narrator' => $request->input("type_narrator")
+        return view('category')->with([
+            'min' => $minmax["min"],
+            'max' => $minmax["max"],
+            'items' => $users,
+            'category' => $category,
+            'teasers' => [],
+            'cat' => $cat,
+            'carstypes' => $carstype,
+            'carsmarks' => $carsmark,
+            'carscolors' => $carscolor,
+            'allcities' => $allcitie,
+            'alltoasts' => $alltoast,
+            'alllanguages' => $alllanguage,
+            'videose' => $videoe,
+            'videosq' => $videoq,
+            'audios' => $audiotype,
+            'allheads' => $allhead,
+            'city' => $city,
+            'data' => $request->input("data"),
+            'arenda_ot' => $request->input("arenda_ot"),
+            'arenda_do' => $request->input("arenda_do"),
+            'mark' => $request->input("marks"),
+            'type' => $request->input("types"),
+            'color' => $request->input("colors"),
+            'language_narrator' => $request->input("language_narrator"),
+            'type_narrator' => $request->input("type_narrator")
         ]);
     }
 //----------------------------------------------------------------------------------------------------------------------
@@ -548,6 +570,7 @@ class CategoryController extends Controller
         $price_ot = $request->input('arenda_ot');
         $price_do = $request->input('arenda_do');
 
+        //---------------------
         $result = Worker::where('category_id', $cat)->get();
 
         /*Нарыли ведущих - исполнителей в зависимости от типа. На выходе массив их id*/
@@ -730,8 +753,9 @@ class CategoryController extends Controller
         $price_ot = $request->input('arenda_ot');
         $price_do = $request->input('arenda_do');
         $searchNarrType = '';
-        $result = Worker::where('category_id', $cat)->get();
 
+
+        $result = Worker::where('category_id', $cat)->get();
         /*Нарыли ведущих - исполнителей в зависимости от типа. На выходе массив их id*/
         if ((in_array("1", $typeNarr) && in_array("2", $typeNarr)) || count($typeNarr) == 0) {
             $searchNarrType = Worker::where('category_id', $cat)->get()->pluck("id");

@@ -9,8 +9,12 @@ use Illuminate\Http\Request;
 
 class AdminFeedbackController extends Controller
 {
-    public function feedback(){
-        $allComments = Comment::all();
+    public function feedback(Request $request){
+        if($request->mark){
+            $allComments = Comment::where('mark', $request->mark)->get();
+        }else {
+            $allComments = Comment::all();
+        }
         return view('admin.adminfeedback')->with(['AllComments' => $allComments]);
     }
 

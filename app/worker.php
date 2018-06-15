@@ -10,4 +10,19 @@ class Worker extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function comment()
+    {
+        return $this->hasMany('App\Comment');
+    }
+
+    public function pricing()
+    {
+        return $this->hasMany('App\pricing');
+    }
+
+    public function avgMark(){
+        print_r(Worker::find(16)->comment);
+    }
+
 }

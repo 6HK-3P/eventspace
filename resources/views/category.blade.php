@@ -112,12 +112,9 @@
                                     <div class="item-desc">
                                         <div class="item-desc-params flex">
                                             <div class="flex item-desc-params-left">
-                                                <? $selwork = \App\Worker::where('user_id', $items[$i]->id)->first();
-                                                $countcomments = \App\Comment::where('worker_id', $selwork->id)->get();
-                                                $avgmark = \App\Comment::select('mark')->where('worker_id', $selwork->id)->get()->avg('mark');
-                                                ?>
-                                                <span class="rating">{{$avgmark}}</span>
-                                                <span class="feedbacks">{{count($countcomments)}}</span>
+                                                <?php $rating =  $items[$i]->worker->comment->avg('mark')?>
+                                                <span class="rating">{{($rating) ? $rating : 0}}</span>
+                                                <span class="feedbacks">{{$items[$i]->worker->comment->count()}}</span>
                                             </div>
                                             <div>
                                                 <span class="item-price">{{\App\Http\Controllers\ProductController::getPriceToday($items[$i]->worker->id)}} ₽</span>
@@ -222,17 +219,32 @@
 
 
         function mock(item) {
+            var price_today = '';
+            $.ajax({
+                url: '/api/getpricetoday/'+item.worker.id,
+                type: "GET",
+                complete: function (data) {
+                    price_today = (data['responseText']) ? JSON.parse(data['responseText']) : '0 ';
+                    $('.price_today_'+item.worker.id).append(price_today+"₽");
+                }
+            });
+            var sum = 0;
+            for(var avg in item.worker.comment){
+                sum = item.worker.comment[avg].mark+sum;
+            }
+            var avg_mark = sum/item.worker.comment.length;
+            avg_mark = avg_mark ? avg_mark : 0;
             var mock =	"<div class='podbor-item '>";
             mock += "<article class='item-cart'>";
             mock += "<div class='item-photo' style='background-image: url("+item.worker.ava+"); Background-size: cover; Background-position: center center'></div>";
             mock += "<div class='item-desc'>";
             mock += "<div class='item-desc-params flex'>";
             mock += "<div class='flex item-desc-params-left'>";
-            mock += "<span class='rating'>4.5</span>";
-            mock += "<span class='feedbacks'>666</span>";
+            mock += "<span class='rating'>"+avg_mark+"</span>";
+            mock += "<span class='feedbacks'>"+item.worker.comment.length+"</span>";
             mock += "</div>";
             mock += "<div>";
-            mock += "<span class='item-price'>18900</span>";
+            mock += "<span class='price_today_"+item.worker.id+" item-price'>"+price_today+"</span>";
             mock += "</div>";
             mock += "</div>";
             mock += "<div class='item-desc-text'>";
@@ -284,12 +296,19 @@
                         $(".topBlock").append("<br><br><p class='empty'> По вашему запросу ничего не найдено </p>")
                     }
                     else{
-                        for(var i=0; i<4; i++){
-                            $(".topBlock").append(mock(items[i]));
+                        var item_class = $(".topBlock");
+                        for(var p in items){
+                            if(p>=4 && p < 7){
+                                item_class = $(".bottomBlock")
+                            }
+                            $(item_class).append(mock(items[p]));
                         }
-                        for(var p=k; p<7; p++){
-                            $(".bottomBlock").append(mock(items[p]));
-                        }
+//                        for(var i=0; i<4; i++){
+//                            $(".topBlock").append(mock(items[i]));
+//                        }
+//                        for(var p=k; p<7; p++){
+//                            $(".bottomBlock").append(mock(items[p]));
+//                        }
                     }
 
 
@@ -315,11 +334,12 @@
                         $(".topBlock").append("<br><br><p class='empty'> По вашему запросу ничего не найдено </p>")
                     }
                     else{
-                        for(var i=0; i<4; i++){
-                            $(".topBlock").append(mock(items[i]));
-                        }
-                        for(var p=4; p<7; p++){
-                            $(".bottomBlock").append(mock(items[p]));
+                        var item_class = $(".topBlock");
+                        for(var l in items){
+                            if(l>=4 && l < 7){
+                                item_class = $(".bottomBlock")
+                            }
+                            $(item_class).append(mock(items[l]));
                         }
                     }
 
