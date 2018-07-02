@@ -58,9 +58,26 @@ class ProductController extends Controller
         //информация о машинах текущенго воркера
         $allCarsWorker = workers_car::where('worker_id',$allInfoWorker->id)->get();
         $city = 1;
-        return view("product")->with(['SelComment' => $select_comment, 'city'=>$city, 'allCarsWorker' => $allCarsWorker, 'InfoUsers' => $allInfoUser, 'InfoWorker' => $allInfoWorker, 'carstypes' => $carstype, 'carsmarks' => $carsmark,'carscolors' => $carscolor,
-                                             'allcities' => $allcitie ,  'alltoasts' => $alltoast ,'alllanguages' => $alllanguage,
-                                              'videose' => $videoe, 'videosq' => $videoq , 'audios'=>$audiotype, 'allheads'=>$allhead]);
+        return view("product")
+            ->with([
+                'cat' => $worker_id->category_id,
+                'attributes' => [],
+                'SelComment' => $select_comment,
+                'city'=>$city,
+                'allCarsWorker' => $allCarsWorker,
+                'InfoUsers' => $allInfoUser,
+                'InfoWorker' => $allInfoWorker,
+                'carstypes' => $carstype,
+                'carsmarks' => $carsmark,
+                'carscolors' => $carscolor,
+                'allcities' => $allcitie ,
+                'alltoasts' => $alltoast ,
+                'alllanguages' => $alllanguage,
+                'videose' => $videoe,
+                'videosq' => $videoq ,
+                'audios'=>$audiotype,
+                'allheads'=>$allhead
+            ]);
     }
 //----------------------------------------------------------------------------------------------------------------------
 

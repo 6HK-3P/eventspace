@@ -54,51 +54,47 @@
 
             <form class="drum__filter-form bron" data-category = "{{$InfoWorker->category_id}}" method="POST" action="/orders/add/{{$InfoUsers->id}}">
                 {{csrf_field()}}
+                <?php $start = microtime(true);?>
+                @include('filters.category_date')
+                @if($InfoWorker->category_id != 3) @include('filters.category_cities') @endif
                 @if ($InfoWorker->category_id == 6)
 
-                        @include('filters.category_date')
-                        @include('filters.category_cities')
                         @include('filters.auto')
-                @endif
 
-                @if ($InfoWorker->category_id == 5)
+                @elseif($InfoWorker->category_id == 5)
+
                         <script src="/public/js/entertainer.js"></script>
-                        @include('filters.category_date')
                         @include('filters.times')
-                        @include('filters.category_cities')
-                @endif
 
-                @if ($InfoWorker->category_id == 3)
-                        @include('filters.category_date')
+                @elseif($InfoWorker->category_id == 3)
+
                         <div class="drum__filter-form__item">
                             <? $capacity = json_decode($InfoWorker->workers_additional_info); ?>
                             <span>Вместимость: {{$capacity->capacity->start}} - {{$capacity->capacity->end}} чел.</span>
                         </div>
                         @include('filters.price_zal')
-                @endif
 
-                @if ($InfoWorker->category_id == 2)
+                @elseif($InfoWorker->category_id == 2)
+
                         <script src="/public/js/video.js"></script>
-                        @include('filters.category_date')
-                        @include('filters.category_cities')
                         @include('filters.times_video')
                         @include('filters.equipment')
 
+                @elseif($InfoWorker->category_id == 4)
+
+                        <script src="/public/js/entertainer.js"></script>
+                        @include('filters.times')
+
+                @elseif($InfoWorker->category_id == 1)
+
+                        <script src="/public/js/entertainer.js"></script>
+                        @include('filters.times')
+
                 @endif
 
-                @if ($InfoWorker->category_id == 4)
-                        <script src="/public/js/entertainer.js"></script>
-                        @include('filters.category_date')
-                        @include('filters.times')
-                        @include('filters.category_cities')
-                @endif
-
-                @if ($InfoWorker->category_id == 1)
-                        <script src="/public/js/entertainer.js"></script>
-                        @include('filters.category_date')
-                        @include('filters.times')
-                        @include('filters.category_cities')
-                @endif
+                <?php $finish = microtime(true);
+                    dump($finish-$start);
+                ?>
 
                 <div class="drum__filter-form__item filter-coast">
                     <div class="drum-form-content"><span>Гонорар</span> <span id="price" class="filter-coast">0 ₽</span></div>
@@ -129,9 +125,9 @@
                             <tr>
                                 <td>{{$i}}</td>
                                 <td>{{$CarsWorker->name}}</td>
-                                <td>{{\App\Workers_cars_mark::find($CarsWorker->mark_id)->title}}</td>
-                                <td>{{\App\Workers_cars_type::find($CarsWorker->type_id)->title}}</td>
-                                <td>{{\App\Workers_cars_color::find($CarsWorker->color_id)->title}}</td>
+                                <td>{{$CarsWorker->mark_car->name}}</td>
+                                <td>{{$CarsWorker->type_car->name}}</td>
+                                <td>{{$CarsWorker->color_car->name}}</td>
                                 <? $i++; ?>
                             </tr>
                         @endforeach

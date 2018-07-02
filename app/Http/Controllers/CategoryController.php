@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\pricing;
 use App\Site_setting;
+use App\Type;
 use App\User;
 use App\workers_car;
 use App\Workers_cars_color;
@@ -32,7 +33,6 @@ class CategoryController extends Controller
     {
         //вся информация которая в шапке
         $allhead = Site_setting::all();
-
         $cat = $this->selectCategory($category);
         //всё про машины
         $carstype = Workers_cars_type::all();
@@ -57,9 +57,27 @@ class CategoryController extends Controller
         $items = $result["items"];
         $minmax = $this->minmax($cat);
 
-        return view('category')->with(['min' => $minmax["min"], 'max' => $minmax["max"], 'city' => '1', 'items' => $items, 'category' => $category, 'teasers' => $teasers, 'cat' => $cat, 'carstypes' => $carstype, 'carsmarks' => $carsmark, 'carscolors' => $carscolor,
-            'allcities' => $allcitie, 'alltoasts' => $alltoast, 'alllanguages' => $alllanguage,
-            'videose' => $videoe, 'videosq' => $videoq, 'audios' => $audiotype, 'allheads' => $allhead]);
+        return view('category')
+            ->with([
+                'attributes' =>  [],
+                'min' => $minmax["min"],
+                'max' => $minmax["max"],
+                'city' => '1',
+                'items' => $items,
+                'category' => $category,
+                'teasers' => $teasers,
+                'cat' => $cat,
+                'carstypes' => $carstype,
+                'carsmarks' => $carsmark,
+                'carscolors' => $carscolor,
+                'allcities' => $allcitie,
+                'alltoasts' => $alltoast,
+                'alllanguages' => $alllanguage,
+                'videose' => $videoe,
+                'videosq' => $videoq,
+                'audios' => $audiotype,
+                'allheads' => $allhead
+            ]);
 
     }
 //----------------------------------------------------------------------------------------------------------------------
@@ -85,8 +103,8 @@ class CategoryController extends Controller
 
 //------------------------------------Округление значений палзунка------------------------------------------------------
     public function minmax($cat){
-        $worker_ids = Worker::where("category_id", $cat)->get()->pluck('id');
-        $items_price = pricing::whereIn("worker_id", $worker_ids)->get()->pluck('price');
+        $worker_ids = Worker::where("category_id", $cat)->pluck('id');
+        $items_price = pricing::whereIn("worker_id", $worker_ids)->pluck('price');
         $arrayPrice = [];
         $max = 0;
         $min = 0;
@@ -132,17 +150,17 @@ class CategoryController extends Controller
 //-------------------------------------Получение всех воркеров выбранной категории для вывода---------------------------
     public function getWorkers(Request $request)
     {
-        $cat = $request->input("cat");
-        $order = $request->input("order");
-        $searchs = $request->input("search");
-        $offset = $request->input("offset");
+        $cat = $request->cat;
+        $order = $request->order;
+        $searchs = $request->search;
+        $offset = $request->offset;
         $items = User::whereHas('worker', function ($q) use ($cat) {
             $q->where('category_id', $cat);
         })->orderBy("name", $order)->offset($offset)->limit(6)->get();
         $items = $this->getAdditionalInfo($items, $cat);
         $teasers = Teaser::where("position", "<=", 6 + $offset)->where("position", "=>", $offset)->get();
 
-        echo json_encode(["teasers" => $teasers, "items" => $items], JSON_UNESCAPED_UNICODE);
+        return response()->json(["teasers" => $teasers, "items" => $items]);
     }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -246,25 +264,25 @@ class CategoryController extends Controller
         $users = [];
         switch ($cat) {
             case "1" :
-                $users = $this->sortPhoto($request, $cat);
+                $users = $this->sortNarrator($request, $cat);
                 break;
             case "2":
-                $users = $this->sortVideo($request, $cat);
+                $users = $this->sortNarrator($request, $cat);
                 break;
             case "3":
-                $users = $this->sortHalls($request, $cat);
+                $users = $this->sortNarrator($request, $cat);
                 break;
             case "5":
                 $users = $this->sortNarrator($request, $cat);
                 break;
             case "4":
-                $users = $this->sortAudio($request, $cat);
+                $users = $this->sortNarrator($request, $cat);
                 break;
             case "6":
                 $users = $this->sortAuto($request, $cat);
                 break;
             default:
-                $users = $this->sortPhoto($request, $cat);
+                $users = $this->sortNarrator($request, $cat);
         }
         //вся информация которая в шапке
         $allhead = Site_setting::all();
@@ -309,14 +327,9 @@ class CategoryController extends Controller
             'audios' => $audiotype,
             'allheads' => $allhead,
             'city' => $city,
-            'data' => $request->input("data"),
             'arenda_ot' => $request->input("arenda_ot"),
             'arenda_do' => $request->input("arenda_do"),
-            'mark' => $request->input("marks"),
-            'type' => $request->input("types"),
-            'color' => $request->input("colors"),
-            'language_narrator' => $request->input("language_narrator"),
-            'type_narrator' => $request->input("type_narrator")
+            'attributes' => ($request->input('attributes')) ? $request->input('attributes') : [],
         ]);
     }
 //----------------------------------------------------------------------------------------------------------------------
@@ -332,74 +345,32 @@ class CategoryController extends Controller
         $city = $request->input("cities");
         $price_ot = $request->input("arenda_ot");
         $price_do = $request->input("arenda_do");
-        $mark = $request->input("marks");
-        $color = $request->input("colors");
-        $type = $request->input("types");
-
+        $attributes = ($request->input('attributes')) ? $request->input('attributes') : [];
+//        $mark = $request->input("marks");
+//        $color = $request->input("colors");
+//        $type = $request->input("types");
+        $type = Type::where('entry_id', 7)->whereIn('id', $attributes)->pluck('id');
+        $mark = Type::where('entry_id', 9)->whereIn('id', $attributes)->pluck('id');
+        $color = Type::where('entry_id', 8)->whereIn('id', $attributes)->pluck('id');
         $result = workers_car::whereNotNull("worker_id");
-
-        if (!empty($color)) $result->whereIn("color_id", $color);
-        if (!empty($type)) $result->whereIn("type_id", $type);
-        if (!empty($mark)) $result->whereIn("mark_id", $mark);
+        if (count($color) > 0) $result->whereIn("color_id", $color);
+        if (count($type) > 0) $result->whereIn("type_id", $type);
+        if (count($mark) > 0) $result->whereIn("mark_id", $mark);
+//        if (!empty($attributes)) $result->whereIn("mark_id", $mark);
 
         $cars = $result->get();
 
         $arrayCarIds = [];
 
         foreach ($cars as $car) {
-
-//---------------------------Получение ценнообразований по дням---------------------------------------
-            $price = "";
-            $workerPricing = pricing::where("info", $car->id)->where('view', 'По дням')->orderBy("id", "DESC")->get();
-
-            foreach ($workerPricing as $pricings) {
-                $arrayData = json_decode($pricings->date);
-                if (strtotime($arrayData[0]) <= strtotime($data) && strtotime($arrayData[1]) >= strtotime($data)) {
-                    $arrayCities = json_decode($pricings->city);
-                    foreach ($arrayCities as $c) {
-                        if ($c == $city) {
-                            $arrayPrice = json_decode($pricings->price);
-                            $price = $arrayPrice[0];
-                            break;
-                        }
-                    }
-                }
-            }
-
-
-//-----------------------Если ценообразования по дня отсутствуют то по месяцам--------------------------
-            if (empty($price)) {
-                $workerPricing = pricing::where("info", $car->id)->where('view', 'По месяцам')->orderBy("id", "DESC")->get();
-                $mesData = getdate(strtotime($data));
-                foreach ($workerPricing as $pricings) {
-                    $arrayData = json_decode($pricings->date);
-                    foreach ($arrayData as $month) {
-
-                        if ($month == $mesData["mon"]) {
-                            $arrayCities = json_decode($pricings->city);
-                            foreach ($arrayCities as $c) {
-                                if ($c == $city) {
-                                    $arrayPrice = json_decode($pricings->price);
-                                    $price = $arrayPrice[0];
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-//-------------------------------------------------------------------------------------------------------
-
-            if ($price >= $price_ot && $price <= $price_do) {
-
-                $arrayCarIds[] = $car->id;
-
+            $workerPricing = pricing::getPricingDay($car->worker_id, $data, $city, $price_ot, $price_do);
+            if (count($workerPricing) > 0) {
+                $arrayCarIds[] = $car->worker_id;
             }
         }
 
         if (count($arrayCarIds)) {
-            $workerIds = workers_car::select("worker_id")->groupBy("worker_id")->whereIn("id", $arrayCarIds)->get()->pluck("worker_id");
-            $usersIds = Worker::select("user_id")->whereIn('id', $workerIds)->get()->pluck("user_id");
+            $usersIds = Worker::whereIn('id', $arrayCarIds)->pluck("user_id");
             return User::whereIn("id", $usersIds)->get();
         }
         return false;
@@ -413,32 +384,28 @@ class CategoryController extends Controller
 //--------------------------------------------Сортировка для залов------------------------------------------------------
         public function sortHalls(Request $request, $cat)
         {
-            $search = '';
-            $decod = '';
-            $i = 0;
-            if ($cat == 3) {
-                if ($request->input('cities')) {
-                    $search = Worker::where('category_id', $cat)->where('city_id', $request->input('cities'))->get();
-                }
-                if ($request->input('min_capacity') && $request->input('max_capacity')) {
-                    print_r($request->input('min_capacity'));
-                    print_r($request->input('max_capacity'));
-                    $search = Worker::where('category_id', $cat)->get();
-                    //$search = Worker::where('category_id', $cat)->where('workers_additional_info->capacity->start', '<=', trim($request->input('min_capacity')))->where('workers_additional_info->capacity->end', '>=', trim($request->input('max_capacity')))->get();
-
-                    //работает
-                    foreach ($search as $searchs) {
-                        $decod[] = json_decode($searchs->workers_additional_info);
-                        if ($decod[$i]->capacity->start <= $request->input('min_capacity') && $decod[$i]->capacity->end >= $request->input('max_capacity')) {
-
-                        }
-                        $i++;
-                    }
-
-
-
-                }
+            if ($request->input('cities')) {
+                $search = Worker::where('category_id', $cat)->where('city_id', $request->input('cities'));
             }
+            if ($request->input('min_capacity') && $request->input('max_capacity')) {
+                $search = Worker::where('category_id', $cat)
+                    ->where('workers_additional_info->capacity->start', '<=', trim($request->input('min_capacity')))
+                    ->where('workers_additional_info->capacity->end', '>=', trim($request->input('max_capacity')))
+                    ->get();
+
+//                //работает
+//                foreach ($search as $searchs) {
+//                    $decod[] = json_decode($searchs->workers_additional_info);
+//                    if ($decod[$i]->capacity->start <= $request->input('min_capacity') && $decod[$i]->capacity->end >= $request->input('max_capacity')) {
+//
+//                    }
+//                    $i++;
+//                }
+
+
+
+            }
+
 
         }
 //----------------------------------------------------------------------------------------------------------------------
@@ -450,110 +417,43 @@ class CategoryController extends Controller
 //--------------------------------Сортировка для ведущих----------------------------------------------------------------
     public function sortNarrator(Request $request, $cat)
     {
-        $typeNarr = ($request->input('type_narrator')) ? $request->input('type_narrator'): [];
-        $langNarr = ($request->input('language_narrator')) ? $request->input('language_narrator'): [];
+        $attributes = ($request->input('attributes')) ? $request->input('attributes') : [];
+
+        $result = Worker::where('category_id',$cat);
+        if($attributes != []) {
+            $result->where(function ($query) use($attributes){
+                foreach ($attributes as $attribute) {
+                    $query->where('attributes', 'LIKE', '%"' . $attribute . '"%');
+                }
+            });
+        }
+//        $typeNarr = ($request->input('type_narrator')) ? $request->input('type_narrator'): [];
+//        $langNarr = ($request->input('language_narrator')) ? $request->input('language_narrator'): [];
+        $index = 0;
+        if($cat == 3){
+            $max_capacity = ($request->input('max_capacity')) ? trim($request->input('max_capacity')) : 99999 ;
+            $min_capacity = ($request->input('min_capacity')) ? trim($request->input('min_capacity')) : 0 ;
+            $result = Worker::where('category_id', $cat)
+                ->where('capacity_start', '>=', $min_capacity)
+                ->where('capacity_end', '<=', $max_capacity);
+            $index = 1;
+        }
         $data = $request->input('data');
         $city = $request->input('cities');
-        $price_ot = $request->input('arenda_ot');
-        $price_do = $request->input('arenda_do');
-        $searchNarrType = '';
-        $result = Worker::where('category_id', $cat)->get();
-
-        /*Нарыли ведущих - исполнителей в зависимости от типа. На выходе массив их id*/
-        if ((in_array("1", $typeNarr) && in_array("2", $typeNarr)) || count($typeNarr) == 0) {
-            $searchNarrType = Worker::where('category_id', $cat)->get()->pluck("id");
-        }
-        elseif (in_array("2", $typeNarr) && !in_array("1", $typeNarr)) {
-           foreach ($result as $sear) {
-                $searchs = json_decode($sear->workers_additional_info);
-                if (in_array("2" ,$searchs->types_conf)) {
-                   $searchNarrType[] = $sear['id'];
-
-                }
-            }
-        }
-        elseif (in_array("1", $typeNarr) && !in_array("2", $typeNarr)) {
-            foreach ($result as $sear) {
-                $searchs = json_decode($sear->workers_additional_info);
-                if (in_array("1" ,$searchs->types_conf)) {
-                    $searchNarrType[] = $sear['id'];
-
-                }
-            }
-        }
-
-
-    /*Нарыли ведущих - исполнителей в зависимости от языка и типа. На выходе массив их id*/
-        if (count($langNarr) != 0) {
-            $result = Worker::whereIn('id', $searchNarrType)->get();
-            $searchNarrType = [];
-            foreach ($result as $worker) {
-                $info = json_decode($worker->workers_additional_info);
-                $langArray = $info->lang;
-                for ($j = 0; $j < count($langNarr); $j++) {
-                        if (in_array($langNarr[$j], $langArray)) {
-                            $searchNarrType[] = $worker->id;
-                            break;
-                        }
-                }
-            }
-
-        }
-
-        $result = Worker::whereIn('id', $searchNarrType)->get();
+        $price_ot = ($request->input('price_check')) ? $request->input('price_check')[0]  : $request->input('arenda_ot');
+        $price_do = ($request->input('price_check')) ? $request->input('price_check')[1]  : $request->input('arenda_do');
         $searchNarrType = [];
-        foreach ($result as $worker) {
-            $price = "";
-            $workerPricing = pricing::where("worker_id", $worker->id)->where('view', 'По дням')->orderBy("id", "DESC")->get();
-            foreach ($workerPricing as $pricings) {
-                $arrayData = json_decode($pricings->date);
-                if (strtotime($arrayData[0]) <= strtotime($data) && strtotime($arrayData[1]) >= strtotime($data)) {
-                    $arrayCities = json_decode($pricings->city);
-                    foreach ($arrayCities as $c) {
-                        if ($c == $city) {
-                            $arrayPrice = json_decode($pricings->price);
-                            $price = $arrayPrice[0];
-                            break;
-                        }
-                    }
-                }
-            }
-            if (empty($price)) {
-                $workerPricing = pricing::where("worker_id", $worker->id)->where('view', 'По месяцам')->orderBy("id", "DESC")->get();
-                $mesData = getdate(strtotime($data));
-                foreach ($workerPricing as $pricings) {
-                    $arrayData = json_decode($pricings->date);
-                    foreach ($arrayData as $month) {
-                        if ($month == $mesData["mon"]) {
-                            $arrayCities = json_decode($pricings->city);
-                            foreach ($arrayCities as $c) {
-                                if ($c == $city) {
-                                    $arrayPrice = json_decode($pricings->price);
-                                    $price = $arrayPrice[0];
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if ($price >= $price_ot && $price <= $price_do) {
+        foreach ($result->get() as $worker) {
+            $workerPricing = pricing::getPricingDay($worker->id, $data, $city, $price_ot, $price_do, $index);
+            if (count($workerPricing) > 0) {
                 $searchNarrType[] = $worker->id;
             }
         }
 
-
-
-
-
         if ($searchNarrType) {
-            $users_id = Worker::select('user_id')->whereIn('id', $searchNarrType)->get()->pluck('user_id');
+            $users_id = Worker::select('user_id')->whereIn('id', $searchNarrType)->pluck('user_id');
             return User::whereIn('id', $users_id)->get();
         }
-
-
-
 
     }
 //----------------------------------------------------------------------------------------------------------------------

@@ -1,23 +1,31 @@
 <div id="add_type">
-    <?php $addInfo = json_decode($allWorkerInfo->workers_additional_info); ?>
-    <?php $count_camers = (isset($addInfo->count_camers))? json_decode($addInfo->count_camers): []; ?>
     <h6>Выберете услуги и укажите цены </h6>
-        <select name="type_price" >
-            @if(in_array("3", $count_camers))<option value="1">3х камерная</option> @endif
-            @if(in_array("2", $count_camers))<option value="2">2х камерная</option> @endif
-            @if(in_array("1", $count_camers))<option value="3">Однокамерная</option> @endif
-            @if(isset($addInfo->kran) && in_array("3", $count_camers)) <option value="4">3х камерная + кран</option> @endif
-            @if(isset($addInfo->kran) && in_array("2", $count_camers)) <option value="5">2х камерная + кран</option> @endif
-            @if(isset($addInfo->kran) && isset($addInfo->kvadro) && in_array("3", $count_camers)) <option value="6">3х камерная + кран + квадрокоптер</option> @endif
-            @if(isset($addInfo->kran) && isset($addInfo->kvadro) && in_array("2", $count_camers)) <option value="7">2х камерная + кран + квадрокоптер</option> @endif
-            @if(isset($addInfo->kvadro) && in_array("3", $count_camers)) <option value="8">3х камерная + квадрокоптер</option> @endif
-            @if(isset($addInfo->kvadro) && in_array("2", $count_camers))<option value="9">2х камерная + квадрокоптер</option> @endif
-        </select>
-        <select name="type_moving" >
-            <option value="1">FullHD</option>
-            @if(isset($addInfo->k)) <option value="2">4K</option> @endif
+        @foreach($all_count_camers->type as $count_camers)
+            @if(in_array($count_camers->id,json_decode($allWorkerInfo->attributes)))
+            <div>
+                <input type="radio" id="{{$count_camers->id}}" class="month" name="type_price" value="{{$count_camers->id}}">
+                <label for="{{$count_camers->id}}">{{$count_camers->name}}</label>
+            </div>
+            @endif
+        @endforeach
 
-        </select>
+        @foreach($all_equipment->type as $equipment)
+            @if(in_array($equipment->id,json_decode($allWorkerInfo->attributes)))
+                <div>
+                    <input type="checkbox" id="{{$equipment->id}}" class="month" name="type_equipment[]" value="{{$equipment->id}}">
+                    <label for="{{$equipment->id}}">{{$equipment->name}}</label>
+                </div>
+            @endif
+        @endforeach
+        <br>
+        @foreach($all_qualities->type as $quality)
+            @if(in_array($quality->id,json_decode($allWorkerInfo->attributes)))
+                <div>
+                    <input type="radio" id="{{$quality->id}}" class="month" name="type_moving" value="{{$quality->id}}">
+                    <label for="{{$quality->id}}">{{$quality->name}}</label>
+                </div>
+            @endif
+        @endforeach
         <div class="services_wrap">
             <div>
                 <span class="ree">

@@ -1,36 +1,42 @@
-<?php $addInfo = json_decode($InfoWorker->workers_additional_info); ?>
-<?php $count_camers = (isset($addInfo->count_camers))? json_decode($addInfo->count_camers): []; ?>
+<?php $all_categories = \App\Entry::all();
+?>
 <div class="drum__filter-form__item" id="optional_equipment_chooser">
     <span>Качество съемки</span>
     <div class="drum-form-content">
-
-        @if(isset($addInfo->fullHD))
-            <label for="fullHD">
-                <input type="radio" name="quality" checked id="fullHD" value="1">
-                FullHD
-            </label>
-        @endif
-        @if(isset($addInfo->k))
-            <label for="4k">
-                <input type="radio" name="quality" id="4k" value="2">
-                4K
-            </label>
-        @endif
-
-
-
-
+        @foreach($all_categories as $category)
+            @if(in_array($cat, json_decode($category->category_id)))
+                @foreach($category->type->where('entry_id',1) as $attribute)
+                    @if(in_array($attribute->id, json_decode($InfoWorker->attributes)))
+                        <label for="{{$attribute->name}}">
+                            <input type="radio" name="quality" id="{{$attribute->name}}" value="{{$attribute->id}}">
+                            {{$attribute->name}}
+                        </label>
+                    @endif
+                @endforeach
+            @endif
+        @endforeach
     </div>
 </div>
 <div class="drum__filter-form__item" id="optional_equipment_chooser">
     <span>Тип съемки</span>
     <div class="drum-form-content types_moves">
+        @foreach($all_categories as $category)
+            @if(in_array($cat, json_decode($category->category_id)))
 
+                @foreach($category->type->where('entry_id',1) as $attribute)
+                    <label for="1t">
+                        <input type="radio" name="type_moving" id="1t" checked value="1">
+                        3х камерная
+                    </label>
+                    <label for="{{$attribute->name}}">
+                        <input type="radio" name="quality" id="{{$attribute->name}}" value="{{$attribute->id}}">
+                        {{$attribute->name}}
+                    </label>
+                @endforeach
+            @endif
+        @endforeach
         @if(in_array("3", $count_camers))
-                <label for="1t">
-                    <input type="radio" name="type_moving" id="1t" checked value="1">
-                    3х камерная
-                 </label>
+
         @endif
         @if(in_array("2", $count_camers))
             <label for="2t">
