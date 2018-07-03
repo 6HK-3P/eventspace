@@ -5,7 +5,7 @@
         <div>
             <select name="auto_id" id="auto_id">
                 @foreach($allCarsWorker as $CarsWorker)
-                    <option value="{{$CarsWorker->id}}" class="autoOption">{{$CarsWorker->name}} - {{\App\Workers_cars_mark::find($CarsWorker->mark_id)->title}} - {{\App\Workers_cars_color::find($CarsWorker->color_id)->title}}</option>
+                    <option value="{{$CarsWorker->id}}" class="autoOption">{{$CarsWorker->name}} - {{$CarsWorker->mark_car->name}} - {{$CarsWorker->color_car->name}}</option>
                 @endforeach
             </select>
             <br><br>

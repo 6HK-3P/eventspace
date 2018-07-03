@@ -25,11 +25,12 @@
                         @endif
 
                     </div>
-                    @if($cat->id == 5) @include('admin.addworker.filtres.conferance') @endif
-                    @if($cat->id == 4) @include('admin.addworker.filtres.repertoire') @endif
-                    @if($cat->id == 2) @include('admin.addworker.filtres.typevideo') @endif
-                    @if($cat->id == 4 || $cat->id == 5) @include('admin.addworker.filtres.language') @endif
+                    {{--@if($cat->id == 5) @include('admin.addworker.filtres.conferance') @endif--}}
+                    {{--@if($cat->id == 4) @include('admin.addworker.filtres.repertoire') @endif--}}
+                    {{--@if($cat->id == 2) @include('admin.addworker.filtres.typevideo') @endif--}}
+                    {{--@if($cat->id == 4 || $cat->id == 5) @include('admin.addworker.filtres.language') @endif--}}
                     @if($cat->id == 3) @include('admin.addworker.filtres.hall_vmestimost') @endif
+                    @include('admin.addworker.filtres.filters')
                     <div class="profile_options_item">
                         <h5>Менеджер</h5>
                         @if($id>0)

@@ -31,4 +31,12 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Worker');
     }
+
+    public function infoUser(){
+
+        return Worker::where('user_id', $this->id)->first();
+    }
+
+
+
 }

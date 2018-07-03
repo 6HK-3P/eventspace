@@ -2216,6 +2216,25 @@ padding-right: 30px;
   box-shadow: 0 0 10px #ffd800;
   cursor: pointer;
 }
+
+.drum__filter-submits {
+	width: 100%;
+	height: 52px;
+
+	color: #080905;
+	font-size: 22px;
+
+	background-color: #ffd800;
+	border: 1px solid #f7f2f2;
+	border-radius: 10px;
+	box-shadow: 0 0 10px #ffd800;
+	cursor: pointer;
+}
+.drum__filter-submits.disabled {
+	background-color: #CCCCCC;
+	border: 1px solid #CCCCCC;
+	box-shadow: 0 0 10px #CCCCCC;
+}
 .drum__filter-submit.disabled {
 	background-color: #CCCCCC;
 	border: 1px solid #CCCCCC;

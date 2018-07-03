@@ -10,21 +10,19 @@
                 </div>
                 <div class="profile_options_item">
                     <h5>Марка автомобиля</h5>
-                    <?php $cars_marks = \App\Workers_cars_mark::all(); ?>
 
                     <select style="padding: 12px" name="mark_car">
                         @foreach($cars_marks as $car_mark)
-                            <option value="{{$car_mark->id}}">{{$car_mark->title}}</option>
+                            <option value="{{$car_mark->id}}">{{$car_mark->name}}</option>
                         @endforeach
                     </select>
 
                 </div>
                 <div class="profile_options_item">
                     <h5>Цвет автомобиля</h5>
-                    <?php $cars_colors = \App\Workers_cars_color::all(); ?>
                     <select  style="padding: 12px" name="color_car">
                         @foreach($cars_colors as $car_color)
-                            <option value="{{$car_color->id}}">{{$car_color->title}}</option>
+                            <option value="{{$car_color->id}}">{{$car_color->name}}</option>
                         @endforeach
                     </select>
 
@@ -33,10 +31,9 @@
 
                 <div class="profile_options_item">
                     <h5>Тип автомобиля</h5>
-                    <?php $cars_colors = \App\Workers_cars_type::all(); ?>
                     <select  style="padding: 12px" name="type_car">
-                        @foreach($cars_colors as $car_color)
-                            <option value="{{$car_color->id}}">{{$car_color->title}}</option>
+                        @foreach($cars_types as $cars_type)
+                            <option value="{{$cars_type->id}}">{{$cars_type->name}}</option>
                         @endforeach
                     </select>
 
@@ -64,9 +61,9 @@
                     <tr>
                         <td>{{$i}}</td>
                         <td>{{$car->name}}</td>
-                        <td>{{\App\Workers_cars_mark::find($car->mark_id)->title}}</td>
-                        <td>{{\App\Workers_cars_type::find($car->type_id)->title}}</td>
-                        <td>{{\App\Workers_cars_color::find($car->color_id)->title}}</td>
+                        <td>{{$car->mark_car->name}}</td>
+                        <td>{{$car->type_car->name}}</td>
+                        <td>{{$car->color_car->name}}</td>
                         <td><a href="">x</a></td>
                         <? $i++; ?>
                     </tr>

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Entry;
 use App\Interval;
 use App\Order;
 use App\Pricing;
+use App\Type;
 use App\User;
 use App\Worker;
 use App\Worker_calendar;
@@ -56,19 +58,21 @@ class AdminWorkerController extends Controller
     {
 
         //информация о исполнителе заносится в массив
-        $array = [];
-        ($request->input('lang'))        ? $array["lang"] = $request->input('lang') : false;
-        ($request->input('kvadro'))      ? $array["kvadro"] = $request->input('kvadro') : false;
-        ($request->input('kran'))        ? $array["kran"] = $request->input('kran') : false;
-        ($request->input('4K'))          ? $array["k"] = $request->input('4K') : false;
-        ($request->input('count_camers'))? $array["count_camers"] = json_encode($request->input('count_camers')) : false;
-        ($request->input('fullHD'))      ? $array["fullHD"] = $request->input('fullHD') : false;
-        ($request->input('main_lang'))   ? $array["basic_lang"] = $request->input('main_lang') : false;
-        ($request->input('type'))        ? $array["types"] = $request->input('type') : false;
-        ($request->input('types_conf'))  ? $array["types_conf"] = $request->input('types_conf') : false ;
-        ($request->input('capacity_start')) ? $array["capacity"]["start"] = $request->input('capacity_start') : false ;
-        ($request->input('capacity_end')) ? $array["capacity"]["end"] = $request->input('capacity_end') : false ;
-        ($request->input('filter_main_type_artist')) ? $array["basic_types"] = $request->input('filter_main_type_artist') : false;
+        $array_attributes = $request->input('attributes');
+//        $array = [];
+        $basic_attributes = ["$request->basic_attributes_4", "$request->basic_attributes_5"];
+//        ($request->input('lang'))        ? $array["lang"] = $request->input('lang') : false;
+//        ($request->input('kvadro'))      ? $array["kvadro"] = $request->input('kvadro') : false;
+//        ($request->input('kran'))        ? $array["kran"] = $request->input('kran') : false;
+//        ($request->input('4K'))          ? $array["k"] = $request->input('4K') : false;
+//        ($request->input('count_camers'))? $array["count_camers"] = json_encode($request->input('count_camers')) : false;
+//        ($request->input('fullHD'))      ? $array["fullHD"] = $request->input('fullHD') : false;
+//        ($request->input('main_lang'))   ? $array["basic_lang"] = $request->input('main_lang') : false;
+//        ($request->input('type'))        ? $array["types"] = $request->input('type') : false;
+//        ($request->input('types_conf'))  ? $array["types_conf"] = $request->input('types_conf') : false ;
+//        ($request->input('capacity_start')) ? $array["capacity"]["start"] = $request->input('capacity_start') : false ;
+//        ($request->input('capacity_end')) ? $array["capacity"]["end"] = $request->input('capacity_end') : false ;
+//        ($request->input('filter_main_type_artist')) ? $array["basic_types"] = $request->input('filter_main_type_artist') : false;
         //информация о телефонах заносится в массив
         $phonearray = [];
         $phonearray[0]["name"]=$request->input('contact-name1');
@@ -127,7 +131,10 @@ class AdminWorkerController extends Controller
         $addw->manager_id = $request->input('filter_admin_artist');
         $addw->manager_comment = $request->input('filter_comments_artist');
         $addw->worker_contacts = json_encode($phonearray);
-        $addw->workers_additional_info = json_encode($array);
+        $addw->capacity_start = $request->input('capacity_start');
+        $addw->capacity_end = $request->input('capacity_end');
+        $addw->attributes = json_encode($array_attributes);
+        $addw->basic_attributes = json_encode($basic_attributes);
         $addw->save();
 
         if(Auth::user() && Auth::user()->root == 1){
@@ -166,10 +173,29 @@ class AdminWorkerController extends Controller
         $managers = User::where("root",2)->get();
         //все заказы
         $all_orders = Order::all();
-
-
-        return view('add_worker')->with(['allcities' => $allcitie, 'audiotypes' => $audiotype, 'alllanguages' => $alllanguage,"managers"=> $managers,
-                                               'allWorkerInfo' => $allWorkerInfo, 'id'=> $id, 'cat' =>$cat, 'AllPricing' => $allPricingInfo, "AllOrders" => $all_orders ]);
+        $all_count_camers = Entry::find(6);
+        $all_equipment = Entry::find(2);
+        $all_qualities = Entry::find(1);
+        $cars_marks = Type::where('entry_id', 9)->get();
+        $cars_types = Type::where('entry_id', 7)->get();
+        $cars_colors = Type::where('entry_id', 8)->get();
+        return view('add_worker')
+            ->with([
+                'all_count_camers' => $all_count_camers,
+                'all_equipment' => $all_equipment,
+                'all_qualities' => $all_qualities,
+                'cars_marks' => $cars_marks,
+                'cars_types' => $cars_types,
+                'cars_colors' => $cars_colors,
+                'allcities' => $allcitie,
+                'audiotypes' => $audiotype,
+                'alllanguages' => $alllanguage,
+                "managers"=> $managers,
+                'allWorkerInfo' => $allWorkerInfo,
+                'id'=> $id, 'cat' =>$cat,
+                'AllPricing' => $allPricingInfo,
+                "AllOrders" => $all_orders
+            ]);
     }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -225,8 +251,7 @@ class AdminWorkerController extends Controller
 //----------------------------------добавление в бд нового ценового правила---------------------------------------------
     public function pricing(Request $request, $id){
         $alltime = '';
-        $allprice = [];
-        $alldeposit = [];
+
         $allcity = "";
         $info = "";
         if($request->input('city')){
@@ -240,6 +265,8 @@ class AdminWorkerController extends Controller
 
         //------------------ добавление цен для всех--------------------------------
         if($request->input('price_type_1') || $request->input('price_type_2') || $request->input('price_type_3')){
+            $allprice = [];
+            $alldeposit = [];
             for($i=3; $i>0; $i--) {
                 if($request->input('type_'.$i)){
                     $allprice[] = $request->input('price_type_'.$i);
@@ -264,6 +291,8 @@ class AdminWorkerController extends Controller
 
         //------------------ добавление цен для залов--------------------------------
         if($request->input('hall_type_2') || $request->input('hall_type_1')) {
+            $allprice = [];
+            $alldeposit = [];
             if ($request->input('hall_type_2')) {
                 if ($request->input('price_hall_2')) {
                     $allprice[] = $request->input('price_hall_2');
@@ -289,15 +318,22 @@ class AdminWorkerController extends Controller
 
         //------------------ добавление цен для автомобилей--------------------------------
         if($request->input('auto_id')){
-
+            $allprice = [];
+            $alldeposit = [];
             $allprice[] = $request->input('price_auto');
             $alldeposit[] = $request->input('price_zalog_auto');
         }
         //-------------------------------------------------------------------------------
 
         //------------------ добавление цен для видеостудий--------------------------------
-        if($request->input('type_price')){
-            $info = json_encode([$request->input('type_price'), $request->input('type_moving')]);
+        if($request->input('type_price') && $request->input('type_moving')){
+            $allprice = [];
+            $alldeposit = [];
+            $attribute =[];
+            $attribute[] = $request->input('type_moving');
+            $attribute[] = $request->input('type_price');
+            $attribute = array_merge($attribute, $request->input('type_equipment'));
+            $info = json_encode($attribute);
             for($i=3; $i>1; $i--) {
                 if($request->input('type_'.$i)){
                     $allprice[] = $request->input('price_type_'.$i);
@@ -324,17 +360,18 @@ class AdminWorkerController extends Controller
             $addPricing->view = 'По дням';
             $start = date("d.m.Y",strtotime($request->input('start_date')));
             $end = date("d.m.Y",strtotime($request->input('end_date')));
-            $alldate = json_encode([$start, $end]);
+            $addPricing->date_from = $end;
+            $addPricing->date_to = $start;
+            $alldate = json_encode([$start,$end]);
         }
         else{
             $alldate = json_encode($request->input('month'));
         }
-        $addPricing->city = $allcity;
         $addPricing->date = $alldate;
+        $addPricing->city = $allcity;
         $addPricing->price = json_encode($allprice);
         $addPricing->deposit = json_encode($alldeposit);
-        $addPricing->info = ($request->input('auto_id')) ? $request->input('auto_id') : '';
-        $addPricing->info =  $info;
+        $addPricing->info = ($request->input('auto_id')) ? $request->input('auto_id') : $info;
         $addPricing->save();
         return json_encode(true);
 

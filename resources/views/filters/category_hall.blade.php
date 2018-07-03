@@ -20,10 +20,10 @@
             <div id="first" class="drum-container">
                 <div class="drum-form-content">
                     <label style="width: 49%">
-                        ОТ <input type="number" name="price_ot_wedding" style="max-width: 60%" min=200 step="100">
+                        ОТ <input type="number" name="price_check[]" style="max-width: 60%" min=200 step="100">
                     </label>
                     <label style="width: 49%">
-                        ДО <input type="number" name="price_do_wedding" style="max-width: 60%" min=300 step="100">
+                        ДО <input type="number" name="price_check[]" style="max-width: 60%" min=300 step="100">
                     </label>
                 </div>
             </div>
