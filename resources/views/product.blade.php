@@ -54,7 +54,6 @@
 
             <form class="drum__filter-form bron" data-category = "{{$InfoWorker->category_id}}" method="POST" action="/orders/add/{{$InfoUsers->id}}">
                 {{csrf_field()}}
-                <?php $start = microtime(true);?>
                 @include('filters.category_date')
                 @if($InfoWorker->category_id != 3) @include('filters.category_cities') @endif
                 @if ($InfoWorker->category_id == 6)
@@ -91,11 +90,6 @@
                         @include('filters.times')
 
                 @endif
-
-                <?php $finish = microtime(true);
-                    dump($finish-$start);
-                ?>
-
                 <div class="drum__filter-form__item filter-coast">
                     <div class="drum-form-content"><span>Гонорар</span> <span id="price" class="filter-coast">0 ₽</span></div>
                     <div class="drum-form-content"><span>Залог</span> <span id="deposit" class="filter-coast">0 ₽</span></div>

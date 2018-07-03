@@ -3,7 +3,7 @@
         @foreach($all_count_camers->type as $count_camers)
             @if(in_array($count_camers->id,json_decode($allWorkerInfo->attributes)))
             <div>
-                <input type="radio" id="{{$count_camers->id}}" class="month" name="type_price" value="{{$count_camers->id}}">
+                <input type="radio" id="{{$count_camers->id}}" class="month" name="type_price" value="{{$count_camers->name}}">
                 <label for="{{$count_camers->id}}">{{$count_camers->name}}</label>
             </div>
             @endif
@@ -12,7 +12,7 @@
         @foreach($all_equipment->type as $equipment)
             @if(in_array($equipment->id,json_decode($allWorkerInfo->attributes)))
                 <div>
-                    <input type="checkbox" id="{{$equipment->id}}" class="month" name="type_equipment[]" value="{{$equipment->id}}">
+                    <input type="checkbox" id="{{$equipment->id}}" class="month" name="type_equipment[]" value="{{$equipment->name}}">
                     <label for="{{$equipment->id}}">{{$equipment->name}}</label>
                 </div>
             @endif
@@ -21,7 +21,7 @@
         @foreach($all_qualities->type as $quality)
             @if(in_array($quality->id,json_decode($allWorkerInfo->attributes)))
                 <div>
-                    <input type="radio" id="{{$quality->id}}" class="month" name="type_moving" value="{{$quality->id}}">
+                    <input type="radio" id="{{$quality->id}}" class="month" name="type_moving" value="{{$quality->name}}">
                     <label for="{{$quality->id}}">{{$quality->name}}</label>
                 </div>
             @endif

@@ -330,9 +330,9 @@ class AdminWorkerController extends Controller
             $allprice = [];
             $alldeposit = [];
             $attribute =[];
-            $attribute[] = $request->input('type_moving');
-            $attribute[] = $request->input('type_price');
-            $attribute = array_merge($attribute, $request->input('type_equipment'));
+            $attribute['moving'] = $request->input('type_moving');
+            $attribute['cameras'] = $request->input('type_price');
+            $attribute = array_merge($attribute, ['equipment' => $request->input('type_equipment')]);
             $info = json_encode($attribute);
             for($i=3; $i>1; $i--) {
                 if($request->input('type_'.$i)){

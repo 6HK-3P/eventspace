@@ -422,8 +422,13 @@ class CategoryController extends Controller
         $result = Worker::where('category_id',$cat);
         if($attributes != []) {
             $result->where(function ($query) use($attributes){
-                foreach ($attributes as $attribute) {
-                    $query->where('attributes', 'LIKE', '%"' . $attribute . '"%');
+                foreach ($attributes as $key => $attribute) {
+                    if($key > 0 && Type::find($attribute)->entry_id != Type::find($attributes[$key-1])->entry_id) {
+                        $query->where('attributes', 'LIKE', '%"' . $attribute . '"%');
+                    }else{
+
+                        $query->orWhere('attributes', 'LIKE', '%"' . $attribute . '"%');
+                    }
                 }
             });
         }

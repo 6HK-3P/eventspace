@@ -503,7 +503,7 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
     function bladePriceRulesVideo(response) {
         $(".price_rules_edit_wrap").html("");
         var rules = response.rules;
-
+        console.log(response);
         if(rules.length>0) {
 
             var tmpl = " <table class='price_rules'><thead><td>№</td><td>Вид</td> <td>Города</td> <td>Даты</td> <td>Цена</td> <td>Залог</td> <td></td></thead> <tbody class='price_rules_body'>";
@@ -523,8 +523,8 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
 
                 var str = switchVideoType(parseInt(types[0]));
                 var quality = switchVideoQuality(parseInt(types[1]));
-                    tmpl +="<p>Съемка - "+str+" </p>";
-                    tmpl +="<p>Качество - "+quality+" </p>";
+                    tmpl +="<p>Съемка - "+types.cameras+" "+types.equipment+"</p>";
+                    tmpl +="<p>Качество - "+types.moving+" </p>";
                 var price = JSON.parse(rules[i].price);
 
                 if (price[0]) {
@@ -537,7 +537,7 @@ $(".add_price_rule.cat4 input[type=submit], .add_price_rule.cat1 input[type=subm
 
                 tmpl += "</td><td>";
                 tmpl +="<p>Съемка - "+str+"</p>";
-                tmpl +="<p>Качество - "+quality+" </p>";
+                tmpl +="<p>Качество - "+types[0]+" </p>";
                 var deposit = JSON.parse(rules[i].deposit);
                 if (deposit[0]) {
                     tmpl += "<div class='flex'><label>День / Вечер</label><input type='text' name='date_deposit_1_" + rules[i].id + "' class='table_price' value='" + deposit[0] + "'></div>";

@@ -13,12 +13,23 @@ class pricing extends Model
         return $this->belongsTo('App\Worker');
     }
 
-    public static function getPricingDay($id, $data, $city, $price_ot, $price_do, $index){
+    public static function getPricingDay($id, $data, $city = null, $price_ot = 0, $price_do = 999999999, $index = 0, $moving = null,$cameras = null,$equipment = null){
         $workerPricing = pricing::where("worker_id", $id)->where('view', 'По дням')
             ->orderBy("id", "DESC")
             ->where('date_to', '<=', $data)
             ->where('date_from','>=', $data)
-            ->where('city', 'LIKE', '%"'.$city.'"%')
+            ->when($city != null, function ($q) use ($city){
+                return $q ->where('city', 'LIKE', '%"'.$city.'"%');
+            })
+            ->when($moving != null, function ($q) use ($moving){
+                return $q->where('info->moving', $moving);
+            })
+            ->when($cameras != null, function ($q) use ($cameras){
+                return $q->where('info->cameras', $cameras);
+            })
+            ->when($equipment != null, function ($q) use ($equipment){
+                return $q ->where('info->equipment','LIKE', '%"'.implode('", "',$equipment).'"%');
+            })
             ->first();
 
         if(isset($workerPricing->price) && json_decode($workerPricing->price)[$index] >= $price_ot && json_decode($workerPricing->price)[$index] <= $price_do){
@@ -29,7 +40,18 @@ class pricing extends Model
                 ->where('view', 'По месяцам')
                 ->orderBy("id", "DESC")
                 ->where('date', 'LIKE', '%"' . $mesData["mon"] . '"%')
-                ->where('city', 'LIKE', '%"' . $city . '"%')
+                ->when($moving != null, function ($q) use ($city){
+                    return $q ->where('city', 'LIKE', '%"'.$city.'"%');
+                })
+                ->when($moving != null, function ($q) use ($moving){
+                    return $q->where('info->moving', $moving);
+                })
+                ->when($cameras != null, function ($q) use ($cameras){
+                    return $q->where('info->cameras', $cameras);
+                })
+                ->when($equipment != null, function ($q) use ($equipment){
+                    return $q ->where('info->equipment','LIKE', '%"'.implode('", "',$equipment).'"%');
+                })
                 ->first();
         }
         if(isset($workerPricing->price) && json_decode($workerPricing->price)[$index] >= $price_ot && json_decode($workerPricing->price)[$index] <= $price_do){
