@@ -64,7 +64,7 @@ class PricingController extends Controller
         $workerPricing = pricing::getPricingDay($worker_id,$data,null,0,999999999,$param);
         $price = (isset($workerPricing->price)) ? json_decode($workerPricing->price) : null;
         $deposit =  (isset($workerPricing->deposit)) ? json_decode($workerPricing->deposit) : null;
-        return (empty($price)) ? json_encode(false) : json_encode(["price"=>$price, "deposit"=>$deposit]);
+        return (empty($price[$param])) ? json_encode(false) : json_encode(["price"=>$price[$param], "deposit"=>$deposit[$param]]);
 
 
     }
@@ -101,9 +101,9 @@ class PricingController extends Controller
         $city= $request->input('cities');
         $workerPricing = pricing::getPricingDay($worker_id,$data,$city,0,999999999,$param);
 
-        $price = (isset($workerPricing->price)) ? json_decode($workerPricing->price) : null;
+        $price = (isset($workerPricing->price) ) ? json_decode($workerPricing->price) : null;
         $deposit =  (isset($workerPricing->deposit)) ? json_decode($workerPricing->deposit) : null;
-        return (empty($price)) ? json_encode(false) : json_encode(["price"=>$price, "deposit"=>$deposit]);
+        return (empty($price[$param])) ? json_encode(false) : json_encode(["price"=>$price[$param], "deposit"=>$deposit[$param]]);
     }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -123,8 +123,8 @@ class PricingController extends Controller
             return json_encode(false);
         }
         $workerPricing = pricing::getPricingDay($worker_id,$data,$city,0,999999999,$param, $moving, $cameras, $equipment);
-        $price = (isset($workerPricing->price)) ? json_decode($workerPricing->price) : null;
-        $deposit =  (isset($workerPricing->deposit)) ? json_decode($workerPricing->deposit) : null;
+        $price = (isset($workerPricing->price)) ? json_decode($workerPricing->price) : '';
+        $deposit =  (isset($workerPricing->deposit)) ? json_decode($workerPricing->deposit) : '';
 
 //        $workerPricing = pricing::where('worker_id', $worker_id)->where( 'view', 'По дням')->orderBy("id", "DESC")->get();
 //        foreach ($workerPricing as $pricings){
@@ -176,7 +176,7 @@ class PricingController extends Controller
 //            }
 //        }
 
-        return (empty($price)) ? json_encode(false) : json_encode(["price"=>$price[$param], "deposit"=>$deposit[$param]]);
+        return (empty($price[$param])) ? json_encode(false) : json_encode(["price"=>$price[$param], "deposit"=>$deposit[$param]]);
     }
 //----------------------------------------------------------------------------------------------------------------------
 
