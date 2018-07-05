@@ -22,7 +22,7 @@
     <script src="http://yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
     <script src="http://yastatic.net/share2/share.js"></script>
     <script src="/public/js/datepicker.min.js"></script>
-
+    <script src="/public/js/modernizr.js"></script> <!-- Modernizr -->
 
 
 
@@ -50,28 +50,11 @@
             @elseif(\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->root == 1)
                 <a href="/lk/">
             @else
-                <a href="/lk/0/0">
+                <a href="#0" class="cd-signin">
             @endif
                     Личный кабинет
                 </a>
-            <div class="login" style="display: none;">
-                <div class="flex center tabsL"><span class="active" data-tab="loginForm">Вход</span><span data-tab="regForm">Регистрация</span></div>
-                <form action="#" method="POST" id="loginForm">
-                    <div class="flex"><label>Телефон</label><input type="text" class="tel" placeholder="+7 925 075-82-81"> </div>
-                    <div class="flex"><label>Пароль</label><input type="password"></div>
-                    <div class="flex">
-                        <div class="notfound">Мы не нашли номера телефона в базе <br> Пожалуйста, <span class="reg">зарегистрируйтесь</span></div>
-                        <button type="submit">Войти</button>
-                    </div>
-                </form>
-                <form action="#" method="POST" id="regForm" style="display:none">
-                    <div class="flex"><label>Телефон</label><input class="tel" type="text" placeholder="+7 925 075-82-81"> </div>
-                    <div class="flex">
-                        <div class="notfound">Ваш номер уже используется <br> Пожалуйста, <span class="log">войдите</span></div>
-                        <button type="submit">Получить смс</button>
-                    </div>
-                </form>
-            </div>
+            
         </div>
     </div>
 
@@ -104,6 +87,105 @@
         <div class="solidWorks"><p>Сделано с любовью в SolidWorks</p></div>
     </div>
 </footer>
+<div class="cd-user-modal"> <!-- все формы на фоне затемнения-->
+        <div class="cd-user-modal-container"> <!-- основной контейнер -->
+            <ul class="cd-switcher">
+                <li><a href="#0">Вход</a></li>
+                <li><a href="#0">Регистрация</a></li>
+            </ul>
+
+            <div id="cd-login"> <!-- форма входа -->
+                <form class="cd-form">
+                    <p class="fieldset">
+                        <label class="image-replace  cd-username" for="signin-email">Телефон</label>
+                        <input class="full-width has-padding has-border tel tel1" id="signin-tel" type="text" placeholder="Телефон">
+                        <span class="cd-error-message">Введите корректный номер телефона!</span>
+                    </p>
+
+                    <p class="fieldset">
+                        <label class="image-replace cd-password" for="signin-password">Пароль</label>
+                        <input class="full-width has-padding has-border" id="signin-password" type="text"  placeholder="Пароль">
+                        <a href="#0" class="hide-password">Скрыть</a>
+                        <span class="cd-error-message">Пароль не менее 6 символов!</span>
+                    </p>
+
+
+
+                    <p class="fieldset">
+                        <input class="full-width" type="submit" id="login" value="Войти">
+                    </p>
+                </form>
+                
+                <p class="cd-form-bottom-message"><a href="#0">Забыли свой пароль?</a></p>
+                <!-- <a href="#0" class="cd-close-form">Close</a> -->
+            </div> <!-- cd-login -->
+
+            <div id="cd-signup"> <!-- форма регистрации -->
+                <form class="cd-form">
+                <div class="step1">
+                    <p class="fieldset">
+                        <label class="image-replace  cd-username" for="signup-username">Телефон</label>
+                        <input class="full-width has-padding tel tel2 has-border" id="signup-tel" type="text" placeholder="Телефон">
+                        <span class="cd-error-message">Введите корректный номер телефона!</span>
+                    </p>
+                    <p class="cd-form-message">Введите номер телефона. Вам придет смс с кодом</p>
+                    
+                    <p class="fieldset">
+                        <input class="full-width has-padding" id="step1" type="submit" value="Получить код">
+                    </p>
+                </div>
+                <div class="step2">
+                    <p class="fieldset">
+                        <label class="image-replace cd-password" for="signup-username">Введите код</label>
+                        <input class="full-width has-padding has-border" id="signup-code" type="text"  maxlength="4" placeholder="Введите код">
+                        <span class="cd-error-message">Некорректный код! Осталось 2 попытки.</span>
+                    </p>
+                    <p class="fieldset">
+                        <input class="full-width has-padding" id="step2" type="submit" value="Подтвердить">
+                    </p>
+                </div>
+                <div class="step3">
+                    <p class="fieldset">
+                        <label class="image-replace cd-password" for="signin-password">Пароль</label>
+                        <input class="full-width  has-padding has-border" id="signup-password" type="text"  placeholder="Придумайте пароль">
+                        <a href="#0" class="hide-password">Скрыть</a>
+                        <span class="cd-error-message">Пароль не менее 6 символов!</span>
+                    </p>
+                    <p class="fieldset">
+                        <input class="full-width has-padding" id="step3" type="submit" value="Зарегистрироваться">
+                    </p>
+                </div>
+                <div class="step4">
+                    <h3>Вы успешно зарегистрированны!</h3>
+                    <img src="img/check.svg" alt="">
+                </div>
+                </form>
+
+                <!-- <a href="#0" class="cd-close-form">Close</a> -->
+            </div> <!-- cd-signup -->
+
+            <div id="cd-reset-password"> <!-- форма восстановления пароля -->
+                <p class="cd-form-message">Забыли пароль? Пожалуйста, введите номер телефона. Вам будет выслан временный пароль, изменить который, вы можете в личном кабинете. </p>
+
+                <form class="cd-form">
+                    <p class="fieldset">
+                        <label class="image-replace cd-username" for="reset-email">Телефон</label>
+                        <input class="full-width has-padding has-border  tel tel3 " id="reset-password" type="text" placeholder="Телефон">
+                        <span class="cd-error-message">Введите корректный номер телефона!</span>
+                    </p>
+
+                    <p class="fieldset">
+                        <input class="full-width has-padding" id="res_pass" type="submit" value="Восстановить пароль">
+                    </p>
+                </form>
+
+                <p class="cd-form-bottom-message"><a href="#0">Вернуться к входу</a></p>
+            </div> <!-- cd-reset-password -->
+            <a href="#0" class="cd-close-form">Закрыть</a>
+        </div> <!-- cd-user-modal-container -->
+    </div> <!-- cd-user-modal -->
+
+
 <script src="/public/js/functions.js"></script>
 <script src="/public/js/index.js"></script>
 
@@ -134,6 +216,6 @@
         });
     })
 </script>
-
+<script src="/public/js/modal.js"></script> <!-- Gem jQuery -->
 </body>
 </html>
